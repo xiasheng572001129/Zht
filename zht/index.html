@@ -1,0 +1,29 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>总后台管理系统</title><link rel=icon href=./static/favicon.ico type=image/x-icon><link rel=stylesheet href=./static/css/common.css><link rel=stylesheet href=./static/js/layer/mobile/need/layer.css><script src=./static/js/jquery.min.js></script><script src=./static/js/layer/layer.js></script><script>var lastTime = new Date().getTime();
+        var currentTime = new Date().getTime();
+        var timeOut = 30 * 60 * 1000; //设置超时时间： 10秒
+        $(function () {
+            /* 鼠标移动事件 */
+            $(document).mouseout(function () {
+                lastTime = new Date().getTime(); //更新操作时间
+            });
+        });
+
+        function testTime() {
+            currentTime = new Date().getTime(); //更新当前时间
+            if (currentTime - lastTime > timeOut) { //判断是否超时
+                alert('长时间未操作，请重新登录');
+                window.location.href = 'https://zd.ctbls.com/zht/#/login';
+                window.sessionStorage.removeItem("bbytoken");
+            }
+        }
+        /* 定时器  间隔1秒检测是否长时间未操作页面  */
+        window.setInterval(testTime, 30 * 60 * 1000);
+        //			window.cartopiaURL = 'https://zd.ctbls.com/las';
+        window.cartopiaURL = 'http://localhost:8080';
+//      window.onload=function(){
+//        document.body.onkeydown=function(e){
+//          if(e.keyCode==123){
+//            return false;
+//          }
+//        }
+//      };</script><link href=./static/css/app.42b16970aaeb26327318ebb97667699e.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=./static/js/manifest.07d1efeaacd9e08fe174.js></script><script type=text/javascript src=./static/js/vendor.5061dafdecf55d5557d5.js></script><script type=text/javascript src=./static/js/app.c26e436a33750d360902.js></script></body></html>

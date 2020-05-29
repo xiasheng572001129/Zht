@@ -124,10 +124,11 @@ import Viewer from '@/utils/Viewer'
 export default {
   data () {
     return {
+      authList: [],
       list: [],
       seCurId: '',
       token: window.sessionStorage.getItem('bbytoken'), //token令牌
-      authList: [],
+      detailList: {},
       page: 0,  //供应商列表当前页数
       pageCount: 0, //供应商列表总页数
       detailVisible: false,
@@ -179,7 +180,7 @@ export default {
         if (res.data.code == 1) {
           var arr = res.data.data || [];
           this.authList = arr;
-          console.log(this.authList)
+
         } else {
           this.$alert(res.data.msg, '提示', {
             type: 'error'

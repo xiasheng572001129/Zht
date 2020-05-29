@@ -19,7 +19,7 @@
           <thead>
             <tr>
               <th>油品名称</th>
-              <th>图片</th>
+              <!-- <th>图片</th> -->
               <th>详情</th>
               <th>修改</th>
               <th>操作</th>
@@ -28,10 +28,10 @@
           <tbody>
             <tr v-for="item in list">
               <td class="sno">{{item.name}}</td>
-              <td class="pic">
+              <!-- <td class="pic">
                 <img :src="item.cover"
                      class="poimg">
-              </td>
+              </td> -->
               <td>
                 <a href="javascript:;"
                    @click="detail(item.id)">查看</a>
@@ -75,7 +75,7 @@
       </div>
       <div class="lunbopic">
         <!--产品图片：<br>-->
-        <el-upload action="https://ceshi.ctbls.com/admin/SystemSetup/uploadPic"
+        <el-upload :action="`${uploadUrl}admin/SystemSetup/uploadPic`"
                    list-type="picture-card"
                    name="image"
                    :data="obj"
@@ -123,6 +123,7 @@ export default {
       list: [],
       token: window.sessionStorage.getItem('bbytoken'),
       obj: {},
+      uploadUrl: this.baseURL,
       reason: '',
       reg_reason: '',
       aid: '',

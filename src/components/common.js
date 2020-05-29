@@ -1,3 +1,4 @@
+import axios from 'axios'
 var obj = {
     sendyzm: function () {
         var that = this;
@@ -15,7 +16,7 @@ var obj = {
     },
     //获取省
     getprovince: function (Callback) {
-        this.$axios.get('agent/reg/regPro')
+        axios.get('agent/reg/regPro')
             .then(res => {
                 this.provincelist = res.data;
                 Callback && Callback(this.provincelist[0].id)
@@ -25,10 +26,12 @@ var obj = {
     //获取市
     checkpro: function () {
         var proId;
+        console.log(this.provincelist)
         for (var i = 0; i < this.provincelist.length; i++) {
             if (this.provincelist[i].name == this.reg.province)
                 proId = this.provincelist[i].id;
         }
+        console.log(proId)
         this.$axios.post('agent/reg/regCity', {
             id: proId
         })
@@ -38,6 +41,37 @@ var obj = {
             })
             .catch(error => console.log(error));
     },
+    getCity (id) {  //获取市 
+        return new Promise((resolve, reject) => {
+            this.$axios.post('agent/reg/regCity', {
+                id: id
+            })
+                .then(res => {
+                    resolve(res.data)
+                })
+                .catch(error => {
+                    reject(error)
+                });
+        })
+
+
+    },
+    getCounty (id) {  //获取区/县
+        return new Promise((resolve, reject) => {
+            this.$axios.post('agent/reg/regCounty', {
+                id: id
+            })
+                .then(res => {
+                    resolve(res.data)
+                })
+                .catch(error => {
+                    reject(error)
+                });
+        })
+
+
+    },
+
     //获取县
     checkcity: function () {
         var cityId;

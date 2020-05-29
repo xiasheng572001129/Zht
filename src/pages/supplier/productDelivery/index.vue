@@ -24,9 +24,7 @@
                      label="已发货"></el-option>
           <el-option value="2"
                      label="已收货"></el-option>
-
         </el-select>
-
       </div>
       <el-table :data="list">
         <el-table-column label="供应商名称"
@@ -44,7 +42,6 @@
         <el-table-column label="产品数量"
                          prop="number"
                          align="center"></el-table-column>
-
         <el-table-column label="申请时间"
                          prop="create_time"
                          align="center"></el-table-column>
@@ -59,7 +56,6 @@
           </template>
         </el-table-column>
       </el-table>
-
       <div class="page_center"
            v-show="pageCount&&pageCount>1">
         <paging :page-count="pageCount"
@@ -100,8 +96,6 @@ export default {
         const res = await this.$axios.post('admin/SmDeliver/getFreeDeliverList', { token: this.token, page: this.page, status: this.status })
         this.list = res.data.data.list || []
         this.pageCount = res.data.data.rows || 0
-
-
       } catch (err) {
         throw (err)
       }
@@ -133,10 +127,9 @@ export default {
         if (res.data.code == 1) {
           var arr = res.data.data || [];
           this.authList = arr;
-          console.log(this.authList)
         } else {
           this.$alert(res.data.msg, '提示', {
-            type: 'error'
+            type: 'error' 
           });
         }
       })
@@ -149,9 +142,7 @@ export default {
     this.erAuth()
   },
   mounted () {
-
     this.init() //初始化数据  
-
   },
 }
 </script>

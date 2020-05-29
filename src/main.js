@@ -36,7 +36,6 @@ Vue.prototype.baseURL = process.env.BASE_URL
 import qs from 'qs';
 axios.interceptors.request.use((config) => {
     config.data = qs.stringify(config.data);
-
     return config;
 }, function (error) {
     return Promise.reject(error);

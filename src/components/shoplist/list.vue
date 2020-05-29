@@ -11,6 +11,51 @@
       <div class="quote">
         <div class="quote-ele"><i></i>维修厂列表</div>
       </div>
+      <div style="margin:20px
+       20px">
+        <el-input placeholder="请输入维修厂"
+                  v-model="ListQuery.company"
+                  class="input-with-select search">
+          <el-button slot="append"
+                     icon="el-icon-search"
+                     @click="page=1,init()"></el-button>
+
+        </el-input>
+
+        省:
+        <el-select v-model="ListQuery.search['province']"
+                   placeholder="请选择省"
+                   class="region"
+                   @change="getCityList">
+          <el-option v-for="item in provincelist"
+                     :key="item.id"
+                     :label="item.name"
+                     :value="item.id">
+          </el-option>
+        </el-select>
+        市:
+        <el-select v-model="ListQuery.search['city']"
+                   placeholder="请选择市"
+                   class="region"
+                   @change="getCounty">
+          <el-option v-for="item in CityList"
+                     :key="item.id"
+                     :label="item.name"
+                     :value="item.id">
+          </el-option>
+        </el-select>
+        区/县:
+        <el-select v-model="ListQuery.search['county']"
+                   placeholder="请选择区/县"
+                   @change="changeCounty"
+                   class="region">
+          <el-option v-for="item in countyList"
+                     :key="item.id"
+                     :label="item.name"
+                     :value="item.name">
+          </el-option>
+        </el-select>
+      </div>
       <table class="table">
         <thead>
           <tr>
@@ -21,14 +66,15 @@
             <th>账户余额</th>
             <th>技师数量</th>
             <th>邦保养次数</th>
-            <th>推荐人</th>
+            <!-- <th>推荐人</th> -->
             <th>设置供应商</th>
             <th>详情</th>
             <th>操作</th>
             <th>维修厂类型</th>
-            <th>服务押金</th>
+            <!-- <th>服务押金</th> -->
             <th>是否有服务车</th>
             <th>服务车补贴</th>
+            <th>升级授权店</th>
           </tr>
         </thead>
         <tbody>
@@ -50,12 +96,12 @@
               <el-button @click="lookbangNum(item.id)"
                          type="text">{{item.service_num}}</el-button>
             </td>
-            <td>
+            <!-- <td>
               <a href="javascript:;"
                  @click="reg.id=item.id,refereesDetails(item)">
                 {{item.share_person==2 ? '设置推荐人' : '查看推荐人'}}
               </a>
-            </td>
+            </td> -->
             <td><a href="javascript:;"
                  @click="isShowSupplier=true,sid=item.id,handleSupplier(item.id)">设置</a></td>
             <td>
@@ -66,9 +112,9 @@
                  @click="close(item.id)">临时关停</a>
             </td>
             <td>
-              {{item.shop_type ==1 ? '智能连锁店' : '主题活动店'}}
+              {{item.shop_type}}
             </td>
-            <td>{{item.fee || '无'}}</td>
+            <!-- <td>{{item.fee || '无'}}</td> -->
             <td>
               <el-switch v-model="item.serve_car"
                          v-if='item.shop_type==1'
@@ -88,6 +134,13 @@
                         placeholder="请输入补贴"
                         @blur="SetupSubsidy(item)" />
               <div v-else>--</div>
+            </td>
+            <td>
+              <el-button type="primary"
+                         size='small'
+                         @click="upgrade(item,index)"
+                         :loading="loading[index]"
+                         :disabled="item.type_shop==2">{{item.type_shop==1 ?'升级' : '已升级'}}</el-button>
             </td>
           </tr>
         </tbody>
@@ -254,13 +307,14 @@
             <span v-if='details.address'>{{details.address}}</span>
             <span v-else>
               <el-select v-model="reg.province"
-                         @change="getCity"
+                         @change="getCity" 
                          placeholder="请选择省">
                 <el-option v-for="item in provincelist"
                            :key="item.id"
                            :label="item.name"
                            :value="item.name">
                 </el-option>
+
               </el-select>
               <el-select v-model="reg.city"
                          @change="getarea"
@@ -356,6 +410,7 @@
 </template>
 <script type="text/ecmascript-6">
 import region from '@/components/common'
+import { getPro } from '@/utils'
 export default {
   data () {
     return {
@@ -400,13 +455,24 @@ export default {
       isShowSupplier: false, //供应商弹框,
       supplierList: [],     //供应商列表
       chooseSupplier: 'a', //默认选中
+      loading: [], //升级授权店按钮状态
+      ListQuery: {
+        company: '',
+        city: '',
+        county: '',
+        search: []
+      },
+      CityList: [],
+      countyList: []
     }
   },
 
   methods: {
-    getprovince: region.getprovince,
+
     checkpro: region.checkpro,
     checkcity: region.checkcity,
+    GetCity: region.getCity,
+    GetCounty: region.getCounty,
     prev (e) {
       this.page = e;
       this.init();
@@ -456,10 +522,10 @@ export default {
       this.getCardNum();
     },
     init () {
-      this.$axios.post('admin/ShopList/index', {
+      this.$axios.post('admin/ShopList/index', Object.assign(this.ListQuery, {
         token: this.token,
         page: this.page
-      })
+      }))
         .then(res => {
 
           if (res.data.code == 1) {
@@ -471,6 +537,50 @@ export default {
           }
         })
         .catch(err => console.log(err))
+    },
+    //获取全部省
+    async getProvince () {
+      try {
+        const res = await getPro();
+        this.provincelist = res;
+      } catch (error) {
+        throw (error)
+      }
+    },
+    //获取市
+    getCityList (id) {
+      console.log('-------------------------------------')
+      this.ListQuery.search['province'] = this.query(this.provincelist, id)
+      this.ListQuery.search['city'] = ''  //清空上一次所选的市
+      this.ListQuery.county = ''  //清空上一次所选的区/县
+      this.ListQuery.search['county'] = ''  //清空上一次所选的区/县id
+
+      this.GetCity(id).then(res => {
+        this.CityList = res
+      })
+      this.init()
+    },
+    //获取 区/县
+    getCounty (id) {
+      this.ListQuery.search['city'] = this.query(this.CityList, id)
+      this.ListQuery.county = '' //清空上一次所选的区/县
+      this.ListQuery.search['county'] = '' //清空上一次所选的区/县id
+      this.GetCounty(id).then(res => {
+        this.countyList = res
+      })
+      this.init()
+    },
+    changeCounty (id) {
+
+      this.init()
+    },
+    //通过 id 查询
+    query (array, id) {  //array 查询的数组  id 通过当前id查询array数组的数据
+      console.log(array)
+      let newArray = array.filter(item => {
+        return item.id == id
+      })
+      return newArray[0].name
     },
     getCardNum () {
       this.$axios.post('admin/ShopList/cardNum', {
@@ -756,10 +866,29 @@ export default {
       } catch (err) {
         throw (err)
       }
+    },
+    //升级授权店
+    async upgrade (item, index) {
+
+      try {
+        this.loading[index] = true
+        const res = await this.$axios.post('admin/ShopList/upgrade', { sid: item.id, token: this.token })
+        this.loading[index] = false
+        if (res.data.code == 1) {
+          this.$message({ message: res.data.msg, type: "success" })
+          this.init()
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      } catch (err) {
+        this.loading[index] = false
+        throw (err)
+      }
     }
   },
   created () {
     this.init();
+    this.getProvince()
   },
   mounted () {
 
@@ -805,6 +934,14 @@ export default {
 }
 </script>
 <style scoped>
+.search {
+  width: 15%;
+  margin-right: 10px;
+}
+.region {
+  width: 10%;
+  margin: 0 10px;
+}
 .quote {
   margin: 0;
 }

@@ -192,6 +192,7 @@ export default {
         layer.msg('权限路径不能为空', { offset: '200px', anim: 6 });
         return;
       }
+      
 
       this.$axios.post('admin/Auth/authModify', {
         token: sessionStorage.getItem('bbytoken'),

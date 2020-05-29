@@ -17,7 +17,6 @@
                      style="float:right;margin:20px 40px 0 0"
                      @click="addVisible=true,state=1">添加</el-button>
         </div>
-
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
                        v-for="item in threeAuthList"
@@ -28,17 +27,16 @@
         </div>
       </div>
       <el-table :data="list">
-        <el-table-column label="图片"
+        <!-- <el-table-column label="图片"
                          align="center">
           <template slot-scope="scope">
             <img :src="scope.row.photo"
                  class="img">
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="center"
                          prop="company"
                          label="名称">
-
         </el-table-column>
         <el-table-column label="类型"
                          align="center">
@@ -49,7 +47,6 @@
         <el-table-column align="center"
                          prop="create_time"
                          label="创建时间">
-
         </el-table-column>
         <el-table-column label="操作/是否显示"
                          align="center">
@@ -60,7 +57,6 @@
                        inactive-color="#ff4949"
                        v-model="scope.row.status"
                        @change='Setup(scope.row)'>
-
             </el-switch>
             <el-button type="primary"
                        size="mini"
@@ -75,7 +71,6 @@
         <paging :page-count="pageCount"
                 :page="page"
                 @index="paging"></paging>
-        
       </div> -->
     </div>
     <el-dialog center
@@ -101,9 +96,9 @@
           <el-radio v-model="listQuery.type"
                     :label="2">单次免费</el-radio>
         </el-form-item>
-        <el-form-item label="图片:"
+        <!-- <el-form-item label="图片:"
                       prop="photo">
-          <el-upload action="https://ceshi.ctbls.com/Gift/file"
+          <el-upload :action="`${uploadUrl}admin/SystemSetup/uploadPic`"
                      list-type="picture-card"
                      :on-success='handleSuccess'
                      :data="{token:token}"
@@ -112,19 +107,17 @@
                      name="image">
             <i class="el-icon-plus"></i>
           </el-upload>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary"
                      @click="state==1? add() : Modify()"
                      :loading="loading">{{state==1 ? '添加' : '修改'}}</el-button>
         </el-form-item>
       </el-form>
-
     </el-dialog>
   </div>
 </template>
 <script type="text/ecmascript-6">
-
 export default {
   data () {
     return {
@@ -134,6 +127,7 @@ export default {
       pageCount: 0,
       authList: [],
       threeAuthList: [],
+      uploadUrl: this.baseURL,
       addVisible: false,
       loading: false,
       listQuery: {
@@ -144,16 +138,14 @@ export default {
       rules: {
         company: { required: true, message: '名称不能为空', trigger: 'blur' },
         type: { required: true, message: '请选择类型', trigger: 'blur' },
-        photo: { required: true, message: '请上传图片', trigger: 'blur' },
+        // photo: { required: true, message: '请上传图片', trigger: 'blur' },
       }
     }
   },
   created () {
     this.init();
   },
-
   methods: {
-
     paging (e) {
       this.page = e;
       this.init()
@@ -161,15 +153,12 @@ export default {
     init () {
       this.$axios.post('admin/SystemSetup/systemList', { token: this.token, page: this.page, types: 2 })
         .then(res => {
-
           this.list = res.data.data.list;
-
           this.pageCount = res.data.data.rows;
         }).catch(err => { })
     },
     //设置 显示 隐藏
     async Setup (row) {
-
       try {
         const res = await this.$axios.post('admin/SystemSetup/updateStatus', { token: this.token, id: row.id, status: row.status })
         if (res.data.code == 1) {
@@ -187,7 +176,6 @@ export default {
       this.$refs.form.validate(async (valid) => {
         if (valid) {
           try {
-
             this.loading = true
             const res = await this.$axios.post('admin/SystemSetup/updateInfo', Object.assign({}, this.listQuery, { token: this.token, types: 2 }))
             this.loading = false
@@ -215,7 +203,6 @@ export default {
       this.$refs.form.validate(async (valid) => {
         if (valid) {
           try {
-
             this.loading = true
             const res = await this.$axios.post('admin/SystemSetup/addGenre', Object.assign({}, this.listQuery, { token: this.token, types: 2 }))
             this.loading = false
@@ -232,14 +219,10 @@ export default {
           }
         }
       })
-
     },
     handleSuccess (res) {  //上传成功
       this.listQuery = Object.assign({}, this.listQuery, { photo: res })
     }
-
-
-
   },
   mounted () {
     var id = this.$route.query.id;

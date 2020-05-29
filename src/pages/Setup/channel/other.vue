@@ -28,13 +28,13 @@
         </div>
       </div>
       <el-table :data="list">
-        <el-table-column label="图片"
+        <!-- <el-table-column label="图片"
                          align="center">
           <template slot-scope="scope">
             <img :src="scope.row.photo"
                  class="img">
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="center"
                          prop="company"
                          label="名称">
@@ -100,9 +100,9 @@
           <el-radio v-model="listQuery.type"
                     :label="2">单次免费</el-radio>
         </el-form-item>
-        <el-form-item label="图片:"
+        <!-- <el-form-item label="图片:"
                       prop="photo">
-          <el-upload action="https://ceshi.ctbls.com/Gift/file"
+          <el-upload :action="`${uploadUrl}admin/SystemSetup/uploadPic`"
                      list-type="picture-card"
                      :on-success='handleSuccess'
                      :data="{token:token}"
@@ -111,7 +111,7 @@
                      :limit="1">
             <i class="el-icon-plus"></i>
           </el-upload>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary"
                      @click="state==1? add() : Modify()"
@@ -133,6 +133,7 @@ export default {
       pageCount: 0,
       authList: [],
       threeAuthList: [],
+      uploadUrl: this.baseURL,
       addVisible: false,
       loading: false,
       listQuery: {
@@ -144,7 +145,7 @@ export default {
       rules: {
         company: { required: true, message: '名称不能为空', trigger: 'blur' },
         type: { required: true, message: '请选择类型', trigger: 'blur' },
-        photo: { required: true, message: '请上传图片', trigger: 'blur' },
+        // photo: { required: true, message: '请上传图片', trigger: 'blur' },
       }
     }
   },

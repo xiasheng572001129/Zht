@@ -28,6 +28,7 @@
             <th>联系电话</th>
             <th>负责人</th>
             <th>提现金额</th>
+            <th>账户信息</th>
             <th>申请时间</th>
             <th>操作</th>
           </tr>
@@ -38,6 +39,33 @@
             <td>{{item.phone}}</td>
             <td>{{item.leader}}</td>
             <td>{{item.money}}</td>
+            <td>
+              <el-popover placement="bottom"
+                          title="账户信息详情"
+                          width="300"
+                          trigger="click">
+                <el-button slot="reference"
+                           type="text">详情</el-button>
+                <div>
+                  <div>
+                    <span>开户名: </span>
+                    <span>{{item.bank_name}}</span>
+                  </div>
+                  <div>
+                    <span>开户行: </span>
+                    <span>{{item.bank}}</span>
+                  </div>
+                  <div>
+                    <span>开户分行: </span>
+                    <span>{{item.branch}}</span>
+                  </div>
+                  <div>
+                    <span>银行卡号: </span>
+                    <span>{{item.account}}</span>
+                  </div>
+                </div>
+              </el-popover>
+            </td>
             <td>{{item.create_time}}</td>
             <td>
               <a href="javascript:;"
@@ -109,6 +137,11 @@
         <li>本次提现金额：{{obj.now_money}}</li>
         <li>本次账户剩余：{{obj.now_amount}}</li>
         <li>申请时间：{{obj.create_time}}</li>
+        <li>
+          转账电话:
+          <el-input class="transferPhone"
+                    v-model="transferPhone" />
+        </li>
       </ul>
       <div class='bot t-c'>
         驳回理由:<input type="text"
@@ -152,7 +185,8 @@ export default {
       curId: 0,
       threeAuthList: [],
       seCurId: 0,
-      thCurId: 0
+      thCurId: 0,
+      transferPhone: '13811959239', //转账电话
     }
   },
   methods: {
@@ -181,7 +215,7 @@ export default {
 
           if (res.data.code == 1) {
             this.list = res.data.data.list;
-            this.showpage(res.data.data);
+
             this.pageCount = res.data.data.rows;
           } else {
             layer.msg(res.data.msg)
@@ -223,9 +257,7 @@ export default {
         page: this.index2
       })
         .then(res => {
-
           this.withlist = res.data.data.list;
-
           for (var i = 0; i < res.data.data.rows; i++) {
             this.pagearr1.push(i + 1);
           }
@@ -295,18 +327,15 @@ export default {
       this.$axios.post('admin/AgentForward/adopt', {
         token: this.token,
         id: this.id,
-        phone: this.obj.phone
+        phone: this.obj.phone,
+        main_phone: this.transferPhone
       })
         .then(res => {
 
           if (res.data.code == 1) {
             layer.closeAll();
             layer.msg(res.data.msg);
-            setTimeout(() => {
-              this.$router.push({
-                path: 'pass'
-              });
-            }, 1000);
+            this.init()
           } else {
             this.alert(res.data.msg, '提示', {
               type: 'error'
@@ -390,7 +419,13 @@ export default {
   text-align: left;
   margin: 33px auto;
 }
-
+.transferPhone {
+  width: 70%;
+  border-bottom: 1px solid #e6e6e6;
+}
+.transferPhone >>> .el-input__inner {
+  border: none !important;
+}
 div.bot {
   margin: 45px auto 35px auto;
 }

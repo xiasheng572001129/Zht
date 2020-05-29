@@ -190,7 +190,7 @@ export default {
         .then(res => {
           if (res.data.code == 1) {
             this.dialogVisible = false;
-            this.$router.go(0);
+            this.getList()
             layer.msg(res.data.msg);
           } else {
             this.$alert(res.data.msg, '提示', { type: 'error' });

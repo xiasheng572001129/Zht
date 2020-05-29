@@ -120,8 +120,7 @@
                        list-type="picture-card"
                        :file-list='listQuery.photo ? [{url:listQuery.photo}] : []'
                        :limit='1'
-                       :on-success="handleAvatarSuccess"
-                       :on-remove="handleRemove">
+                       :on-success="handleAvatarSuccess">
               <i class="el-icon-plus"></i>
             </el-upload>
             <el-dialog :visible.sync="imgVisible"
@@ -161,14 +160,19 @@ import wangEditor from '@/components/common/wangEditor'
 export default {
   data () {
     return {
+      authList: [],
       list: [],
       seCurId: '',
       token: window.sessionStorage.getItem('bbytoken'), //token令牌
       page: 0,  //供应商列表当前页数
       pageCount: 0, //供应商列表总页数
       state: 0,
+      earningsTotal: 0,
+      earningsPage: 0,
       modifyVisible: false,
+      imgVisible: false,
       listQuery: {},
+      dialogImageUrl: '',
       rules: {
         name: { required: true, message: '请输入奖品名称', trigger: 'blur' },
         need_km: { required: true, message: '请输入历程', trigger: 'blur' },

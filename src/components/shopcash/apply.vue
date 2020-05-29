@@ -29,6 +29,7 @@
             <th>负责人</th>
             <th>提现金额</th>
             <th>申请时间</th>
+            <th>账户信息</th>
             <th>操作</th>
           </tr>
         </thead>
@@ -39,6 +40,33 @@
             <td>{{item.leader}}</td>
             <td>{{item.money}}</td>
             <td>{{item.create_time}}</td>
+            <td>
+              <el-popover placement="bottom"
+                          title="账户信息详情"
+                          width="300"
+                          trigger="click">
+                <el-button slot="reference"
+                           type="text">详情</el-button>
+                <div>
+                  <div>
+                    <span>开户名: </span>
+                    <span>{{item.account_name}}</span>
+                  </div>
+                  <div>
+                    <span>开户行: </span>
+                    <span>{{item.bank_name}}</span>
+                  </div>
+                  <div>
+                    <span>开户分行: </span>
+                    <span>{{item.branch}}</span>
+                  </div>
+                  <div>
+                    <span>银行卡号: </span>
+                    <span>{{item.account}}</span>
+                  </div>
+                </div>
+              </el-popover>
+            </td>
             <td>
               <a href="javascript:;"
                  @click="income(item.sid)">收入明细</a>
@@ -169,6 +197,12 @@
           </tr>
         </tbody>
       </table>
+      <div class="page_center">
+
+        <paging :page-count="tpageCount"
+                :page="tPage"
+                @index="Tpaging"></paging>
+      </div>
       <!-- 分页 -->
       <!--<div class="page-nav">-->
       <!--<a href="javascript:;" v-for="i in pagearr1"-->
@@ -183,6 +217,11 @@
         <li>本次提现金额：{{obj.now_money}}</li>
         <li>本次账户剩余：{{obj.now_amount}}</li>
         <li>申请时间：{{obj.create_time}}</li>
+        <li>
+          转账电话:
+          <el-input class="transferPhone"
+                    v-model="transferPhone" />
+        </li>
       </ul>
       <div class='bot t-c'>
         驳回理由:<input type="text"
@@ -205,8 +244,11 @@ export default {
       list: [],
       token: window.sessionStorage.getItem('bbytoken'),
       //分页数据
+      zpage:1,
       page: 1, //显示的页码数
       totalpage: 1, //总页数
+      tPage: 1,
+      tpageCount: 1,
       incomelist: [],
       withlist: [],
       changeList: [],
@@ -224,6 +266,7 @@ export default {
       seCurId: 0,
       thCurId: 0,
       pageCount: 1,
+      transferPhone: '13811959239', //转账电话
     }
   },
   methods: {
@@ -275,8 +318,12 @@ export default {
       }
     },
     paging (e) {
-      this.page = e;
+      this.zpage = e;
       this.init()
+    },
+    Tpaging (e) {
+      this.tPage = e;
+      this.withdraw()
     },
     //邦保养收入
     income: function (sid) {
@@ -305,10 +352,9 @@ export default {
     init () {
       this.$axios.post('admin/ShopForward/waitList', {
         token: this.token,
-        page: this.page1
+        page: this.zpage
       })
         .then(res => {
-        
           if (res.data.code == 1) {
             this.list = res.data.data.list;
             this.pageCount = res.data.data.rows;
@@ -337,7 +383,7 @@ export default {
       }
     },
     bang: function () {
-     
+
       this.$axios.post('admin/ShopForward/bangList', {
         token: this.token,
         sid: this.sid,
@@ -366,7 +412,7 @@ export default {
     },
     //成长基金
     money: function () {
-     
+
       this.$axios.post('/admin/ShopForward/rewardFund', {
         token: this.token,
         sid: this.sid,
@@ -380,7 +426,7 @@ export default {
     },
     //提现明细
     withdraw: function (sid) {
-     
+
       this.$axios.post('admin/ShopForward/forwardList', {
         token: this.token,
         sid: sid,
@@ -389,9 +435,7 @@ export default {
         .then(res => {
 
           this.withlist = res.data.data.list;
-          for (var i = 0; i < res.data.data.rows; i++) {
-            this.pagearr1.push(i + 1);
-          }
+          this.tpageCount = res.data.data.rows;
           layer.open({
             type: 1,
             area: ['50%', '60%'],
@@ -410,6 +454,7 @@ export default {
         token: this.token,
         phone: phone,
         sid: sid
+
       })
         .then(res => {
 
@@ -458,7 +503,8 @@ export default {
       this.$axios.post('admin/ShopForward/adopt', {
         token: this.token,
         phone: this.obj.phone,
-        id: this.obj.id
+        id: this.obj.id,
+        main_phone: this.transferPhone
       })
         .then(res => {
 
@@ -526,6 +572,13 @@ export default {
 }
 </script>
 <style scoped>
+.transferPhone {
+  width: 70%;
+  border-bottom: 1px solid #e6e6e6;
+}
+.transferPhone >>> .el-input__inner {
+  border: none !important;
+}
 .laybox2 ul {
   margin: 33px auto 33px auto;
   border-bottom: 1px dashed #04bbfc;

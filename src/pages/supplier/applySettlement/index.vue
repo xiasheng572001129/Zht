@@ -12,8 +12,15 @@
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele"
-             style="float:left"><i></i>供应商-提现 </div>
+        <div class="quote-ele"><i></i>供应商-提现-未审核 </div>
+        <div class="quote-nav">
+          <router-link :class="thCurId==item.id? 'cur':''"
+                       v-for="item in threeAuthList"
+                       :key="item.id"
+                       :to="{path:item.action,query:{id:curId}}">
+            {{item.name}}
+          </router-link>
+        </div>
       </div>
 
       <el-table :data="list">
@@ -22,21 +29,32 @@
                          align="center">
 
         </el-table-column>
+        <el-table-column label="开户行"
+                         prop="bank"
+                         align="center">
+
+        </el-table-column>
+        <el-table-column label="开户分行"
+                         prop="bank_branch"
+                         align="center">
+
+        </el-table-column>
+        <el-table-column label="开户人"
+                         prop="bank_name"
+                         align="center">
+        </el-table-column>
         <el-table-column label="银行卡号"
                          prop="account"
                          align="center">
 
         </el-table-column>
-        <el-table-column label="开户人"
-                         prop="account_name"
-                         align="center">
 
-        </el-table-column>
         <el-table-column label="提现金额"
                          prop="total_money"
                          align="center">
 
         </el-table-column>
+
         <el-table-column label="申请时间"
                          prop="create_time"
                          align="center">
@@ -119,12 +137,17 @@ import Viewer from '@/utils/Viewer'
 export default {
   data () {
     return {
+      authList: [],
+      threeAuthList: [],
+      thCurId: '',
+      curId: '',
       list: [],
       seCurId: '',
       token: window.sessionStorage.getItem('bbytoken'), //token令牌
       page: 0,
       pageCount: 0,
       detailList: [],
+
       detailVisible: false, //详情弹框状态
       throughLoading: false, //通过加载Loading
       rejectLoading: false, //驳回Loading
@@ -139,7 +162,7 @@ export default {
 
     async init () {
       try {
-        const res = await this.$axios.post('admin/SmCash/smApplyCashList', { token: this.token, page: this.page })
+        const res = await this.$axios.post('admin/SmCash/smApplyCashList', { token: this.token, page: this.page, status: 0 })
         this.list = res.data.data.list || []
         this.pageCount = res.data.data.rows || 0
 
@@ -156,14 +179,17 @@ export default {
     },
     //通过审核
     through (row) {
-      this.$confirm('此操作将通过审核, 是否继续?', '提示', {
+      this.$prompt('请输入转账电话', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async () => {
+        inputPattern: /^1[3456789]\d{9}$/,
+        inputValue: '13811959239',
+        inputErrorMessage: '手机号错误'
+      }).then(async (current) => {
         try {
+
           this.throughLoading = true
-          const res = await this.$axios.post('admin/SmCash/cashHandle', { token: this.token, sm_id: row.sm_id, id: row.id, total_money: row.total_money })
+          const res = await this.$axios.post('admin/SmCash/cashHandle', { token: this.token, sm_id: row.sm_id, id: row.id, total_money: row.total_money, main_phone: current.value })
           this.throughLoading = false
           if (res.data.code == 1) {
             this.$message({ message: res.data.msg, type: 'success' })
@@ -211,8 +237,24 @@ export default {
       }).then(res => {
         if (res.data.code == 1) {
           var arr = res.data.data || [];
+          for (var i = 0; i < arr.length; i++) {
+            if (arr[i].son) {
+              if (arr[i].name == '提现') {
+                this.seCurId = arr[i].id;
+                this.threeAuthList = arr[i].son;
+
+              }
+              for (var j = 0; j < arr[i].son.length; j++) {
+                if (arr[i].action != arr[i].son[j].action) {
+                  arr[i].action = arr[i].son[0].action;
+                }
+                if (arr[i].son[j].name == '申请列表' && arr[i].name == '提现') {
+                  this.thCurId = arr[i].son[j].id;
+                }
+              }
+            }
+          }
           this.authList = arr;
-          console.log(this.authList)
         } else {
           this.$alert(res.data.msg, '提示', {
             type: 'error'

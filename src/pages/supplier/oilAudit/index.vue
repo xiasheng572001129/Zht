@@ -55,7 +55,7 @@
                        size="small"
                        @click="reject(item.sm_id,index)"
                        :loading="rejectLoading[index]">驳回</el-button>
-                        
+
           </td>
         </tr>
       </table>
@@ -123,6 +123,7 @@ import Viewer from '@/utils/Viewer'
 export default {
   data () {
     return {
+      authList: [],
       list: [],
       seCurId: '',
       token: window.sessionStorage.getItem('bbytoken'), //token令牌
@@ -225,7 +226,7 @@ export default {
         if (res.data.code == 1) {
           var arr = res.data.data || [];
           this.authList = arr;
-          console.log(this.authList)
+
         } else {
           this.$alert(res.data.msg, '提示', {
             type: 'error'

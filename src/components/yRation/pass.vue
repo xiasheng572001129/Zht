@@ -27,7 +27,7 @@
             <th>市级配送中心</th>
             <th>联系电话</th>
             <th>负责人</th>
-            <th>支付凭证</th>
+            <!-- <th>支付凭证</th> -->
             <th>区域个数</th>
             <th>申请时间</th>
             <th>通过时间</th>
@@ -39,14 +39,14 @@
             <td class="t-l">{{item.company}}</td>
             <td>{{item.phone}}</td>
             <td>{{item.leader}}</td>
-            <td>
+            <!-- <td>
               <img ref="usecost"
                    class="usecost"
                    :src="item.usecost">
-            </td>
+            </td> -->
             <td v-if="item.regions">
               <a href="javascript:;"
-                 @click="regionsf(item.aid)">{{item.regions}}</a>
+                 @click="regionsf(item.aid,item.id)">{{item.regions}}</a>
             </td>
             <td v-else>0</td>
             <td>{{item.create_time}}</td>
@@ -128,21 +128,17 @@ export default {
             this.list = res.data.data.list;
             this.showpage(res.data.data);
             this.pageCount = res.data.data.rows;
-            this.$nextTick(() => {
-              const ViewerDome = this.$refs.usecost;
-              console.log(this.$refs.usecost)
-              Viewer(ViewerDome)
-            })
           } else {
             layer.msg(res.data.msg)
           }
         })
         .catch(err => console.log(err))
     },
-    regionsf: function (aid) {
+    regionsf: function (aid, id) {
       this.$axios.post('admin/AgentIncRation/showArea', {
         token: this.token,
         aid: aid,
+        id: id
       })
         .then(res => {
           this.arealist = res.data.data;

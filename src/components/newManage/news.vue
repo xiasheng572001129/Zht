@@ -66,7 +66,8 @@
         </p>
         <p>
           发送对象：
-          <span v-for="item in obj.sendto">{{item}} </span>
+          <span v-for="(item,index) in obj.sendto"
+                :key="index">{{item}} </span>
         </p>
         <p>创建者：{{obj.create_person}}</p>
         <p>创建时间：{{obj.create_time}}</p>
@@ -153,7 +154,7 @@ export default {
               if (this.obj.sendto[i] == 9)
                 this.obj.sendto[i] = "约驾出行";
               if (this.obj.sendto[i] == 13)
-                this.obj.sendto[i] = "服务经理";
+                this.obj.sendto[i] = "供应商";
               if (this.obj.sendto[i] == 12)
                 this.obj.sendto[i] = "运营总监";
             }
@@ -192,11 +193,11 @@ export default {
   mounted () {
     var id = this.$route.query.id;
     this.curId = id;
-   
+
     this.$axios.post("admin/Auth/erAuth", { token: window.sessionStorage.getItem('bbytoken'), id: id }).then(res => {
       if (res.data.code == 1) {
         var arr = res.data.data;
-      
+
         for (var i = 0; i < arr.length; i++) {
           if (arr[i].name == "消息管理") {
             this.seCurId = arr[i].id;

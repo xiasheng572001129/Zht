@@ -128,7 +128,7 @@ export default {
         if (res.data.code == 1) {
           var arr = res.data.data || [];
           this.authList = arr;
-          console.log(this.authList)
+
         } else {
           this.$alert(res.data.msg, '提示', {
             type: 'error'

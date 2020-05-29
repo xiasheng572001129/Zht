@@ -84,14 +84,15 @@
                          style="width: 200px;height: 100px;margin:10px 0"></div>
                   <el-form label-position="left"
                            style="margin-left:58px;padding-right:58px;box-sizing: border-box;">
-                           <el-form-item v-show='type==1'>
-                                 <el-radio-group v-model="choose">
-                                    <el-radio :label="1">倒库</el-radio>
-                                    <el-radio :label="2">基数</el-radio>
-                                 </el-radio-group>
-                                
-                           </el-form-item>
-                    <el-form-item label="物料配给/组" v-show="type==2 || choose==2">
+                    <el-form-item v-show='type==1'>
+                      <el-radio-group v-model="choose">
+                        <el-radio :label="1">倒库</el-radio>
+                        <el-radio :label="2">基数</el-radio>
+                      </el-radio-group>
+
+                    </el-form-item>
+                    <el-form-item label="物料配给/组"
+                                  v-show="type==2 || choose==2">
 
                     </el-form-item>
                     <el-form-item v-show="type==2 || choose==2">
@@ -116,17 +117,24 @@
                         <div style="text-align:center;padding-bottom:10px">详情</div>
                         <el-table :data="choose==2 || type==2 ?  materielDetails :  old_detail"
                                   border
-                                  size='mini' >
+                                  size='mini'>
                           <el-table-column label="物料名称"
                                            align="center"
                                            prop="materiel"
                                            style="font-size:10px">
                           </el-table-column>
-                          <el-table-column align='center' label="库存" prop="ration" v-if='type==1 && choose==1'></el-table-column>
-                          <el-table-column align='center' label="剩余库存" prop="materiel_stock"  v-if='type==1 && choose==1'></el-table-column>
+                          <el-table-column align='center'
+                                           label="库存"
+                                           prop="ration"
+                                           v-if='type==1 && choose==1'></el-table-column>
+                          <el-table-column align='center'
+                                           label="剩余库存"
+                                           prop="materiel_stock"
+                                           v-if='type==1 && choose==1'></el-table-column>
                           <el-table-column label="件"
                                            align="center"
-                                           prop="num" v-if='type==2 || choose==2 '>
+                                           prop="num"
+                                           v-if='type==2 || choose==2 '>
 
                           </el-table-column>
                         </el-table>
@@ -193,10 +201,12 @@
                       <el-select v-model="gid"
                                  placeholder="请选择"
                                  v-if="prosyList.length">
+
                         <el-option v-for="(item, index) in prosyList"
                                    :key="index"
                                    :value="item.id"
                                    :label="item.name">
+
                         </el-option>
                       </el-select>
                       <div v-else>
@@ -301,16 +311,17 @@ export default {
       CurrentGroup: 1,
       materialVisible: false,
       usecost: '',//支付凭证
-      gid: "",
+      gid: '',
       aid: '',
       id: '',
       adoptLoading: false,
       rejectLoading: false,
-      type:0,
-      old_aid:'',
-      cancel_id:'',
-      choose:1, // 1倒库 2奇数
-      old_detail:[],
+      type: 0,
+      old_aid: '',
+      cancel_id: '',
+      choose: 1, // 1倒库 2奇数
+      old_detail: [],
+      Type: ''
 
     }
   },
@@ -330,7 +341,11 @@ export default {
     index () {
       this.init();
     },
-    
+    choose (val) {
+      this.Type = val
+
+    }
+
   },
   methods: {
     paging (e) {
@@ -357,10 +372,11 @@ export default {
     //通过详情
     async throughDetails (row) {
       try {
-        const res = await this.$axios.post("admin/AgentAuditList/detail", { token: this.token, aid: row.aid,id:row.id})
+        const res = await this.$axios.post("admin/AgentAuditList/detail", { token: this.token, aid: row.aid, id: row.id })
         this.usecost = res.data.data.usecost
         this.type = res.data.data.type
-        this.old_aid= res.data.data.old_aid
+        this.Type = res.data.data.type
+        this.old_aid = res.data.data.old_aid
         this.cancel_id = res.data.data.old_cancel_id
         this.old_detail = res.data.data.old_detail || []
         this.detailArea(row.id)
@@ -401,7 +417,8 @@ export default {
     async selectAgent (id, aid) {  //供应商列表
       try {
         const res = await this.$axios.post('admin/AgentIncRation/selectAgent', { token: this.token, id: id, aid: aid })
-        this.prosyList = res.data.data || []
+        this.prosyList = res.data.data || [];
+        this.gid = this.prosyList && this.prosyList[0].id
       } catch (error) {
         throw (error)
       }
@@ -429,12 +446,14 @@ export default {
           }
         } catch (error) {
           this.rejectLoading = false
+
+
           throw (error)
         }
       }).catch(() => { });
     },
     adopt () {
-      this.gid =   this.prosyList.id ? this.prosyList.id : this.gid
+      this.gid = this.prosyList.id ? this.prosyList.id : this.gid
       if (!(this.delay_fine && this.gid)) {
         this.$message.error('供应商/送货延迟罚款不能为空')
         return;
@@ -444,9 +463,9 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        try {   
+        try {
           this.adoptLoading = true
-          const res = await this.$axios.post('admin/AgentAuditList/adopt', { token: this.token, delay_fine: this.delay_fine, gid: this.gid, number: this.choose==2 || this.type==2 ? this.CurrentGroup : '', aid: this.aid, type: this.choose, id: this.id,old_aid:this.type==1 && this.old_aid,cancel_id:this.type==1 && this.cancel_id   })
+          const res = await this.$axios.post('admin/AgentAuditList/adopt', { token: this.token, delay_fine: this.delay_fine, gid: this.gid, number: this.choose == 2 || this.type == 2 ? this.CurrentGroup : '', aid: this.aid, type: this.Type, id: this.id, old_aid: this.type == 1 && this.old_aid, cancel_id: this.type == 1 && this.cancel_id })
           this.adoptLoading = false
           if (res.data.code == 1) {
             this.materialVisible = false
@@ -467,8 +486,10 @@ export default {
       this.gid = ''
       this.delay_fine = 200
       this.Reason = ''
-      this.old_aid=''
-      this.cancel_id =''
+      this.type = ''
+      this.Type = ''
+      this.old_aid = ''
+      this.cancel_id = ''
     }
   },
   mounted () {

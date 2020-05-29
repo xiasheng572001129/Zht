@@ -57,7 +57,9 @@
       </el-table>
       <el-dialog title="详情"
                  center
-                 :visible.sync="detailsVisible">
+                 :visible.sync="detailsVisible" @close='()=>{
+                   smid = ""
+                 }'>
         <div v-if='detailsList'
              class="details">
           <div>
@@ -114,8 +116,7 @@
             <span>
               <el-select v-model="smid"
                          :disabled="detailsList.aid>1">
-                <el-option :value="''"
-                           label="请选择供应商"></el-option>
+               
                 <el-option v-for='(item,index) in supplyList'
                            :key="index"
                            :label="item.name"
@@ -190,8 +191,10 @@ export default {
         const supplyList = this.$axios.post('admin/ShopAudit/smList', { token: this.token, id: row.id })
         const [ResdetailsList, ResagentList, resSupplyList] = await Promise.all([detailsList, agentList, supplyList])
         this.detailsList = ResdetailsList.data.data || {}
+       
         this.agentList = ResagentList.data.data || []
         this.supplyList = resSupplyList.data.data || []
+        this.smid = resSupplyList.data.data && resSupplyList.data.data[0].id
         this.$nextTick(() => {
           const ViewerDom = [...this.$refs.imgage, this.$refs.img]
           Viewer(ViewerDom)

@@ -27,7 +27,7 @@
             <th>市级配送中心</th>
             <th>联系电话</th>
             <th>负责人</th>
-            <th>支付凭证</th>
+            <!-- <th>支付凭证</th> -->
             <!-- <th>区域个数</th> -->
             <th>申请时间</th>
             <th>驳回理由</th>
@@ -39,11 +39,11 @@
             <td class="t-l">{{item.company}}</td>
             <td>{{item.phone}}</td>
             <td>{{item.leader}}</td>
-            <td>
+            <!-- <td>
               <img ref="usecost"
                    :src="item.usecost"
                    style="width:60px;height:60px;vertical-align:middle;margin:10px 0">
-            </td>
+            </td> -->
             <!-- <td v-if="item.regions">
               <a href="javascript:;"
                  @click="regionsf(item.id)">{{item.regions}}</a>

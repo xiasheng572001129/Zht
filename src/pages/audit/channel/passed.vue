@@ -11,7 +11,7 @@
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele"><i></i>审核-保险客户-未审核</div>
+        <div class="quote-ele"><i></i>审核-免费保养-已审核</div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
                        v-for="item in threeAuthList"
@@ -21,8 +21,74 @@
           </router-link>
         </div>
       </div>
-      <el-table :data="list">
-
+      <div style="margin:0 20px">
+        <!-- <el-input placeholder="请输入维修厂"
+                  v-model="ListQuery.company"
+                  class="input-with-select search">
+          <el-button slot="append"
+                     icon="el-icon-search"
+                     @click="page=1,init()"></el-button>
+        </el-input> -->
+        <el-select style="margin-right:10px"
+                   v-model="ListQuery.ucp_company"
+                   placeholder="请选择保险公司"
+                   @change="page=1,init()">
+          <el-option v-for="(item,index) in companyList"
+                     :key="index"
+                     :label="item.company"
+                     :value="item.company"></el-option>
+        </el-select>
+        <!-- <el-date-picker v-model="pickerSearch"
+                        type="daterange"
+                        style="width:24%;margin-right:10px"
+                        @change="page=1,init()"
+                        value-format="yyyy-MM-dd"
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期">
+        </el-date-picker> -->
+        省:
+        <el-select v-model="ListQuery.search['province']"
+                   placeholder="请选择省"
+                   class="region"
+                   @change="page=1,getCity()">
+          <el-option v-for="item in provincelist"
+                     :key="item.id"
+                     :label="item.name"
+                     :value="item.id">
+          </el-option>
+        </el-select>
+        市:
+        <el-select v-model="ListQuery.search['city']"
+                   placeholder="请选择市"
+                   class="region"
+                   @change="page=1,getCounty()">
+          <el-option v-for="item in citylist"
+                     :key="item.id"
+                     :label="item.name"
+                     :value="item.id">
+          </el-option>
+        </el-select>
+        区/县:
+        <el-select v-model="ListQuery.county"
+                   placeholder="请选择区/县"
+                   @change="page=1,changeCounty()"
+                   class="region">
+          <el-option v-for="item in countyList"
+                     :key="item.id"
+                     :label="item.name"
+                     :value="item.id">
+          </el-option>
+        </el-select>
+        <!-- <el-button type="primary"
+                   class="printRight"
+                   @click="print">下载</el-button> -->
+      </div>
+      <el-table :data="list"
+                tooltip-effect="dark">
+        <!-- <el-table-column type="selection"
+                         width="55">
+        </el-table-column> -->
         <el-table-column label="福利"
                          align="center"
                          prop="user_type">
@@ -36,68 +102,50 @@
           </template>
         </el-table-column>
         <el-table-column prop="ucp_company"
-                         label="名称"
+                         label="保险公司名称"
                          align="center"></el-table-column>
         <el-table-column prop="company"
-                         label="所属维修厂"
+                         label="维修厂名称"
                          align="center"></el-table-column>
-        <el-table-column prop="name"
-                         label="车品牌"
+        <el-table-column prop="phone"
+                         label="联系电话"
                          align="center"></el-table-column>
-        <el-table-column prop="type"
-                         label="车类型"
+        <el-table-column prop="leader"
+                         label="负责人"
                          align="center"></el-table-column>
-        <el-table-column prop="series"
-                         label="车排量"
-                         align="center"></el-table-column>
-        <el-table-column prop="plate"
-                         label="车牌号"
-                         align="center"></el-table-column>
-        <el-table-column label="保单号"
+        <el-table-column label="地区"
                          align="center">
+
           <template slot-scope="scope">
-           
-            <span  v-if='scope.row.user_type==1'>
-              <el-popover placement="top-start"
-                          title="保单号"
-                          width="200"
-                          trigger="hover"
-                          :content="scope.row.policy_num">
-                <el-button type="text"
-                           slot="reference"
-                           class="ellipsis">{{scope.row.policy_num}}</el-button>
-              </el-popover>
-            </span>
-             <span v-else>无</span>
-          </template>
-        </el-table-column>
-          <el-table-column label="保单照片"
-                         align="center" >
-
-          <template slot-scope="scope" >
-            
-            <el-button type="text" v-if='scope.row.user_type==1' @click="details(scope.row)">详情</el-button>
-            <span v-else>无 </span>
-            
+            <el-popover placement="top-start"
+                        title="地区详情"
+                        width="200"
+                        trigger="hover"
+                        :content="`${scope.row.province}${scope.row.city}${scope.row.county}`">
+              <el-button type="text"
+                         slot="reference"
+                         class="ellipsis">{{`${scope.row.province}${scope.row.city}${scope.row.county}`}}</el-button>
+            </el-popover>
           </template>
 
         </el-table-column>
 
-        <el-table-column prop="sale_time"
-                         label="售卡时间"
-                         align="center"></el-table-column>
-        <!-- <el-table-column label="操作"
+        <el-table-column label="销售数量"
+                         align="center"
+                         prop="num">
+
+        </el-table-column>
+
+        <el-table-column label="操作"
                          align="center">
           <template slot-scope="scope">
             <el-button type="primary"
                        size="mini"
-                       @click="through(scope.row)">通过</el-button>
-            <el-button type="danger"
-                       size="mini"
-                       @click="rejected(scope.row)">驳回</el-button>
+                       @click="details(scope.row)">详情</el-button>
+
           </template>
 
-        </el-table-column> -->
+        </el-table-column>
       </el-table>
 
       <!-- 分页 -->
@@ -111,199 +159,319 @@
     </div>
     <el-dialog title="详情"
                center
-               :visible.sync="detailsVisible">
-      <el-form label-width="100px"
-               v-if='detailsList'>
-        <el-form-item label="vin码 : ">
-          {{detailsList.vin}}
-        </el-form-item>
-        <el-form-item label="保单号 : ">
-          {{detailsList.policy_num}}
-        </el-form-item>
-        <el-form-item label="投保时间 : ">
-          {{detailsList.start_time}}
-        </el-form-item>
-        <el-form-item label="截止时间 : ">
-          {{detailsList.end_time}}
-        </el-form-item>
-        <el-form-item label="售卡时间 : ">
-          {{detailsList.sale_time}}
-        </el-form-item>
+               :visible.sync="detailsVisible"
+               width="80%">
+      <el-table :data="detailsList"
+                class="detailsTable">
+        <el-table-column align="center"
+                         prop="ucp_company"
+                         label="保险公司名称">
 
-      </el-form>
-      <div>
-        <span style="margin:0 20px 0 25px">保单图片 : </span>
+        </el-table-column>
+        <el-table-column align="center"
+                         prop="name"
+                         label="车辆名称">
 
-        <img :src="item"
-             v-for="(item,index) in detailsList.pc_img"
-             :key="index"
-             class="images"
-             ref="images">
+        </el-table-column>
+        <el-table-column align="center"
+                         prop="type"
+                         label="车辆类型">
 
+        </el-table-column>
+        <el-table-column align="center"
+                         prop="series"
+                         label="车排量">
+
+        </el-table-column>
+        <el-table-column align="center"
+                         prop="plate"
+                         label="车牌号">
+
+        </el-table-column>
+        <el-table-column align="center"
+                         prop="vin"
+                         label="vin码">
+
+        </el-table-column>
+        <el-table-column align="center"
+                         prop="policy_num"
+                         label="保单号">
+          <template slot-scope="scope">
+            {{scope.row.policy_num || '无'}}
+          </template>
+        </el-table-column>
+        <el-table-column align="center"
+                         prop=""
+                         label="保单图片">
+          <template slot-scope="scope">
+
+            <el-button type="text"
+                       v-if="scope.row.pc_img && scope.row.pc_img.length>0"
+                       @click="pcImgVisible=true,imgList=scope.row.pc_img,imgDetails()">详情</el-button>
+            <span v-else>无</span>
+
+          </template>
+        </el-table-column>
+        <el-table-column align="center"
+                         prop="start_time"
+                         label="开始时间">
+          <template slot-scope="scope">
+            {{scope.row.start_time || '无'}}
+          </template>
+        </el-table-column>
+        <el-table-column align="center"
+                         prop="end_time"
+                         label="结束时间">
+          <template slot-scope="scope">
+            {{scope.row.end_time || '无'}}
+          </template>
+        </el-table-column>
+        <el-table-column align="center"
+                         prop="audit_time"
+                         label="审核时间">
+          <template slot-scope="scope">
+            {{scope.row.audit_time | datetime }}
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <div class="page_center">
+        <paging :page-count="detailsCount"
+                :page="detailsPage"
+                @index="detailsPaging"></paging>
+        <!--分页的组件-->
       </div>
+      <el-dialog center
+                 title="保单图片"
+                 :visible.sync="pcImgVisible"
+                 append-to-body
+                 width="25%">
+        <div>
+
+          <img v-for="(item,index) in imgList"
+               style="width:100px;height:100px;margin-right:20px"
+               :key='index'
+               :src="item"
+               ref="img" />
+        </div>
+      </el-dialog>
     </el-dialog>
   </div>
 </template>
 <script type="text/ecmascript-6">
 import Viewer from '@/utils/Viewer'
+import { getPro } from '@/utils'
+import region from '@/components/common'
 export default {
   data () {
     return {
       list: [],
       token: window.sessionStorage.getItem('bbytoken'),
-      page: 0,
-      pageCount: 0,
+      page: 1,
+      pageCount: 1,
       thCurId: '',
       authList: [],
       threeAuthList: [],
-      throughLoading: false,
-      rejecteLoading: false,
       detailsVisible: false,
+      pcImgVisible: false,
       multipleData: [],
-      detailsList: {}
+      detailsList: [],
+      detailsPage: 1,
+      detailsCount: 1,
+      currentDetails: {},
+      ListQuery: {
+        company: '',
+        ucp_company: '平安汽车保险',
+        start_time: '',
+        end_time: '',
+        city: '',
+        county: '',
+        search: []
+      },
+      pickerSearch: "",
+      provincelist: [],
+      citylist: [],
+      countyList: [],
+      companyList: [], //保险公司列表
+      imgList: []
     }
   },
   created () {
     this.init();
   },
-
+  watch: {
+    pickerSearch (val) {   //获取日期
+      if (val) {
+        this.ListQuery.start_time = val[0]
+        this.ListQuery.end_time = val[1]
+      } else {
+        this.ListQuery.start_time = ''
+        this.ListQuery.end_time = ''
+      }
+    }
+  },
   methods: {
-
+    GetCity: region.getCity,
+    GetCounty: region.getCounty,
     paging (e) {
       this.page = e;
       this.init()
     },
+    detailsPaging (e) {
+      this.detailsPage = e;
+      this.details(this.currentDetails)
+    },
     init () {
-      this.$axios.post('admin/UserAudit/channelList', { token: this.token, page: this.page, status: 1, pay_status: 1 })
+      this.$axios.post('admin/UserAudit/channelList', Object.assign(this.ListQuery, { token: this.token, page: this.page, status: 1, pay_status: 1, review: 2 }))
         .then(res => {
-
           this.list = res.data.data.list;
-
           this.pageCount = res.data.data.rows;
         }).catch(err => { })
     },
-    details (row) {  //详情
+    //获取保险公司
+    async getCompany () {
+      try {
+        const res = await this.$axios.post('admin/UserAudit/policyCompany', { token: this.token, type_channel: 1 })
+        this.companyList = res.data.data || []
+      } catch (error) {
+        throw (error)
+      }
+    },
+    //获取全部省
+    async getProvince () {
+      try {
+        const res = await getPro();
+        this.provincelist = res;
+      } catch (error) {
+        throw (error)
+      }
+    },
+    //获取市
+    getCity (id) {
+      this.ListQuery.search['province'] = this.query(this.provincelist, id)
+      this.ListQuery.search['city'] = ''  //清空上一次所选的市
+      this.ListQuery.county = ''  //清空上一次所选的区/县
+      this.ListQuery.search['county_id'] = ''  //清空上一次所选的区/县id
+      this.GetCity(id).then(res => {
+        this.citylist = res
+      })
+      this.init()
+    },
+    //获取 区/县
+    getCounty (id) {
+      this.ListQuery.search['city'] = this.query(this.citylist, id)
+      this.ListQuery.county = '' //清空上一次所选的区/县
+      this.ListQuery.search['county_id'] = '' //清空上一次所选的区/县id
+      this.GetCounty(id).then(res => {
+        this.countyList = res
+      })
+      this.init()
+    },
+    changeCounty (id) {
+      this.ListQuery.search['county_id'] = id
+      this.init()
+    },
+    //通过 id 查询
+    query (array, id) {  //array 查询的数组  id 通过当前id查询array数组的数据
+      console.log(array)
+      let newArray = array.filter(item => {
+        return item.id == id
+      })
+      return newArray[0].name
+    },
+    async details (row) {  //详情
       this.detailsVisible = true
-      this.detailsList = row
+      this.currentDetails = row
+      try {
+        const res = await this.$axios.post("admin/UserAudit/detail", { token: this.token, sid: row.id, policy_id: row.policy_id, status: row.status, page: this.detailsPage })
+        this.detailsList = res.data.data.list || [];
+        this.detailsCount = res.data.data.rows;
+
+      } catch (error) {
+        throw (error)
+      }
+
+    },
+    // handleSelectionChange (val) {  //全选/单选
+    //   let tmp = []
+    //   val.forEach(el => {
+    //     tmp.push({ ucp_id: el.ucp_id, uc_id: el.uc_id, user_type: el.user_type })
+    //   });
+
+    //   this.multipleData = tmp
+    // },
+    imgDetails () {  //保单图片详情
       this.$nextTick(() => {
-        Viewer(this.$refs.images)
+        console.log(this.$refs)
+        const img = this.$refs.img
+        Viewer(img)
       })
     },
-    handleSelectionChange (val) {  //全选/单选
-      let tmp = []
-      val.forEach(el => {
-        tmp.push({ ucp_id: el.ucp_id, uc_id: el.uc_id, user_type: el.user_type })
-      });
 
-      this.multipleData = tmp
-    },
-    //通过
-    through () {
-      if (this.multipleData && this.multipleData.length < 1) {
-        this.$message.error('请选择通过项')
-        return;
-      }
-      this.$confirm('此操作将通过审核, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-        center: true
-      }).then(async () => {
-        try {
 
-          this.throughLoading = true
-          const res = await this.$axios.post('admin/UserAudit/channelAdopt', { token: this.token, data: this.multipleData })
-          this.throughLoading = false
+    Auth () {
+      var id = this.$route.query.id;
+      this.curId = id;
+      this.$axios.post('admin/Auth/erAuth', {
+        token: window.sessionStorage.getItem('bbytoken'),
+        id: id
+      })
+        .then(res => {
+
           if (res.data.code == 1) {
-            this.$message({ message: res.data.msg, type: "success" })
-            this.init()
-          } else {
-            this.$message.error(res.data.msg)
-          }
-        } catch (err) {
-          this.throughLoading = false
-          throw (err)
-        }
-      }).catch(() => { });
-    },
-    //驳回
-    rejecte () {
-      if (this.multipleData && this.multipleData.length < 1) {
-        this.$message.error('请选择驳回项')
-        return;
-      }
-      this.$prompt('请输入邮箱', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /\S/,
-        inputErrorMessage: '请输入驳回理由'
-      }).then(async ({ value }) => {
-        try {
-
-          this.rejecteLoading = true
-          const res = await this.$axios.post('admin/UserAudit/channelReject', { token: this.token, data: this.multipleData, reason: value })
-          this.rejecteLoading = false
-          if (res.data.code == 1) {
-            this.$message({ message: res.data.msg, type: "success" })
-            this.init()
-          } else {
-            this.$message.error(res.data.msg)
-          }
-        } catch (err) {
-          this.rejecteLoading = false
-          throw (err)
-        }
-      }).catch(() => { });
-    }
-
-
-  },
-  mounted () {
-    var id = this.$route.query.id;
-    this.curId = id;
-    this.$axios.post('admin/Auth/erAuth', {
-      token: window.sessionStorage.getItem('bbytoken'),
-      id: id
-    })
-      .then(res => {
-
-        if (res.data.code == 1) {
-          var arr = res.data.data;
-          for (var i = 0; i < arr.length; i++) {
-            if (arr[i].son) {
-              if (arr[i].name == '保险客户') {
-                this.seCurId = arr[i].id;
-                this.threeAuthList = arr[i].son;
-              }
-              for (var j = 0; j < arr[i].son.length; j++) {
-                if (arr[i].action != arr[i].son[j].action) {
-                  arr[i].action = arr[i].son[0].action;
+            var arr = res.data.data;
+            for (var i = 0; i < arr.length; i++) {
+              if (arr[i].son) {
+                if (arr[i].name == '免费保养') {
+                  this.seCurId = arr[i].id;
+                  this.threeAuthList = arr[i].son;
                 }
-                if (arr[i].son[j].name == '已审核' && arr[i].name == '保险客户') {
-                  this.thCurId = arr[i].son[j].id;
+                for (var j = 0; j < arr[i].son.length; j++) {
+                  if (arr[i].action != arr[i].son[j].action) {
+                    arr[i].action = arr[i].son[0].action;
+                  }
+                  if (arr[i].son[j].name == '已审核' && arr[i].name == '免费保养') {
+                    this.thCurId = arr[i].son[j].id;
+                  }
                 }
               }
             }
+            this.authList = arr;
+          } else {
+            this.$alert(res.data.msg, '提示', { type: 'error' });
           }
-          this.authList = arr;
-        } else {
-          this.$alert(res.data.msg, '提示', { type: 'error' });
-        }
-      })
-      .catch(err => {
-        alert(err);
-      })
+        })
+        .catch(err => {
+          alert(err);
+        })
+    }
+  },
+  mounted () {
+    this.Auth()
+    this.getProvince()
+    this.getCompany()
+
   },
 }
 </script>
 <style scoped>
 .ellipsis {
-  width: 150px;
+  width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  margin: 0 auto;
+  text-align: center;
+}
+.search {
+  width: 15%;
+  margin-right: 10px;
+}
+.region {
+  width: 10%;
+  margin: 0 10px;
 }
 .img {
   width: 70px;
@@ -386,7 +554,6 @@ button.pass {
   float: left;
   width: 50%;
 }
-
 .right {
   float: right;
   width: 50%;

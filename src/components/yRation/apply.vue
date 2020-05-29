@@ -323,7 +323,7 @@ export default {
       DevelopmentData: '', //开发奖励下拉选择器数据
       selectValue: '',
       mid: '', //服务经理id
-      adoptVisible: false,
+      adoptVisible: false, 
       adoptContent: "通过",
       serviceList: [],
       businessList: [],
@@ -332,7 +332,7 @@ export default {
       serviceID: '',
       OperateList: {},
       prosyList: [], //市场代理,
-      activeProsy: 'a',
+      activeProsy: '', 
       oneProsy: '',
       youpin: [], //油品
       regionState: 1,  //区域选择
@@ -598,7 +598,7 @@ export default {
           gid: this.activeProsy,
           mate: this.youpin,
           level: this.regionState,
-          number: this.CurrentGroup
+          number: this.materialState ? this.CurrentGroup : 0
         }
         //调取通过接口
         this.adoptLoading = true
@@ -633,7 +633,6 @@ export default {
       id: id
     })
       .then(res => {
-
         if (res.data.code == 1) {
           var arr = res.data.data;
           for (var i = 0; i < arr.length; i++) {

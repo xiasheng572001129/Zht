@@ -493,19 +493,23 @@ const routes = [
     { path: '/maintainVip/balance', name: 'cardTab', component: resolve => require(['@/pages/maintainVip/balance/list'], resolve), meta: { auth: true } },
 
     //邦保养车管家
+    // {
+    //     path: '/CarButler/Policy', name: 'Policy', component: resolve => require(['@/pages/CarButler/Policy/Policy'], resolve), meta: { auth: true },
+    //     children: [
+    //         { path: '/CarButler/Policy', redirect: 'Unaudited' },
+    //         //未审核列表
+    //         { path: 'Unaudited', component: resolve => require(['@/pages/CarButler/Policy/Unaudited/Unaudited'], resolve), meta: { auth: true } },
+    //         // 通过列表
+    //         { path: 'adopt', component: resolve => require(['@/pages/CarButler/Policy/adopt/adopt'], resolve), meta: { auth: true } },
+    //         //驳回列表
+    //         { path: 'Reject', component: resolve => require(['@/pages/CarButler/Policy/Reject/Reject'], resolve), meta: { auth: true } },
+    //         //保单过期列表
+    //         { path: 'pastdue', component: resolve => require(['@/pages/CarButler/Policy/pastdue/pastdue'], resolve), meta: { auth: true } }
+    //     ]
+    // },
     {
-        path: '/CarButler/Policy', name: 'Policy', component: resolve => require(['@/pages/CarButler/Policy/Policy'], resolve), meta: { auth: true },
-        children: [
-            { path: '/CarButler/Policy', redirect: 'Unaudited' },
-            //未审核列表
-            { path: 'Unaudited', component: resolve => require(['@/pages/CarButler/Policy/Unaudited/Unaudited'], resolve), meta: { auth: true } },
-            // 通过列表
-            { path: 'adopt', component: resolve => require(['@/pages/CarButler/Policy/adopt/adopt'], resolve), meta: { auth: true } },
-            //驳回列表
-            { path: 'Reject', component: resolve => require(['@/pages/CarButler/Policy/Reject/Reject'], resolve), meta: { auth: true } },
-            //保单过期列表
-            { path: 'pastdue', component: resolve => require(['@/pages/CarButler/Policy/pastdue/pastdue'], resolve), meta: { auth: true } }
-        ]
+        path: "/CarButler/Policy",
+        redirect: '/CarButler/Cash_withdrawal/apply'
     },
     { path: '/balance', redirect: '/CarButler/Cash_withdrawal/apply' },
     { path: '/CarButler/Cash_withdrawal/apply', component: () => import('@/pages/CarButler/CashWithdrawal/apply'), meta: { auth: true } },
@@ -564,26 +568,26 @@ const routes = [
     {
         path: '/OilStation',
         component: () => import('@/pages/OilStation'),
-        redirect: '/OilStation/Toexamine/register',
+        redirect: '/OilStation/Toexamine/unaudited',
         meta: {
             auth: true
         },
         children: [
             {
                 path: 'Toexamine', component: () => import('@/pages/OilStation/Toexamine'),
-
+                redirect: "/OilStation/Toexamine/unaudited",
                 children: [
                     {
-                        path: 'register',
-                        component: () => import('@/pages/OilStation/Toexamine/register'),
+                        path: 'unaudited',
+                        component: () => import('@/pages/OilStation/Toexamine/unaudited'),
                     },
                     {
-                        path: 'cancel',
-                        component: () => import('@/pages/OilStation/Toexamine/cancel'),
+                        path: 'rejected',
+                        component: () => import('@/pages/OilStation/Toexamine/rejected'),
                     },
                     {
-                        path: 'open',
-                        component: () => import('@/pages/OilStation/Toexamine/open'),
+                        path: 'audited',
+                        component: () => import('@/pages/OilStation/Toexamine/audited'),
                     }
                 ]
             },
@@ -614,6 +618,25 @@ const routes = [
             {
                 path: 'install',
                 component: () => import('@/pages/OilStation/install')
+            },
+            {   //推广审核
+                path: 'promote',
+                component: () => import('@/pages/OilStation/promote'),
+                redirect: "/OilStation/promote/unaudited",
+                children: [
+                    {
+                        path: 'unaudited',
+                        component: () => import('@/pages/OilStation/promote/unaudited'),
+                    },
+                    {
+                        path: 'rejected',
+                        component: () => import('@/pages/OilStation/promote/rejected'),
+                    },
+                    {
+                        path: 'passed',
+                        component: () => import('@/pages/OilStation/promote/passed'),
+                    }
+                ]
             }
         ]
     },
@@ -699,9 +722,23 @@ const routes = [
         component: () => import('@/pages/supplier/oilDelivery'),
         meta: { auth: true }
     },
-    {  //供应商申请结算
-        path: '/supplier/applySettlement',
+    {
+        path: "/supplier/applySettlement",
+        redirect: '/supplier/applySettlement/unaudited'
+    },
+    {  //供应商 提现-未审核
+        path: '/supplier/applySettlement/unaudited',
         component: () => import('@/pages/supplier/applySettlement'),
+        meta: { auth: true }
+    },
+    {  //提现--已审核
+        path: "/supplier/applySettlement/approved",
+        component: () => import('@/pages/supplier/applySettlement/approved'),
+        meta: { auth: true }
+    },
+    {  //提现--已驳回
+        path: "/supplier/applySettlement/rejected",
+        component: () => import('@/pages/supplier/applySettlement/rejected'),
         meta: { auth: true }
     },
     {  //供应商养护品信息列表
@@ -873,6 +910,11 @@ const routes = [
         meta: { auth: true }
 
     },
+    {  //渠道发卡
+        path: "/audit/channelIssuing",
+        component: () => import('@/pages/audit/channelIssuing'),
+        meta: { auth: true }
+    },
 
 
 
@@ -935,7 +977,137 @@ const routes = [
         meta: {
             auth: true
         }
-    }
+    },
+    {  //领卡渠道
+        path: '/ststemSet/channel/Receipt',
+        component: () => import('@/pages/Setup/channel/Receipt'),
+        meta: {
+            auth: true
+        }
+    },
+
+    //兑换码
+    {
+        path: '/Conversioncode',
+        redirect: '/Conversioncode/notVerification'
+    },
+    { //兑换码-未核销
+        path: '/Conversioncode/notVerification',
+        component: () => import('@/pages/Conversioncode/notVerification'),
+        meta: {
+            auth: true
+        }
+    },
+    { //兑换码-已核销
+        path: '/Conversioncode/hasVerification',
+        component: () => import('@/pages/Conversioncode/hasVerification'),
+        meta: {
+            auth: true
+        }
+    },
+
+
+
+    //地区设置
+    {
+        path: '/regionSetup',
+        component: () => import('@/pages/regionSetup'),
+        meta: {
+            auth: true
+        }
+    },
+
+
+
+    //德州旅行
+    {
+        path: '/TexasTravel',
+        redirect: "/TexasTravel/shuffling"
+    },
+    { //德州旅行-出游
+        path: '/TexasTravel/travel',
+        component: () => import('@/pages/TexasTravel/travel'),
+        meta: {
+            auth: true
+        }
+    },
+    {  //德州旅行-轮播列表
+        path: '/TexasTravel/shuffling',
+        redirect: "/TexasTravel/shuffling/unaudited"
+    },
+    { //德州旅行-轮播列表-未审核
+        path: '/TexasTravel/shuffling/unaudited',
+        component: () => import('@/pages/TexasTravel/shuffling/unaudited'),
+        meta: {
+            auth: true
+        }
+    },
+    { //德州旅行-轮播列表-已审核
+        path: '/TexasTravel/shuffling/audited',
+        component: () => import('@/pages/TexasTravel/shuffling/audited'),
+        meta: {
+            auth: true
+        }
+    },
+    { //德州旅行-轮播列表-已驳回
+        path: '/TexasTravel/shuffling/rejected',
+        component: () => import('@/pages/TexasTravel/shuffling/rejected'),
+        meta: {
+            auth: true
+        }
+    },
+    {  //德州旅行-德州旅行列表
+        path: '/TexasTravel/travelList',
+        redirect: "/TexasTravel/travelList/unaudited"
+    },
+    { //德州旅行-德州旅行列表-未审核
+        path: '/TexasTravel/travelList/unaudited',
+        component: () => import('@/pages/TexasTravel/travelList/unaudited'),
+        meta: {
+            auth: true
+        }
+    },
+    { //德州旅行-德州旅行列表-已审核
+        path: '/TexasTravel/travelList/audited',
+        component: () => import('@/pages/TexasTravel/travelList/audited'),
+        meta: {
+            auth: true
+        }
+    },
+    { //德州旅行-德州旅行列表-已驳回
+        path: '/TexasTravel/travelList/rejected',
+        component: () => import('@/pages/TexasTravel/travelList/rejected'),
+        meta: {
+            auth: true
+        }
+    },
+
+
+    {  //德州旅行-注册审核
+        path: '/TexasTravel/enrollAudit',
+        redirect: "/TexasTravel/enrollAudit/unaudited"
+    },
+    { //德州旅行-注册审核-未审核
+        path: '/TexasTravel/enrollAudit/unaudited',
+        component: () => import('@/pages/TexasTravel/enrollAudit/unaudited'),
+        meta: {
+            auth: true
+        }
+    },
+    { //德州旅行-注册审核-已审核
+        path: '/TexasTravel/enrollAudit/audited',
+        component: () => import('@/pages/TexasTravel/enrollAudit/audited'),
+        meta: {
+            auth: true
+        }
+    },
+    { //德州旅行-注册审核-已驳回
+        path: '/TexasTravel/enrollAudit/rejected',
+        component: () => import('@/pages/TexasTravel/enrollAudit/rejected'),
+        meta: {
+            auth: true
+        }
+    },
 
 ]
 

@@ -28,6 +28,7 @@
             <th>联系电话</th>
             <th>负责人</th>
             <th>提现金额</th>
+            <th>账户信息</th>
             <th>申请时间</th>
             <th>通过时间</th>
           </tr>
@@ -38,6 +39,33 @@
             <td>{{item.phone}}</td>
             <td>{{item.leader}}</td>
             <td>{{item.money}}</td>
+            <td>
+              <el-popover placement="bottom"
+                          title="账户信息详情"
+                          width="300"
+                          trigger="click">
+                <el-button slot="reference"
+                           type="text">详情</el-button>
+                <div>
+                  <div>
+                    <span>开户名: </span>
+                    <span>{{item.bank_name}}</span>
+                  </div>
+                  <div>
+                    <span>开户行: </span>
+                    <span>{{item.bank}}</span>
+                  </div>
+                  <div>
+                    <span>开户分行: </span>
+                    <span>{{item.branch}}</span>
+                  </div>
+                  <div>
+                    <span>银行卡号: </span>
+                    <span>{{item.account}}</span>
+                  </div>
+                </div>
+              </el-popover>
+            </td>
             <td>{{item.create_time}}</td>
             <td>{{item.audit_time | datetime}}</td>
           </tr>

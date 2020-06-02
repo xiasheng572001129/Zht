@@ -171,6 +171,7 @@
                     <img width="100px"
                          :src="it.photo" />
                   </div>
+
                   <div>
                     <div>{{it.name}}</div>
                     <div>{{it.time}}</div>
@@ -313,7 +314,6 @@ export default {
         center: true
       }).then(async () => {
         try {
-
           this.throughLoading[index] = true
           const res = await this.$axios.post('admin/DeTravel/travelAdopt', { token: this.token, id: item.id })
           this.throughLoading[index] = false

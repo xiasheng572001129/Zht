@@ -1109,6 +1109,47 @@ const routes = [
         }
     },
 
+    {  //人车生活
+        path: "/mancarLife",
+        name: 'mancarLife',
+        component: () => import('@/pages/mancarLife'),
+        redirect: { name: 'SaveTrouble' },
+        children: [
+            {   //省事儿
+                path: 'SaveTrouble',
+                name: 'SaveTrouble',
+                component: () => import('@/pages/mancarLife/SaveTrouble'),
+                redirect: { name: 'unaudited' },
+                children: [
+                    {  //未审核
+                        path: 'unaudited',
+                        name: 'unaudited',
+                        component: () => import('@/pages/mancarLife/SaveTrouble/unaudited'),
+                        meta: {
+                            auth: true
+                        }
+                    },
+                    {  //已审核
+                        path: 'audited',
+                        name: 'audited',
+                        component: () => import('@/pages/mancarLife/SaveTrouble/audited'),
+                        meta: {
+                            auth: true
+                        }
+                    },
+                    {  //已驳回
+                        path: 'rejected',
+                        name: 'rejected',
+                        component: () => import('@/pages/mancarLife/SaveTrouble/rejected'),
+                        meta: {
+                            auth: true
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+
 ]
 
 export default routes

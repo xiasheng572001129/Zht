@@ -12,7 +12,7 @@
     <div class="container">
       <div class="quote">
         <div class="quote-ele">
-          <i></i>系统设置-渠道客户服务-保险公司
+          <i></i>系统设置-免费保养设置-保险公司
           <el-button type="primary"
                      style="float:right;margin:20px 40px 0 0"
                      @click="addVisible=true,state=1,openAdd(true)">添加</el-button>
@@ -25,6 +25,18 @@
             {{item.name}}
           </router-link>
         </div>
+      </div>
+      <div style="margin-left:20px">
+        <el-select v-model="province"
+                   placeholder="请选择所查询的地区"
+                   @change="page=1,init()">
+          <el-option value="1"
+                     label="全国">全国</el-option>
+          <el-option v-for="(item,index) in provinceList"
+                     :key="index"
+                     :label="item.name"
+                     :value="item.id"></el-option>
+        </el-select>
       </div>
       <el-table :data="list">
         <!-- <el-table-column label="图片"
@@ -232,6 +244,7 @@ export default {
       threeAuthList: [],
       addVisible: false,
       loading: false,
+      province: '',
       listQuery: {
         company: '',
         type_channel: 1,
@@ -290,7 +303,7 @@ export default {
       this.provinceList = getAreaList || []
     },
     async getList () {
-      return await this.$axios.post('admin/SystemSetup/systemList', { token: this.token, page: this.page })
+      return await this.$axios.post('admin/SystemSetup/systemList', { token: this.token, page: this.page, province: this.province })
     },
     async openAdd (checked, defaultData) {  //获取全部省
       this.provinceList = this.areaWhetherChecked(true)
@@ -550,7 +563,7 @@ export default {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {
               if (arr[i].son) {
-                if (arr[i].name == '渠道客户服务') {
+                if (arr[i].name == '免费保养设置') {
                   this.seCurId = arr[i].id;
                   this.threeAuthList = arr[i].son;
                 }
@@ -558,7 +571,7 @@ export default {
                   if (arr[i].action != arr[i].son[j].action) {
                     arr[i].action = arr[i].son[0].action;
                   }
-                  if (arr[i].son[j].name == '保险公司' && arr[i].name == '渠道客户服务') {
+                  if (arr[i].son[j].name == '保险公司' && arr[i].name == '免费保养设置') {
                     this.thCurId = arr[i].son[j].id;
                   }
                 }

@@ -26,7 +26,6 @@
       
     },
     mounted() {
-     
       var id = this.$route.query.id;
       this.curId = id;
       this.$axios.post('admin/Auth/erAuth', {
@@ -34,11 +33,9 @@
         id: id
       })
         .then(res => {
-          
           if(res.data.code == 1) {
             var arr = res.data.data;
             this.authList = arr;
-            
           } else {
             this.$alert(res.data.msg, '提示', {
               type: 'error'

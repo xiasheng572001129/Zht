@@ -26,7 +26,7 @@ export default {
     }
   },
   methods: {
-
+        
   },
   mounted () {
     var id = this.$route.query.id;

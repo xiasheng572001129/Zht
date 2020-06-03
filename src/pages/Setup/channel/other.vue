@@ -12,7 +12,7 @@
     <div class="container">
       <div class="quote">
         <div class="quote-ele">
-          <i></i>系统设置-渠道客户服务-其他类型
+          <i></i>系统设置-免费保养设置-其他类型
           <el-button type="primary"
                      style="float:right;margin:20px 40px 0 0"
                      @click="addVisible=true,state=1">添加</el-button>
@@ -255,7 +255,7 @@ export default {
           var arr = res.data.data;
           for (var i = 0; i < arr.length; i++) {
             if (arr[i].son) {
-              if (arr[i].name == '渠道客户服务') {
+              if (arr[i].name == '免费保养设置') {
                 this.seCurId = arr[i].id;
                 this.threeAuthList = arr[i].son;
               }
@@ -263,7 +263,7 @@ export default {
                 if (arr[i].action != arr[i].son[j].action) {
                   arr[i].action = arr[i].son[0].action;
                 }
-                if (arr[i].son[j].name == '其他类型' && arr[i].name == '渠道客户服务') {
+                if (arr[i].son[j].name == '其他类型' && arr[i].name == '免费保养设置') {
                   this.thCurId = arr[i].son[j].id;
                 }
               }

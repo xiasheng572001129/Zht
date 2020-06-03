@@ -318,6 +318,7 @@ export default {
           const res = await this.$axios.post('admin/DeTravel/travelAdopt', { token: this.token, id: item.id })
           this.throughLoading[index] = false
           if (res.data.code == 1) {
+              
             this.$message({ message: res.data.msg, type: "success" })
             this.init()
           } else {
@@ -330,7 +331,7 @@ export default {
       }).catch(() => { });
     },
     //驳回
-    rejecte (item, index) {
+    rejecte (item, index) { 
       this.$prompt('请输入驳回理由', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

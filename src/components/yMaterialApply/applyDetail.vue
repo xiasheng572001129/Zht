@@ -2,14 +2,14 @@
   <div>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele not-print"><i></i>市级配送中心-物料申请详情</div>
+        <div class="quote-ele not-print"><i></i>配送中心-物料申请详情</div>
         <el-button type="danger"
                    @click="word"
                    class="not-print"
                    style="margin-left: 122px;">打印</el-button>
         <div class="detail">
           <h4>申请信息</h4>
-          <p>市级配送中心：{{list.company}}</p>
+          <p>配送中心：{{list.company}}</p>
           <p>联系电话：{{list.phone}}</p> <br>
           <p>地址：{{list.province+list.city+list.county+list.address}}</p>
         </div>

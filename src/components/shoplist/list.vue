@@ -71,10 +71,12 @@
             <th>详情</th>
             <th>操作</th>
             <th>维修厂类型</th>
+            <th>押金类型</th>
             <!-- <th>服务押金</th> -->
             <th>是否有服务车</th>
             <th>服务车补贴</th>
-            <th>升级授权店</th>
+            <!-- <th>升级授权店</th> -->
+            <th>转化管理押金</th>
           </tr>
         </thead>
         <tbody>
@@ -114,6 +116,7 @@
             <td>
               {{item.shop_type}}
             </td>
+            <td>{{item.deposit_type}}</td>
             <!-- <td>{{item.fee || '无'}}</td> -->
             <td>
               <el-switch v-model="item.serve_car"
@@ -135,12 +138,19 @@
                         @blur="SetupSubsidy(item)" />
               <div v-else>--</div>
             </td>
-            <td>
+            <!-- <td>
               <el-button type="primary"
                          size='small'
                          @click="upgrade(item,index)"
                          :loading="loading[index]"
                          :disabled="item.type_shop==2">{{item.type_shop==1 ?'升级' : '已升级'}}</el-button>
+            </td> -->
+            <td>
+              <el-button type="primary"
+                         size="small"
+                         :loading="conversionLoading[index]"
+                         @click="conversion(item,index)"
+                         :disabled="item.mold==3">{{item.mold==3? '已转化' : '转化'}}</el-button>
             </td>
           </tr>
         </tbody>
@@ -307,7 +317,7 @@
             <span v-if='details.address'>{{details.address}}</span>
             <span v-else>
               <el-select v-model="reg.province"
-                         @change="getCity" 
+                         @change="getCity"
                          placeholder="请选择省">
                 <el-option v-for="item in provincelist"
                            :key="item.id"
@@ -463,7 +473,8 @@ export default {
         search: []
       },
       CityList: [],
-      countyList: []
+      countyList: [],
+      conversionLoading: [],//转化loading
     }
   },
 
@@ -883,6 +894,22 @@ export default {
       } catch (err) {
         this.loading[index] = false
         throw (err)
+      }
+    },
+    //转化管理押金
+    async conversion (item, index) {
+      try {
+        this.conversionLoading[index] = true
+        const res = await this.$axios.post("admin/ShopList/upManage", { token: this.token, sid: item.id })
+        this.conversionLoading[index] = false
+        if (res.data.code == 1) {
+          this.$message({ message: res.data.msg, type: "success" })
+          this.init()
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      } catch (error) {
+        this.conversionLoading[index] = false
       }
     }
   },

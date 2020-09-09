@@ -117,6 +117,7 @@
 <script type="text/ecmascript-6">
 import page from '../common.js';
 import UE from '@/components/common/wangEditor';
+
 export default {
   data () {
     return {
@@ -216,13 +217,14 @@ export default {
     },
     reset: function (id) {
       var that = this;
+      console.log(this)
       layer.open({
         type: 2,
         area: ['80%', '80%'],
         title: ['详情', 'height:60px;background-color:#98D1F9;color:white;text-align:center;font-size:20px;line-height:60px;'],
         shadeClose: true,
         shade: 0.8,
-        content: cartopiaURL + '/#/systemSet/saveoil?id=' + id,
+        content: this.layerHeader + '/#/systemSet/saveoil?id=' + id,
         end: function () {
           that.$axios.post('admin/SystemSetup/oillist', {
             token: that.token,

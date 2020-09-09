@@ -36,9 +36,9 @@
           <el-option v-for="(item,index) in companyList"
                      :key="index"
                      :label="item.company"
-                     :value="item.company"></el-option>
+                     :value="item.id"></el-option>
         </el-select>
-        <!-- <el-date-picker v-model="pickerSearch"
+        <el-date-picker v-model="pickerSearch"
                         type="daterange"
                         style="width:24%;margin-right:10px"
                         @change="page=1,init()"
@@ -46,12 +46,12 @@
                         range-separator="至"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期">
-        </el-date-picker> -->
+        </el-date-picker>
         省:
         <el-select v-model="ListQuery.search['province']"
                    placeholder="请选择省"
                    class="region"
-                   @change="page=1,getCity()">
+                   @change="getCity">
           <el-option v-for="item in provincelist"
                      :key="item.id"
                      :label="item.name"
@@ -62,7 +62,7 @@
         <el-select v-model="ListQuery.search['city']"
                    placeholder="请选择市"
                    class="region"
-                   @change="page=1,getCounty()">
+                   @change="getCounty">
           <el-option v-for="item in citylist"
                      :key="item.id"
                      :label="item.name"
@@ -72,7 +72,7 @@
         区/县:
         <el-select v-model="ListQuery.county"
                    placeholder="请选择区/县"
-                   @change="page=1,changeCounty()"
+                   @change="changeCounty"
                    class="region">
           <el-option v-for="item in countyList"
                      :key="item.id"
@@ -89,7 +89,7 @@
         <!-- <el-table-column type="selection"
                          width="55">
         </el-table-column> -->
-        <el-table-column label="福利"
+        <!-- <el-table-column label="福利"
                          align="center"
                          prop="user_type">
           <template slot-scope="scope">
@@ -100,19 +100,19 @@
               {{scope.row.user_type==1 ? '保险公司' : scope.row.user_type==2 ? '主机厂' : '其他类型'}}
             </span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column prop="ucp_company"
                          label="保险公司名称"
                          align="center"></el-table-column>
         <el-table-column prop="company"
                          label="维修厂名称"
                          align="center"></el-table-column>
-        <el-table-column prop="phone"
+        <!-- <el-table-column prop="phone"
                          label="联系电话"
                          align="center"></el-table-column>
         <el-table-column prop="leader"
                          label="负责人"
-                         align="center"></el-table-column>
+                         align="center"></el-table-column> -->
         <el-table-column label="地区"
                          align="center">
 
@@ -130,7 +130,7 @@
 
         </el-table-column>
 
-        <el-table-column label="销售数量"
+        <el-table-column label="未复核数量"
                          align="center"
                          prop="num">
 
@@ -160,10 +160,24 @@
     <el-dialog title="详情"
                center
                :visible.sync="detailsVisible"
-               width="80%">
+               width="80%"
+               @close='detailsPage=1,detailsCount=1'>
       <el-table :data="detailsList"
                 class="detailsTable">
         <el-table-column align="center"
+                         label="施工照片">
+          <template slot-scope="scope">
+            <div>
+              <img v-for="(item,index) in scope.row.oil_photo"
+                   :key="index"
+                   :src="item"
+                   width="50px"
+                   height="50px"
+                   ref="oil_photo" />
+            </div>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column align="center"
                          prop="ucp_company"
                          label="保险公司名称">
 
@@ -182,13 +196,23 @@
                          prop="series"
                          label="车排量">
 
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="center"
                          prop="plate"
                          label="车牌号">
 
         </el-table-column>
         <el-table-column align="center"
+                         prop="rankers"
+                         label="类型">
+        </el-table-column>
+        <el-table-column align="center"
+                         label="老兵姓名">
+          <template slot-scope="scope">
+            {{scope.row.ranker==6 ? scope.row.old_name : '无'}}
+          </template>
+        </el-table-column>
+        <!-- <el-table-column align="center"
                          prop="vin"
                          label="vin码">
 
@@ -199,10 +223,10 @@
           <template slot-scope="scope">
             {{scope.row.policy_num || '无'}}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="center"
                          prop=""
-                         label="保单图片">
+                         label="保单图片/优待证">
           <template slot-scope="scope">
 
             <el-button type="text"
@@ -213,19 +237,16 @@
           </template>
         </el-table-column>
         <el-table-column align="center"
-                         prop="start_time"
-                         label="开始时间">
-          <template slot-scope="scope">
-            {{scope.row.start_time || '无'}}
-          </template>
+                         prop="audit_time"
+                         label="保养时间">
         </el-table-column>
-        <el-table-column align="center"
+        <!-- <el-table-column align="center"
                          prop="end_time"
                          label="结束时间">
           <template slot-scope="scope">
             {{scope.row.end_time || '无'}}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column min-width="100px"
                          label="操作"
                          align="center">
@@ -290,7 +311,7 @@ export default {
       currentDetails: {},
       ListQuery: {
         company: '',
-        ucp_company: '平安汽车保险',
+        ucp_company: '',
         start_time: '',
         end_time: '',
         city: '',
@@ -357,6 +378,7 @@ export default {
     },
     //获取市
     getCity (id) {
+      this.page = 1
       this.ListQuery.search['province'] = this.query(this.provincelist, id)
       this.ListQuery.search['city'] = ''  //清空上一次所选的市
       this.ListQuery.county = ''  //清空上一次所选的区/县
@@ -368,6 +390,7 @@ export default {
     },
     //获取 区/县
     getCounty (id) {
+      this.page = 1
       this.ListQuery.search['city'] = this.query(this.citylist, id)
       this.ListQuery.county = '' //清空上一次所选的区/县
       this.ListQuery.search['county_id'] = '' //清空上一次所选的区/县id
@@ -377,6 +400,7 @@ export default {
       this.init()
     },
     changeCounty (id) {
+      this.page = 1
       this.ListQuery.search['county_id'] = id
       this.init()
     },
@@ -392,9 +416,14 @@ export default {
       this.detailsVisible = true
       this.currentDetails = row
       try {
-        const res = await this.$axios.post("admin/UserAudit/detail", { token: this.token, sid: row.id, policy_id: row.policy_id, status: row.status, page: this.detailsPage })
+        const res = await this.$axios.post("admin/UserAudit/detail", { token: this.token, sid: row.id, policy_id: row.policy_id, status: row.status, page: this.detailsPage, start_time: this.ListQuery.start_time, end_time: this.ListQuery.end_time })
         this.detailsList = res.data.data.list || [];
         this.detailsCount = res.data.data.rows;
+        this.$nextTick(() => {  //施工图放大
+          if (this.$refs.oil_photo && this.$refs.oil_photo.length > 0) {
+            Viewer(this.$refs.oil_photo)
+          }
+        })
 
       } catch (error) {
         throw (error)
@@ -428,7 +457,7 @@ export default {
         try {
 
           this.throughLoading[index] = true
-          const res = await this.$axios.post('admin/UserAudit/channelAdopt', { token: this.token, ucp_id: item.ucp_id })
+          const res = await this.$axios.post('admin/UserAudit/channelAdopt', { token: this.token, ucp_id: item.ucp_id, card_id: item.card_id })
           this.throughLoading[index] = false
           if (res.data.code == 1) {
             this.$message({ message: res.data.msg, type: "success" })
@@ -453,7 +482,6 @@ export default {
         inputErrorMessage: '请输入驳回理由'
       }).then(async ({ value }) => {
         try {
-
           this.rejecteLoading[index] = true
           const res = await this.$axios.post('admin/UserAudit/channelReject', { token: this.token, ucp_id: item.ucp_id, uc_id: item.uc_id, reason: value })
           this.rejecteLoading[index] = false

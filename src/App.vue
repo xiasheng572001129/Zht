@@ -1,8 +1,6 @@
 <template>
   <div id="app">
-
-       <router-view></router-view>
-
+    <router-view></router-view>
   </div>
 </template>
 
@@ -13,13 +11,13 @@ export default {
 </script>
 
 <style>
-#app{
-	height: 100%;
+#app {
+  height: 100%;
 }
- .viewer-container {
-        z-index: 9999 !important;
-   }
-   .el-message {
-       z-index: 9999 !important;
-   }
+.viewer-container {
+  z-index: 9999 !important;
+}
+.el-message {
+  z-index: 9999 !important;
+}
 </style>

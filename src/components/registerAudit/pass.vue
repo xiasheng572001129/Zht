@@ -11,7 +11,7 @@
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele"><i></i>市级配送中心-注册审核-已审核</div>
+        <div class="quote-ele"><i></i>配送中心-注册审核-已审核</div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
                        v-for="item in threeAuthList"
@@ -108,7 +108,7 @@ export default {
       this.init();
     },
     init: function () {
-      this.$axios.post('admin/AgentAuditList/index', { token: this.token, page: this.page, status: 1 })
+      this.$axios.post('admin/AgentAuditList/index', { token: this.token, page: this.page, status: 1,audit_status:1 })
         .then(res => {
 
           if (res.data.data.list)

@@ -27,15 +27,8 @@
       <el-table-column align="center"
                        label="图文详情">
         <template slot-scope="scope">
-          <el-popover placement="bottom"
-                      width="200"
-                      trigger="click">
-            <el-button type="text"
-                       slot="reference">详情</el-button>
-            <div v-if="scope.row.content">
-              <div v-html="scope.row.content"></div>
-            </div>
-          </el-popover>
+          <el-button type="text"
+                     @click="contentDetails(scope.row)">详情</el-button>
         </template>
       </el-table-column>
       <el-table-column align="center"
@@ -75,6 +68,13 @@
       </el-table-column>
 
     </el-table>
+    <el-dialog title="图文详情"
+               center
+               :visible.sync="imgDetails">
+      <div class="content">
+        <div v-html="content"></div>
+      </div>
+    </el-dialog>
     <!-- 分页 -->
     <div class="page_center"
          v-show="list && list.length>0">
@@ -93,6 +93,8 @@ export default {
       list: [],
       page: 1,
       pageCount: 1,
+      imgDetails: false, //图文详情弹框显示状态
+      content: '',//内容
     }
   },
   methods: {
@@ -104,7 +106,14 @@ export default {
       } catch (error) {
         throw (error)
       }
-    }
+    },
+    //图文/内容详情
+    contentDetails (item) {
+      this.imgDetails = true
+      this.$nextTick(() => {
+        this.content = item.content
+      })
+    },
   },
   mounted () {
     this.init()
@@ -121,5 +130,9 @@ export default {
   -webkit-line-clamp: 2;
   margin: 0 auto;
   text-align: center;
+}
+.content {
+  max-height: 500px;
+  overflow: auto;
 }
 </style>

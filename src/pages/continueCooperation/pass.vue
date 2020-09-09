@@ -11,7 +11,7 @@
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele"><i></i>市级配送中心-继续合作-已审核</div>
+        <div class="quote-ele"><i></i>配送中心-继续合作-已审核</div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
                        v-for="item in threeAuthList"

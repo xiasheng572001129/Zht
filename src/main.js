@@ -24,7 +24,7 @@ import { ContainerMixin, ElementMixin } from 'vue-slicksort';
 Vue.use(ElementUI);
 Vue.prototype.$axios = axios;
 Vue.prototype.$echarts = echarts;
-Vue.prototype.layerHeader = 'https://zd.ctbls.com/';
+Vue.prototype.layerHeader = process.env.NODE_ENV == 'development' ? 'http://192.168.101.18:8082/' : 'https://zd.ctbls.com/';
 axios.defaults.withCredentials = true;
 
 axios.defaults.baseURL = process.env.BASE_URL;  /*cc 线上 / ceshi 测试*/
@@ -44,7 +44,7 @@ Vue.config.productionTip = false
 Vue.use(Router);
 var router = new Router({
     linkActiveClass: 'cur',
-    routes: routes,
+    routes: routes, 
 })
 Vue.filter('datetime', function (timestamp) {
     if (timestamp == "") return "--"
@@ -54,7 +54,7 @@ Vue.filter('datetime', function (timestamp) {
     m = m < 10 ? ('0' + m) : m;
     var d = date.getDate();
     d = d < 10 ? ('0' + d) : d;
-    var h = date.getHours();
+    var h = date.getHours(); 
     h = h < 10 ? ('0' + h) : h;
     var minute = date.getMinutes();
     var second = date.getSeconds();

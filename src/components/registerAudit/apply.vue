@@ -11,7 +11,7 @@
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele"><i></i>市级配送中心-注册审核-未审核</div>
+        <div class="quote-ele"><i></i>配送中心-注册审核-未审核</div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
                        v-for="item in threeAuthList"
@@ -98,8 +98,8 @@
                     <el-form-item v-show="type==2 || choose==2">
                       <div class="progress">
                         <div :class="['progress-item',active[index]]"
-                             @click="Selection(item)"
-                             v-for="(item,index) in 10"
+                             @click="CurrentGroup=index + 1,Selection(index + 1)"
+                             v-for="(item,index) in  materialGroup"
                              :key="index">
                           <p>{{item}}</p>
                         </div>
@@ -221,6 +221,39 @@
                              v-model="delay_fine">
                     </div>
                   </li>
+                  <li>
+                    <div>配送费元/升</div>
+                    <div class="right_border-bottom">
+                      <input type="text"
+                             v-model="delivery_fee">
+                    </div>
+                  </li>
+                  <!-- <li>
+                    <div>市运营中心电话</div>
+                    <div class="right_border-bottom">
+                      <input type="text"
+                             v-model="CityPhone">
+                    </div>
+                  </li> -->
+                  <!-- <li>
+                    <div>
+                      <p>机滤补贴</p>
+                      <el-radio-group v-model="core_type">
+                        <el-radio label="1">配送中心</el-radio>
+                        <el-radio label="2">维修厂</el-radio>
+                      </el-radio-group>
+                    </div>
+
+                    <div style="margin:10px 0"
+                         v-if="core_type==1">
+                      <p>滤芯补助费</p>
+                      <div class="right_border-bottom">
+                        <input type="text"
+                               v-model="core_fee">
+                      </div>
+                    </div>
+
+                  </li> -->
                   <!-- <li>
                     <div>维修厂工时费(百分比)</div>
                     <div class="right_border-bottom">
@@ -296,6 +329,7 @@ export default {
       detailsList: [],
       regionState: 1,
       active: ['active'],
+      materialGroup: [160, 320, 640, 1280],
       materielDetails: [],
       regionList: [],
       isReadonly: '',
@@ -321,8 +355,11 @@ export default {
       cancel_id: '',
       choose: 1, // 1倒库 2奇数
       old_detail: [],
-      Type: ''
-
+      Type: '',
+      delivery_fee: 3, //配送费
+      CityPhone: '', //市运营中心电话
+      core_type: "2",
+      core_fee: 15,
     }
   },
   computed: {
@@ -353,7 +390,7 @@ export default {
       this.init()
     },
     init () {
-      this.$axios.post('admin/AgentAuditList/index', { token: this.token, page: this.page, status: 0 })
+      this.$axios.post('admin/AgentAuditList/index', { token: this.token, page: this.page, status: 0,audit_status:0 })
         .then(res => {
           this.list = res.data.data.list;
           this.pageCount = res.data.data.rows;
@@ -379,6 +416,7 @@ export default {
         this.old_aid = res.data.data.old_aid
         this.cancel_id = res.data.data.old_cancel_id
         this.old_detail = res.data.data.old_detail || []
+        this.CityPhone = res.data.data.phone || ''
         this.detailArea(row.id)
         this.selectAgent(row.id, row.aid)
         this.$nextTick(() => {
@@ -418,7 +456,7 @@ export default {
       try {
         const res = await this.$axios.post('admin/AgentIncRation/selectAgent', { token: this.token, id: id, aid: aid })
         this.prosyList = res.data.data || [];
-        this.gid = this.prosyList && this.prosyList[0].id
+        this.gid = this.prosyList && this.prosyList.id ? this.prosyList.id : this.prosyList[0].id
       } catch (error) {
         throw (error)
       }
@@ -465,7 +503,8 @@ export default {
       }).then(async () => {
         try {
           this.adoptLoading = true
-          const res = await this.$axios.post('admin/AgentAuditList/adopt', { token: this.token, delay_fine: this.delay_fine, gid: this.gid, number: this.choose == 2 || this.type == 2 ? this.CurrentGroup : '', aid: this.aid, type: this.Type, id: this.id, old_aid: this.type == 1 && this.old_aid, cancel_id: this.type == 1 && this.cancel_id })
+          console.log('-------------------')
+          const res = await this.$axios.post('admin/AgentAuditList/adopt', { token: this.token, delay_fine: this.delay_fine, gid: this.gid, number: this.choose == 2 || this.type == 2 ? this.CurrentGroup : '', aid: this.aid, type: this.Type, id: this.id, old_aid: this.type == 1 && this.old_aid, cancel_id: this.type == 1 && this.cancel_id, delivery_fee: this.delivery_fee, cid: this.regionList.cityId })
           this.adoptLoading = false
           if (res.data.code == 1) {
             this.materialVisible = false

@@ -11,7 +11,7 @@
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele"><i></i>市级配送中心-物料配给</div>
+        <div class="quote-ele"><i></i>配送中心-物料配给</div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
                        v-for="(item,index) in threeAuthList"
@@ -24,7 +24,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th>市级配送中心</th>
+            <th>配送中心</th>
             <th>联系电话</th>
             <th>负责人</th>
 
@@ -121,8 +121,8 @@
                     <div class="progress"
                          v-if="materialState">
                       <div :class="['progress-item',active[index]]"
-                           @click="CurrentGroup=item,Selection(item)"
-                           v-for="(item,index) in  10"
+                           @click="CurrentGroup=index + 1,Selection(index + 1)"
+                           v-for="(item,index) in  materialGroup"
                            :key="index">
                         <p>{{item}}</p>
                       </div>
@@ -323,7 +323,7 @@ export default {
       DevelopmentData: '', //开发奖励下拉选择器数据
       selectValue: '',
       mid: '', //服务经理id
-      adoptVisible: false, 
+      adoptVisible: false,
       adoptContent: "通过",
       serviceList: [],
       businessList: [],
@@ -332,13 +332,14 @@ export default {
       serviceID: '',
       OperateList: {},
       prosyList: [], //市场代理,
-      activeProsy: '', 
+      activeProsy: '',
       oneProsy: '',
       youpin: [], //油品
       regionState: 1,  //区域选择
       regionID: '',  //区域id
       regionList: {},  //区域列表
       CurrentGroup: 1,  //当前物料配给/组
+      materialGroup: [160, 320, 640, 1280],
       active: ['active'],
       materielDetails: [], //物料详情
       materialState: 0, //是否增加物料 0 不增加 1 增加
@@ -366,13 +367,11 @@ export default {
     },
     Selection (length) {
 
-
       let item = []
       for (let i = 0; i < length; i++) {
         item.push('active')
       }
       this.active = item
-
     },
     close () {
       this.itemList = ''

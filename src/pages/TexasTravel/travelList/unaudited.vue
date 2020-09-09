@@ -11,7 +11,7 @@
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele"><i></i>德州旅行-德州旅行列表-未审核</div>
+        <div class="quote-ele"><i></i>德州旅行-活动列表-未审核</div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
                        v-for="item in threeAuthList"
@@ -318,7 +318,7 @@ export default {
           const res = await this.$axios.post('admin/DeTravel/travelAdopt', { token: this.token, id: item.id })
           this.throughLoading[index] = false
           if (res.data.code == 1) {
-              
+
             this.$message({ message: res.data.msg, type: "success" })
             this.init()
           } else {
@@ -331,7 +331,7 @@ export default {
       }).catch(() => { });
     },
     //驳回
-    rejecte (item, index) { 
+    rejecte (item, index) {
       this.$prompt('请输入驳回理由', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -369,7 +369,7 @@ export default {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {
               if (arr[i].son) {
-                if (arr[i].name == '德州旅行列表') {
+                if (arr[i].name == '活动列表') {
                   this.seCurId = arr[i].id;
                   this.threeAuthList = arr[i].son;
                 }
@@ -377,7 +377,7 @@ export default {
                   if (arr[i].action != arr[i].son[j].action) {
                     arr[i].action = arr[i].son[0].action;
                   }
-                  if (arr[i].son[j].name == '未审核' && arr[i].name == '德州旅行列表') {
+                  if (arr[i].son[j].name == '未审核' && arr[i].name == '活动列表') {
                     this.thCurId = arr[i].son[j].id;
                   }
                 }

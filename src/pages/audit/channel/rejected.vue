@@ -36,7 +36,7 @@
           <el-option v-for="(item,index) in companyList"
                      :key="index"
                      :label="item.company"
-                     :value="item.company"></el-option>
+                     :value="item.id"></el-option>
         </el-select>
         <!-- <el-date-picker v-model="pickerSearch"
                         type="daterange"
@@ -107,12 +107,12 @@
         <el-table-column prop="company"
                          label="维修厂名称"
                          align="center"></el-table-column>
-        <el-table-column prop="phone"
+        <!-- <el-table-column prop="phone"
                          label="联系电话"
                          align="center"></el-table-column>
         <el-table-column prop="leader"
                          label="负责人"
-                         align="center"></el-table-column>
+                         align="center"></el-table-column> -->
         <el-table-column label="地区"
                          align="center">
 
@@ -130,7 +130,7 @@
 
         </el-table-column>
 
-        <el-table-column label="销售数量"
+        <el-table-column label="驳回数量"
                          align="center"
                          prop="num">
 
@@ -160,10 +160,25 @@
     <el-dialog title="详情"
                center
                :visible.sync="detailsVisible"
-               width="80%">
+               width="80%"
+               @close='detailsPage=1,detailsCount=1'>
       <el-table :data="detailsList"
                 class="detailsTable">
         <el-table-column align="center"
+                         label="施工照片">
+          <template slot-scope="scope">
+
+            <div>
+              <img v-for="(item,index) in scope.row.oil_photo"
+                   :key="index"
+                   :src="item"
+                   width="50px"
+                   height="50px"
+                   ref="oil_photo" />
+            </div>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column align="center"
                          prop="ucp_company"
                          label="保险公司名称">
 
@@ -182,13 +197,23 @@
                          prop="series"
                          label="车排量">
 
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="center"
                          prop="plate"
                          label="车牌号">
 
         </el-table-column>
         <el-table-column align="center"
+                         prop="rankers"
+                         label="类型">
+        </el-table-column>
+        <el-table-column align="center"
+                         label="老兵姓名">
+          <template slot-scope="scope">
+            {{scope.row.ranker==6 ? scope.row.old_name : '无'}}
+          </template>
+        </el-table-column>
+        <!-- <el-table-column align="center"
                          prop="vin"
                          label="vin码">
 
@@ -199,10 +224,10 @@
           <template slot-scope="scope">
             {{scope.row.policy_num || '无'}}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="center"
                          prop=""
-                         label="保单图片">
+                         label="保单图片/优待证">
           <template slot-scope="scope">
 
             <el-button type="text"
@@ -212,7 +237,7 @@
 
           </template>
         </el-table-column>
-        <el-table-column align="center"
+        <!-- <el-table-column align="center"
                          prop="start_time"
                          label="开始时间">
           <template slot-scope="scope">
@@ -225,7 +250,7 @@
           <template slot-scope="scope">
             {{scope.row.end_time || '无'}}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column align="center"
                          label="驳回理由">
           <template slot-scope="scope">
@@ -242,12 +267,13 @@
 
         </el-table-column>
         <el-table-column align="center"
-                         prop="audit_time"
+                         prop="review_time"
                          label="驳回时间">
           <template slot-scope="scope">
-            {{scope.row.audit_time | datetime }}
+            {{scope.row.review_time | datetime}}
           </template>
         </el-table-column>
+
       </el-table>
 
       <div class="page_center">
@@ -296,7 +322,7 @@ export default {
       currentDetails: {},
       ListQuery: {
         company: '',
-        ucp_company: '平安汽车保险',
+        ucp_company: '',
         start_time: '',
         end_time: '',
         city: '',
@@ -401,6 +427,11 @@ export default {
         const res = await this.$axios.post("admin/UserAudit/detail", { token: this.token, sid: row.id, policy_id: row.policy_id, status: row.status, page: this.detailsPage })
         this.detailsList = res.data.data.list || [];
         this.detailsCount = res.data.data.rows;
+        this.$nextTick(() => {  //施工图放大
+          if (this.$refs.oil_photo && this.$refs.oil_photo.length > 0) {
+            Viewer(this.$refs.oil_photo)
+          }
+        })
 
       } catch (error) {
         throw (error)

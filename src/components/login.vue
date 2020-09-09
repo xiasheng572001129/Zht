@@ -66,10 +66,10 @@ export default {
 
           var that = this;
           if (res.data.data) {
-            window.sessionStorage.setItem('bbytoken', res.data.data);
+            window.sessionStorage.setItem('bbytoken', res.data.data.token);
             window.sessionStorage.setItem('loginname', this.name);
             layer.msg('登录成功', { icon: 1, time: 2000 }, function () {
-              that.$router.push({ name: 'entry' })
+              that.$router.push({ name: 'entry', params: { str: res.data.data.str ? res.data.data.str : '' } })
             });
           }
           else {

@@ -22,6 +22,13 @@
         </div>
       </div>
       <el-table :data="list">
+        <el-table-column label="支付凭证"
+                         align="center">
+          <template slot-scope="scope">
+            <el-button type="text"
+                       @click="check(scope.row)">查看</el-button>
+          </template>
+        </el-table-column>
         <el-table-column label="维修厂名称"
                          align="center"
                          prop="company">
@@ -57,7 +64,8 @@
       </el-table>
       <el-dialog title="详情"
                  center
-                 :visible.sync="detailsVisible" @close='()=>{
+                 :visible.sync="detailsVisible"
+                 @close='()=>{
                    smid = ""
                  }'>
         <div v-if='detailsList'
@@ -106,7 +114,7 @@
             </span>
           </div> -->
           <div v-show='detailsList.aid>1'>
-            <span>市级配送中心 : </span>
+            <span>配送中心 : </span>
             <span>
               {{detailsList.acompany}}
             </span>
@@ -116,7 +124,7 @@
             <span>
               <el-select v-model="smid"
                          :disabled="detailsList.aid>1">
-               
+
                 <el-option v-for='(item,index) in supplyList'
                            :key="index"
                            :label="item.name"
@@ -131,6 +139,19 @@
                          @click="through">通过</el-button>
             </span>
           </div>
+        </div>
+
+      </el-dialog>
+      <el-dialog title="支付凭证"
+                 center
+                 :visible.sync="credentialVisible"
+                 width="20%">
+        <div style="text-align:center">
+          <img :src="credentialImg"
+               ref="credentialImg"
+               width="90%"
+               height="300px"
+               style="border:1px solid #ccc;padding:10px" />
         </div>
       </el-dialog>
       <!-- 分页 -->
@@ -166,6 +187,8 @@ export default {
       aid: '',
       sid: '',
       smid: '', //供应商id
+      credentialVisible: false,
+      credentialImg: ''
     }
   },
   methods: {
@@ -191,7 +214,7 @@ export default {
         const supplyList = this.$axios.post('admin/ShopAudit/smList', { token: this.token, id: row.id })
         const [ResdetailsList, ResagentList, resSupplyList] = await Promise.all([detailsList, agentList, supplyList])
         this.detailsList = ResdetailsList.data.data || {}
-       
+
         this.agentList = ResagentList.data.data || []
         this.supplyList = resSupplyList.data.data || []
         this.smid = resSupplyList.data.data && resSupplyList.data.data[0].id
@@ -202,6 +225,14 @@ export default {
       } catch (err) {
         throw (err)
       }
+    },
+    check (item) {  //查看支付凭证
+      this.credentialVisible = true
+      this.$nextTick(() => {
+        this.credentialImg = item.credential
+        const ViewerDom = this.$refs.credentialImg
+        Viewer(ViewerDom)
+      })
     },
     //通过审核
     async through () {

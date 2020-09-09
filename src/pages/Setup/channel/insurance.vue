@@ -38,7 +38,8 @@
                      :value="item.id"></el-option>
         </el-select>
       </div>
-      <el-table :data="list">
+      <el-table :data="list"
+                v-loading="tableLoading">
         <!-- <el-table-column label="图片"
                          align="center">
           <template slot-scope="scope">
@@ -243,6 +244,7 @@ export default {
       uploadUrl: this.baseURL,
       threeAuthList: [],
       addVisible: false,
+      tableLoading: false,
       loading: false,
       province: '',
       listQuery: {
@@ -297,10 +299,12 @@ export default {
       this.init()
     },
     async init () {
+      this.tableLoading = true
       let [list, getAreaList] = await Promise.all([this.getList(), this.getArea()])
       this.list = list.data.data.list || []
       this.pageCount = list.data.data.rows || 1;
       this.provinceList = getAreaList || []
+      this.tableLoading = false
     },
     async getList () {
       return await this.$axios.post('admin/SystemSetup/systemList', { token: this.token, page: this.page, province: this.province })
@@ -445,7 +449,8 @@ export default {
       this.provinceList[provinceIndex].checked = val
       let { provinceCheckedID, cityCheckedId } = this.getAreaCheckedID();   //获取当前选中市
       this.listQuery.provinceID = provinceCheckedID
-      this.cityChecked = val ? this.provinceList[provinceIndex].checked ? cityCheckedId : cityID : []   //默认市的选中
+      console.log(cityCheckedId)
+      this.cityChecked = val ? this.provinceList[provinceIndex].checked ? cityCheckedId : cityID : cityCheckedId  //默认市的选中
 
       this.isIndeterminate = provinceCheckedID.length < this.provinceList.length && provinceCheckedID.length > 0
 
@@ -470,6 +475,7 @@ export default {
         provinceCheckedID,
         cityCheckedId
       }
+
     },
     //当前市的操作
     cityChange (v, e, index) { // v:当前市是否被选中 e:event对象
@@ -480,9 +486,9 @@ export default {
 
       this.provinceList[this.provinceIndex].checked = cityCheckedLength == 0 ? false : true
 
-      let { provinceCheckedID } = this.getAreaCheckedID();
+      let { provinceCheckedID, cityCheckedId } = this.getAreaCheckedID();
       this.listQuery.provinceID = provinceCheckedID;
-      console.log(cityCheckedLength, 'cityCheckedLength', '-----', this.currentCity.length)
+      console.log(cityCheckedId, '---')
       this.isIndeterminate = cityCheckedLength < this.currentCity.length && cityCheckedLength > 0
 
     },

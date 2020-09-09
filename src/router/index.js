@@ -95,10 +95,6 @@ import operationlogMessage from '../components/operationlog/message'
 import effectareaAdd from '../components/effectarea/add'
 import effectareaList from '../components/effectarea/list'
 
-
-
-
-
 const routes = [
 
     // { path:'/',component:home,name:'主功能页' },
@@ -155,7 +151,38 @@ const routes = [
             auth: true
         }
     },
-
+    {  //小程序-用户信息列表
+        path: '/SmallInvoice/userInfoList',
+        redirect: '/SmallInvoice/userInfoList/insuranceUser'
+    },
+    {  //小程序-用户信息列表-保险用户
+        path: '/SmallInvoice/userInfoList/insuranceUser',
+        component: () => import("@/pages/userInfoList/insuranceUser"),
+        meta: {
+            auth: true
+        }
+    },
+    {  //小程序-用户信息列表-仲达会员
+        path: '/SmallInvoice/userInfoList/membersList',
+        component: () => import("@/pages/userInfoList/membersList"),
+        meta: {
+            auth: true
+        }
+    },
+    {  //小程序-用户信息列表-老兵
+        path: '/SmallInvoice/userInfoList/veteranList',
+        component: () => import("@/pages/userInfoList/veteranList"),
+        meta: {
+            auth: true
+        }
+    },
+    {  //小程序-服务工号列表
+       path:'/SmallInvoice/severCode',
+       component: () => import("@/pages/smallProgram/severCode"),
+       meta: {
+           auth: true
+       }
+    },
 
     { path: "/turntable/upload", component: resolve => require(["@/components/turntable/upload"], resolve), meta: { auth: true } },
     { path: "/turntable/GiftList", component: resolve => require(["@/components/turntable/GiftList"], resolve), meta: { auth: true } },
@@ -233,7 +260,7 @@ const routes = [
         path: '/continueCooperation',
         redirect: '/continueCooperation/apply'
     },
-    {
+    { //继续合作-未审核
         path: '/continueCooperation/apply',
         component: () => import('@/pages/continueCooperation/apply'),
         meta: {
@@ -241,7 +268,7 @@ const routes = [
         }
 
     },
-    {
+    { //继续合作-已审核
         path: '/continueCooperation/pass',
         component: () => import('@/pages/continueCooperation/pass'),
         meta: {
@@ -249,13 +276,50 @@ const routes = [
         }
 
     },
-    {
+    {  //继续合作-已驳回
         path: '/continueCooperation/reject',
         component: () => import('@/pages/continueCooperation/reject'),
         meta: {
             auth: true
         }
 
+    },
+
+    //提现复核
+    {
+        path: '/withdrawalReview',
+        redirect: '/withdrawalReview/apply'
+    },
+    { //提现复核-未审核
+        path: '/withdrawalReview/apply',
+        component: () => import('@/pages/withdrawalReview/apply'),
+        meta: {
+            auth: true
+        }
+
+    },
+    { //提现复核-已审核
+        path: '/withdrawalReview/pass',
+        component: () => import('@/pages/withdrawalReview/pass'),
+        meta: {
+            auth: true
+        }
+
+    },
+    {  //提现复核-已驳回    
+        path: '/withdrawalReview/reject',
+        component: () => import('@/pages/withdrawalReview/reject'),
+        meta: {
+            auth: true
+        }
+
+    },
+    {  //滤芯收入
+        path: "/filterIncome",
+        component: () => import('@/pages/filterIncome'),
+        meta: {
+            auth: true
+        }
     },
 
 
@@ -283,7 +347,7 @@ const routes = [
     //能量值
     { path: '/ststemSet/EnergyValue', component: resolve => require(['@/components/systemSet/EnergyValue/EnergyValue'], resolve), meta: { auth: true } },
     { path: '/ststemSet/fbList', component: resolve => require(['@/components/systemSet/fbList'], resolve), meta: { auth: true } },
-    //邦保养
+    //邦保养         
     { path: "/systemSet/maintain/maintain", component: resolve => require(["@/components/systemSet/maintain/maintain"], resolve), meta: { auth: true } },
     { path: "/systemSet/maintain/oillist", component: resolve => require(["@/components/systemSet/maintain/oillist"], resolve), meta: { auth: true } },
     { path: "/systemSet/maintain/Datachange", component: resolve => require(["@/components/systemSet/maintain/Datachange"], resolve), meta: { auth: true } },
@@ -328,7 +392,7 @@ const routes = [
             { path: "detailsPage", component: resolve => require(["@/components/MunicipalAgent/detailsPage"], resolve), meta: { auth: true } }
         ]
     },
-    //物料申请
+    //物料申请  
     {
         path: "/MunicipalAgent/materiel/materiel", component: resolve => require(["@/components/MunicipalAgent/materiel/materiel"], resolve), meta: { auth: true },
         children: [
@@ -568,7 +632,7 @@ const routes = [
     {
         path: '/OilStation',
         component: () => import('@/pages/OilStation'),
-        redirect: '/OilStation/Toexamine/unaudited',
+        redirect: '/OilStation/list',
         meta: {
             auth: true
         },
@@ -822,13 +886,13 @@ const routes = [
         redirect: '/audit/servicer/Toaudit',
 
     },
-    {
+    {  //审核-车补审核-已审核
         path: '/audit/servicer/Toaudit',
         component: () => import('@/pages/audit/servicer/Toaudit'),
         meta: { auth: true }
 
     },
-    {
+    { //审核-车补审核-待审核
         path: '/audit/servicer/audited',
         component: () => import('@/pages/audit/servicer/audited'),
         meta: { auth: true }
@@ -883,30 +947,36 @@ const routes = [
 
     },
 
-    //渠道客户-已驳回
+    //免费保养-已驳回
     {
         path: '/audit/channel/rejected',
         component: () => import('@/pages/audit/channel/rejected'),
         meta: { auth: true }
 
     },
-    {  //渠道客户
+    {  //免费保养
         path: "/audit/channel",
         redirect: '/audit/channel/unaudited',
 
         meta: { auth: true }
 
     },
-    {  //渠道客户-未审核
+    {  //免费保养-未审核
         path: '/audit/channel/unaudited',
         component: () => import('@/pages/audit/channel/unaudited'),
         meta: { auth: true }
 
     },
 
-    {  //渠道客户-已审核
+    {  //免费保养-已审核
         path: '/audit/channel/passed',
         component: () => import('@/pages/audit/channel/passed'),
+        meta: { auth: true }
+
+    },
+    {  //免费保养-二次复核
+        path: '/audit/channel/twiceReview',
+        component: () => import('@/pages/audit/channel/twiceReview'),
         meta: { auth: true }
 
     },
@@ -916,6 +986,34 @@ const routes = [
         meta: { auth: true }
     },
 
+    {  //审核-服务工号审核
+        path: '/audit/serviceCode',
+        redirect: '/audit/serviceCode/unaudited'
+    },
+    {  //审核-服务工号审核-未审核
+        path: '/audit/serviceCode/unaudited',
+        component: () => import('@/pages/audit/serviceCode/unaudited'),
+        meta: {
+            auth: true
+        }
+
+    },
+    {  //审核-服务工号审核-已审核
+        path: '/audit/serviceCode/audited',
+        component: () => import('@/pages/audit/serviceCode/audited'),
+        meta: {
+            auth: true
+        }
+
+    },
+    {  //审核-服务工号审核-已驳回
+        path: '/audit/serviceCode/rejected',
+        component: () => import('@/pages/audit/serviceCode/rejected'),
+        meta: {
+            auth: true
+        }
+
+    },
 
 
 
@@ -955,7 +1053,7 @@ const routes = [
     //系统设置
     {
         path: '/ststemSet/channel',
-        redirect: '/ststemSet/channel/insurance'
+        redirect: '/ststemSet/channel/Receipt'
     },
     {  //保险公司
         path: '/ststemSet/channel/insurance',
@@ -985,6 +1083,41 @@ const routes = [
             auth: true
         }
     },
+    {  //系统设置-市运营中心设置
+        path: "/ststemSet/operatingSetup",
+        component: () => import('@/pages/operatingSetup'),
+        meta: {
+            auth: true
+        }
+    },
+
+    {  //系统设置-滤芯设置
+        path: '/ststemSet/filterSetup',
+        component: () => import('@/pages/filterSetup'),
+        meta: {
+            auth: true
+        }
+    },
+    { //系统设置-保险公司设置
+        path: '/ststemSet/freeMaintenance',
+        redirect: '/ststemSet/freeMaintenance/issueCamilo'
+
+    },
+    { //系统设置-保险公司设置-发放卡密
+        path: '/ststemSet/freeMaintenance/issueCamilo',
+        component: () => import('@/pages/freeMaintenance/issueCamilo'),
+        meta: {
+            auth: true
+        }
+    },
+    { //系统设置-保险公司设置-线下领取
+        path: '/ststemSet/freeMaintenance/offlineGet',
+        component: () => import('@/pages/freeMaintenance/offlineGet'),
+        meta: {
+            auth: true
+        }
+    },
+
 
     //兑换码
     {
@@ -1113,13 +1246,13 @@ const routes = [
         path: "/mancarLife",
         name: 'mancarLife',
         component: () => import('@/pages/mancarLife'),
-        redirect: { name: 'SaveTrouble' },
+        redirect: '/mancarLife/SaveTrouble',
         children: [
             {   //省事儿
                 path: 'SaveTrouble',
                 name: 'SaveTrouble',
                 component: () => import('@/pages/mancarLife/SaveTrouble'),
-                redirect: { name: 'unaudited' },
+                redirect: '/mancarLife/SaveTrouble/unaudited',
                 children: [
                     {  //未审核
                         path: 'unaudited',
@@ -1146,8 +1279,52 @@ const routes = [
                         }
                     }
                 ]
+            },
+            {   //惠生活-邦友特惠
+                path: 'HoyoTech',
+                name: 'HoyoTech',
+                component: () => import('@/pages/mancarLife/HoyoTech'),
+                redirect: '/mancarLife/HoyoTech/unaudited',
+                children: [
+                    {  //未审核
+                        path: 'unaudited',
+                        name: 'unaudited',
+                        component: () => import('@/pages/mancarLife/HoyoTech/unaudited'),
+                        meta: {
+                            auth: true
+                        }
+                    },
+                    {  //已审核
+                        path: 'audited',
+                        name: 'audited',
+                        component: () => import('@/pages/mancarLife/HoyoTech/audited'),
+                        meta: {
+                            auth: true
+                        }
+                    },
+                    {  //已驳回
+                        path: 'rejected',
+                        name: 'rejected',
+                        component: () => import('@/pages/mancarLife/HoyoTech/rejected'),
+                        meta: {
+                            auth: true
+                        }
+                    }
+                ]
             }
         ]
+    },
+
+    {
+        path: '/channelIssuing', //渠道发卡
+        redirect: '/channelIssuing/list'
+    },
+    {
+        path: '/channelIssuing/list', //渠道发卡-发卡列表
+        component: () => import('@/pages/channelIssuing/list'),
+        meta: {
+            auth: true
+        }
     }
 
 ]

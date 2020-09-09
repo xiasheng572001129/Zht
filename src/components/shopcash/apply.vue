@@ -34,7 +34,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in list">
+          <tr v-for="(item,index) in list"
+              :key="index">
             <td class="t-l">{{item.company}}</td>
             <td>{{item.phone}}</td>
             <td>{{item.leader}}</td>
@@ -244,7 +245,7 @@ export default {
       list: [],
       token: window.sessionStorage.getItem('bbytoken'),
       //分页数据
-      zpage:1,
+      zpage: 1,
       page: 1, //显示的页码数
       totalpage: 1, //总页数
       tPage: 1,
@@ -334,7 +335,6 @@ export default {
         page: this.page
       })
         .then(res => {
-
           this.incomelist = res.data.data.list;
           this.totalpage = res.data.data.rows;
           layer.open({
@@ -355,12 +355,8 @@ export default {
         page: this.zpage
       })
         .then(res => {
-          if (res.data.code == 1) {
-            this.list = res.data.data.list;
-            this.pageCount = res.data.data.rows;
-          } else {
-            layer.msg(res.data.msg)
-          }
+          this.list = res.data.data.list || []
+          this.pageCount = res.data.data.rows || 0;
         })
         .catch(err => console.log(err))
     },
@@ -507,11 +503,10 @@ export default {
         main_phone: this.transferPhone
       })
         .then(res => {
-
           if (res.data.code == 1) {
+            this.$message({ message: res.data.msg, type: 'success' })
+            this.init()
             layer.closeAll();
-            layer.msg(res.data.msg);
-            this.init();
           } else {
             layer.alert(res.data.msg);
           }
@@ -522,10 +517,9 @@ export default {
         })
     }
   },
-  created () {
-    this.init();
-  },
+
   mounted () {
+    this.init();
     var id = this.$route.query.id;
     this.curId = id;
     this.$axios.post('admin/Auth/erAuth', {

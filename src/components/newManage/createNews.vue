@@ -34,18 +34,19 @@
         <button @click="send"
                 class="send">{{sendText}}</button>
       </div>
-    </div>
+    </div> 
+    
   </div>
 </template>
 <script type="text/ecmascript-6">
 // import UE from '../common/uedit.vue';
 import wangEditor from '../common/wangEditor.vue';
 import qs from 'qs';
-// window.UEDITOR_HOME_URL = "../../../static/images/";
+// window.UEDITOR_HOME_URL = "../../../static/images/"; 8
 export default {
   // components: {UE},
   components: { wangEditor },
-  data () {
+  data () { 
     return {
       title: '',
       perarr: [],

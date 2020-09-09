@@ -89,6 +89,8 @@ export default {
             this.content = this.editObj.about.replace(new RegExp("<.+?>", "g"), '');
           this.lunboaddr = this.editObj.cover;
           this.price = this.editObj.price;
+          this.indexNow = parent.layer.getFrameIndex(window.name)
+
         }).catch(err => this.indexNow = parent.layer.getFrameIndex(window.name))
 
     }
@@ -116,10 +118,9 @@ export default {
       }
       this.$axios.post('admin/SystemSetup/setOper', obj1)
         .then(res => {
-          layer.msg(res.data.msg, function () {
-            if (res.data.code == 1)
-              parent.layer.close(that.indexNow);
-          });
+          layer.msg(res.data.msg, (() => {
+            parent.layer.close(this.indexNow);
+          }));
         }).catch(err => console.log(err))
     },
     cancel () { //取消直接关闭

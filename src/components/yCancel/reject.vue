@@ -11,7 +11,7 @@
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele"><i></i>市级配送中心-取消合作</div>
+        <div class="quote-ele"><i></i>配送中心-取消合作</div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
                        v-for="item in threeAuthList"
@@ -24,7 +24,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th>市级配送中心</th>
+            <th>配送中心</th>
             <th>联系电话</th>
             <th>负责人</th>
             <th>申请时间</th>
@@ -63,8 +63,8 @@
         <thead>
           <tr>
             <th>物料名称</th>
-            <th>市级配送中心库存</th>
-            <th>市级配送中心授信库</th>
+            <th>配送中心库存</th>
+            <th>配送中心授信库</th>
           </tr>
         </thead>
         <tbody>
@@ -133,7 +133,7 @@ export default {
           layer.open({
             type: 0,
             area: ['30%', '30%'],
-            title: ['市级配送中心取消合作理由', 'height:60px;background-color:#98D1F9;color:white;text-align:center;font-size:20px;line-height:60px;'],
+            title: ['配送中心取消合作理由', 'height:60px;background-color:#98D1F9;color:white;text-align:center;font-size:20px;line-height:60px;'],
             shadeClose: true,
             shade: 0.8,
             content: res.data.data

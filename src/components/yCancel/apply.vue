@@ -11,7 +11,7 @@
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele"><i></i>市级配送中心-取消合作</div>
+        <div class="quote-ele"><i></i>配送中心-取消合作</div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
                        v-for="item in threeAuthList"
@@ -24,7 +24,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th>市级配送中心</th>
+            <th>配送中心</th>
             <th>地区</th>
             <th>联系电话</th>
             <th>负责人</th>
@@ -99,7 +99,7 @@
     <div class="laybox2"
          style="display:none">
       <ul>
-        <li>市级配送中心：{{obj.company}}</li>
+        <li>配送中心：{{obj.company}}</li>
         <li>联系电话：{{obj.phone}}</li>
         <li>已开通汽修厂数量：{{obj.open_shop}}</li>
         <li>剩余金额：{{obj.balance}}</li>

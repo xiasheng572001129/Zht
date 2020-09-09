@@ -3,8 +3,9 @@
     <ctbHead></ctbHead>
     <div class='con'>
       <ul>
-        <li v-for="item in list"
-            :style="note">
+        <li v-for="(item,index) in list"
+            :style="note"
+            :key="index">
           <router-link :to="{path:item.action,query:{id:item.id}}">
             <div><img :src="item.icon"
                    alt=""></div>
@@ -69,49 +70,63 @@ export default {
       list: []
     }
   },
+  methods: {
+
+    prompt () {   //免费保险的保险公司卡数为0提示
+      let str = this.$route.params && this.$route.params.str
+      if (str) {
+        this.$confirm(`保险公司[${str}]卡数已为0`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          center: true,
+          type: 'warning'
+        }).then(() => {
+          this.$router.push({ path: '/ststemSet/freeMaintenance', query: { id: 7 } })
+        }).catch(() => { });
+      }
+    },
+    Auth () {  //权限
+      this.$axios.post('admin/Auth/ifUser', {
+        token: window.sessionStorage.getItem('bbytoken')
+      })
+        .then(res => {
+          if (res.data.code == 1) {
+            var list = res.data.data;
+            this.list = list;
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        })
+        .catch(err => {
+          throw (err)
+        })
+
+    }
+  },
   mounted () {
-    this.$axios.post('admin/Auth/ifUser', {
-      token: window.sessionStorage.getItem('bbytoken')
-    })
-      .then(res => {
-
-        if (res.data.code == 1) {
-          var list = res.data.data;
-
-          this.list = list;
-
-        } else {
-          this.$message.error(res.data.msg)
-
-        }
-      })
-      .catch(err => {
-        throw (err)
-
-      })
-
+    this.Auth()
+    this.prompt()
   }
 }
 </script>
 <style scoped>
-div.entry {
+.entry {
   width: 100%;
   height: 100%;
   background-color: #292f42;
   margin: 80px 0 0 0;
-
-  /* overflow-x: scroll; */
 }
-
 .con {
-  width: 90%;
-  height: 100%;
+  width: 100%;
+  height: calc(100% - 80px);
   position: relative;
   margin: 0 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .con ul {
-  width: 100%;
-  margin: 0 20px 0 20px;
+  width: 90%;
+  margin: 0 auto;
 }
 /* .con ul > li:nth-child(10) div {
   position: relative;
@@ -140,9 +155,9 @@ div.entry {
 .entry ul li {
   display: inline-block;
   text-align: center;
-  width: calc(100% / 5 - 109px);
+  width: calc(100% / 5 - 60px);
   height: 220px;
-  margin-right: 3%;
+  margin: 0 30px;
   margin-bottom: 3%;
   border-radius: 10px;
   background-image: url("../../static/images/entry.jpg");
@@ -181,7 +196,6 @@ div.entry {
 .entry li div {
   width: 90px;
   height: 90px;
-
   border-radius: 50%;
   background-image: radial-gradient(
     rgba(255, 255, 255, 0),

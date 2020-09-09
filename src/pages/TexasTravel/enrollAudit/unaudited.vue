@@ -40,16 +40,16 @@
                          align="center"
                          prop="phone">
         </el-table-column>
-        <el-table-column label="注册地区"
+        <el-table-column label="注册类型"
                          align="center"
-                         prop="area">
-
+                         prop="type">
         </el-table-column>
         <el-table-column label="注册地区"
                          align="center"
                          prop="area">
 
         </el-table-column>
+
         <el-table-column label="详细地址"
                          align="center">
           <template slot-scope="scope">

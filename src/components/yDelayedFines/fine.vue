@@ -23,7 +23,7 @@
       <table class="table">
         <thead style="width: 100%;">
           <tr>
-            <th>市级配送中心</th>
+            <th>配送中心</th>
             <th>联系电话</th>
             <th>负责人</th>
             <th>罚款金额</th>
@@ -134,7 +134,7 @@
         <table>
           <thead>
             <tr>
-              <th>市级配送中心</th>
+              <th>配送中心</th>
               <th>罚款金额</th>
               <th>物料申请时间</th>
               <th>货物送达时间 </th>
@@ -334,7 +334,7 @@ export default {
                   if (arr[i].action != arr[i].son[j].action) {
                     arr[i].action = arr[i].son[0].action;
                   }
-                  if (arr[i].son[j].name == '市级配送中心列表' && arr[i].name == '管理列表') {
+                  if (arr[i].son[j].name == '配送中心列表' && arr[i].name == '管理列表') {
                     this.thCurId = arr[i].son[j].id;
                   }
                 }

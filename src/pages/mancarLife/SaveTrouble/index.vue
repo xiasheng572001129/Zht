@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="quote">
-      <div class="quote-ele"><i></i>人车生活</div>
+      <div class="quote-ele"><i></i>人车生活-省事儿</div>
       <div class="quote-nav">
         <router-link active-class="cur"
                      v-for='item in threeAuthList'
@@ -29,7 +29,6 @@ export default {
   methods: {
     /* 获取能用的权限列表 */
     async authority () {
-
       try {
         let res = await this.$axios.post('admin/Auth/erAuth', {
           token: this.token,
@@ -37,14 +36,17 @@ export default {
         })
         if (res.data.code == 1) {
           if (res.data.data && res.data.data[0]) {
-            this.threeAuthList = res.data.data[0].son
+            let son = res.data.data
+            son.forEach(item => {
+              if (item.name == '省事儿') {
+                this.threeAuthList = item.son
+              }
+            });
           }
-
         }
       } catch (err) {
         throw (err)
       }
-
     }
   },
   mounted () {

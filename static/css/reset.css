@@ -99,7 +99,7 @@ hr {
 }
 
 input, select ,textarea{
-  vertical-align: middle;
+  vertical-align: middle;           
   font-size: 16px;
   box-sizing: border-box;
 }

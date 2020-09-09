@@ -11,7 +11,7 @@
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele"><i></i>市级配送中心</div>
+        <div class="quote-ele"><i></i>配送中心</div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
                        v-for="item in threeAuthList"
@@ -24,7 +24,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th>市级配送中心</th>
+            <th>配送中心</th>
             <th>联系电话</th>
             <th>负责人</th>
             <!-- <th>汽修厂数量</th> -->
@@ -35,10 +35,13 @@
             <th>设置供应商</th>
             <th>服务车数量</th>
             <th>车补</th>
+            <th>配送费( 元/升 )</th>
+            <th>滤芯补贴金额( 元 )</th>
             <!-- <th>推荐人</th> -->
             <th>操作</th>
             <!-- <th>服务押金</th> -->
             <th>是否有服务车</th>
+            <th>滤芯补助</th>
             <!-- <th>服务车补贴</th> -->
           </tr>
         </thead>
@@ -71,7 +74,7 @@
               {{item.serve_fee}}元
             </td>
             <!-- <td>
-              <el-popover placement="bottom"
+              <el-popover placement="bottom"  
                           title="推荐人详情"
                           width="200"
                           trigger="click">
@@ -87,6 +90,15 @@
 
             </td> -->
             <td>
+              <el-input v-model="item.delivery_fee"
+                        :disabled="item.if_delivery_fee==2"
+                        style="width:50%"
+                        @change="ModifyDelivery(item.aid,$event)" />
+            </td>
+            <td>
+              {{item.core_fee}}元
+            </td>
+            <td>
               <a href="javascript:;"
                  @click="ShutDown(item.aid,item.company,item.leader)">关停</a>
               <a href="javascript:;"
@@ -100,6 +112,15 @@
                          active-color="#13ce66"
                          inactive-color="#ff4949"
                          @change='switchChange(item.if_serve,item.aid)'>
+              </el-switch>
+            </td>
+            <td>
+              <el-switch v-model="item.core_type"
+                         :active-value='1'
+                         :inactive-value='2'
+                         active-color="#13ce66"
+                         inactive-color="#ff4949"
+                         @change='coreChange(item.core_type,item.aid)'>
               </el-switch>
             </td>
             <!-- <td>
@@ -226,7 +247,7 @@
         <thead>
           <tr>
             <th>订单号</th>
-            <th>市级配送中心</th>
+            <th>配送中心</th>
             <th>维修厂负责人</th>
             <th>维修厂电话</th>
             <th>邦保养时间</th>
@@ -633,7 +654,6 @@ export default {
     },
     //点击确定关停
     SureShutdown () {
-
       if (!this.textVal) {
         layer.msg('请输入关停理由', { time: 1500 })
         return;
@@ -728,7 +748,6 @@ export default {
     },
     // 设置服务车 switch 发生改变时  
     async switchChange (value, aid) {
-
       this.aid = aid
       if (value == 1) {
         this.servicerVisible = true
@@ -749,6 +768,7 @@ export default {
         }
       }
 
+
       //   try {
       //     const res = await this.$axios.post('admin/AgentList/serveCar', { token: this.token, aid: aid })
       //     if (res.data.code == 1) {
@@ -759,6 +779,37 @@ export default {
       //   } catch (err) {
       //     throw (err)
       //   }
+    },
+    coreChange (core_type, aid) {
+      if (core_type == 1) {
+        this.$prompt('请输入滤芯补贴', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /\S/,
+          inputErrorMessage: '滤芯补贴不能为空',
+          inputValue: 15
+        }).then(async ({ value }) => {
+
+          this.coreSet(aid, core_type, value)
+        }).catch(() => {
+          this.init()
+        });
+      } else {
+        this.coreSet(aid, core_type)
+      }
+    },
+    async coreSet (aid, core_type, core_fee) {
+      try {
+        const res = await this.$axios.post('admin/AgentList/coreSet', { token: this.token, aid: aid, core_type: core_type, core_fee: core_fee })
+        if (res.data.code == 1) {
+          this.$message({ message: res.data.msg, type: "success" })
+          this.init()
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      } catch (error) {
+        throw (error)
+      }
     },
     async chooseServicer () {
       try {
@@ -791,6 +842,22 @@ export default {
       } catch (err) {
         throw (err)
       }
+    },
+    //修改配送费
+    async ModifyDelivery (aid, item) {
+      try {
+        const res = await this.$axios.post('admin/AgentList/delivery', { token: this.token, aid: aid, delivery_fee: item })
+        if (res.data.code == 1) {
+          this.$message({ message: res.data.msg, type: "success" })
+          this.init()
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      } catch (error) {
+        throw (error)
+      }
+
+
     }
   },
   created () {
@@ -819,7 +886,7 @@ export default {
                   if (arr[i].action != arr[i].son[j].action) {
                     arr[i].action = arr[i].son[0].action;
                   }
-                  if (arr[i].son[j].name == '市级配送中心列表' && arr[i].name == '管理列表') {
+                  if (arr[i].son[j].name == '配送中心列表' && arr[i].name == '管理列表') {
                     this.thCurId = arr[i].son[j].id;
                   }
 

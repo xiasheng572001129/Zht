@@ -11,7 +11,7 @@
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele"><i></i>德州旅行-德州旅行列表-已驳回</div>
+        <div class="quote-ele"><i></i>德州旅行-活动列表-已驳回</div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
                        v-for="item in threeAuthList"
@@ -166,7 +166,7 @@
             {{detailsList.guide_name ? detailsList.guide_name : '无'}}
           </el-form-item>
           <el-form-item label="行程介绍 : ">
-            <el-timeline v-if="detailsList.cate_name=='出游活动'">
+            <el-timeline v-if="detailsList.mold_ID==6">
               <el-timeline-item :timestamp="detailsList.journey_referral && detailsList.journey_referral.set_out ? `${detailsList.journey_referral.set_out.date} ${detailsList.journey_referral.set_out.week} ${detailsList.journey_referral.set_out.time}` : ''">
                 <h2 style="color:#09B91E">出发点</h2>
                 <div v-if="detailsList.journey_referral && detailsList.journey_referral.set_out">
@@ -335,7 +335,7 @@ export default {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {
               if (arr[i].son) {
-                if (arr[i].name == '德州旅行列表') {
+                if (arr[i].name == '活动列表') {
                   this.seCurId = arr[i].id;
                   this.threeAuthList = arr[i].son;
                 }
@@ -343,7 +343,7 @@ export default {
                   if (arr[i].action != arr[i].son[j].action) {
                     arr[i].action = arr[i].son[0].action;
                   }
-                  if (arr[i].son[j].name == '已驳回' && arr[i].name == '德州旅行列表') {
+                  if (arr[i].son[j].name == '已驳回' && arr[i].name == '活动列表') {
                     this.thCurId = arr[i].son[j].id;
                   }
                 }

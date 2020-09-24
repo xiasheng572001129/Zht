@@ -49,12 +49,18 @@
 
         </el-table-column>
 
-        <el-table-column label="提现金额"
+        <el-table-column label="提现金额（元）"
                          prop="total_money"
+                         align="center">
+             <template slot-scope="scope">
+                 <el-button type="text" size="small" @click="moneyDetails.currentList = scope.row,getMoneyDetails(scope.row)">{{scope.row.total_money}}</el-button>
+             </template>
+        </el-table-column>
+         <el-table-column label="提现类型"
+                         prop="types"
                          align="center">
 
         </el-table-column>
-
         <el-table-column label="申请时间"
                          prop="create_time"
                          align="center">
@@ -65,68 +71,79 @@
           <template slot-scope="scope">
             <el-button type="primary"
                        size="small"
-                       @click="through(scope.row)">通过</el-button>
+                       @click="through(scope.row,scope.$index)">通过</el-button>
             <el-button type="danger "
                        size="small"
-                       @click="reject(scope.row)">驳回</el-button>
+                       @click="reject(scope.row,scope.$index)">驳回</el-button>
           </template>
         </el-table-column>
       </el-table>
-
-      <el-dialog title="详情"
+      <!-- 金额详情 -->
+      <el-dialog title="金额详情"
                  center
-                 :visible.sync="detailVisible">
-        <table class="table">
-          <tr>
-            <th>油品名称</th>
-            <th>总后台的油品名称</th>
-            <th>油品介绍</th>
-            <th>升数</th>
-            <th>结算价</th>
-            <th>型号</th>
-            <th>油品图片</th>
-          </tr>
-          <tr v-for='(item,index) in detailList'
-              :key="index">
-            <td>
-              {{item.oil_name}}
-            </td>
-            <td>
-              {{item.little_name}}
-            </td>
-            <td>
-              <el-popover placement="top-start"
-                          title="油品介绍"
-                          width="200"
-                          trigger="hover"
-                          :content="item.about">
-                <el-button slot="reference"
-                           type="text"
-                           class="ellipsis"
-                           style="width:100px">{{item.about}}</el-button>
-              </el-popover>
-            </td>
-            <td>
-              {{item.rise}}
-            </td>
-            <td>
-              {{item.price}}
-            </td>
-            <td>
-              {{item.standard}}
-            </td>
-            <td>
-              <img :src="item.cover"
-                   ref="images">
-            </td>
-          </tr>
-        </table>
+                 :visible.sync="moneyDetails.visible" @close='()=>{
+                    moneyDetails.page = 1,  //关闭弹框清空当前页
+                    moneyDetails.pageCount=1  //清空总页数
+                   
+                 }'>
+             <el-table :data="moneyDetails.list" ref="table">
+                    <el-table-column label="产品名称"  align="center" >
+                        <template slot-scope="scope">
+                            {{scope.row.name || '无'}}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="订单号" prop="odd_number" align="center"></el-table-column>
+                     <el-table-column label="单价（元）"  prop="unit_price" min-width="100px" align="center" >
+                         <template slot-scope="scope">
+                            {{scope.row.unit_price || '无'}}
+                        </template>
+                     </el-table-column>
+                    <el-table-column label="总收入（元）" min-width="110px" prop="settlement_price" align="center"></el-table-column>
+                    <el-table-column label="总升数" prop="oil_LPM" align="center"></el-table-column>
+                    <el-table-column label="发货图片"  align="center">
+                         <template slot-scope="scope">
+                              <img :src="scope.row.freight_pic" class="deliveryImg" />
+                         </template>
+                    </el-table-column>
+                     <el-table-column label="物料详情"  align="center" v-if="moneyDetails.currentList.type==1">
+                         <template slot-scope="scope">
+                                  <el-popover
+                                      placement="bottom"
+                                      width="500"
+                                      trigger="click"
+                                      
+                                     >
+                                      <el-button slot="reference" type="text">详情</el-button>
+                                      <div class="popoverTable">
+                                         <el-table :data="scope.row.detail" >
+                                         <el-table-column label="物料名称" prop="materiel" align="center"></el-table-column>
+                                         <el-table-column label="数量" prop="num" align="center"></el-table-column>
+                                         <el-table-column label="备注" prop="remarks" align="center"></el-table-column>
+                                         <el-table-column label="总价格（元）" prop="settlement_price" align="center"></el-table-column>
+                                      </el-table>
+                                      </div>
+                                  </el-popover>
+                         </template>
+                    </el-table-column>
+             </el-table>
+              <div class="page_center">
+                  <paging :page-count="moneyDetails.pageCount"
+                          :page="moneyDetails.page"
+                          @index="e=>{
+                            moneyDetails.page=e,
+                            getMoneyDetails()
+                          }"></paging>
+                  <!--分页的组件-->
+              </div>
       </el-dialog>
       <div class="page_center"
            v-show="page&&page>1">
         <paging :page-count="pageCount"
                 :page="page"
-                @index="paging"></paging>
+                @index="e=>{
+                  page=e,
+                  init()
+                }"></paging>
         <!--分页的组件-->
       </div>
     </div>
@@ -146,65 +163,75 @@ export default {
       token: window.sessionStorage.getItem('bbytoken'), //token令牌
       page: 0,
       pageCount: 0,
-      detailList: [],
-
-      detailVisible: false, //详情弹框状态
-      throughLoading: false, //通过加载Loading
-      rejectLoading: false, //驳回Loading
+      throughLoading: [], //通过加载Loading
+      rejectLoading: [], //驳回Loading
+      moneyDetails:{  //金额详情
+         visible:false, //弹框显示状态
+         page:1,  //当前页数
+         pageCount:1, //总页数
+         list:[],  //列表
+         currentList:{}, //当前所打开的金额详情
+      }
     }
   },
 
   methods: {
-    paging (e) {  //获取供应商列表当前页
-      this.page = e
-      this.init()
-    },
-
     async init () {
       try {
         const res = await this.$axios.post('admin/SmCash/smApplyCashList', { token: this.token, page: this.page, status: 0 })
         this.list = res.data.data.list || []
         this.pageCount = res.data.data.rows || 0
-
-
       } catch (err) {
         throw (err)
       }
     },
-    detail () {  //油品详情
-      this.$nextTick(() => {
-        const ViewerRef = this.$refs.images
-        Viewer(ViewerRef)
-      })
+    //获取金额详情
+   async getMoneyDetails(item){
+         try {
+           this.moneyDetails.visible = true;  //打开金额详情弹框
+           const res  = await this.$axios.post('admin/SmCash/cashDetail',{
+                token:this.token,
+                page:this.moneyDetails.page,  //当前页数
+                id: this.moneyDetails.currentList.id,  //提现id
+                type:this.moneyDetails.currentList.type
+             })  
+            this.moneyDetails.list = res.data.data.list || [];  //列表
+            this.moneyDetails.pageCount = res.data.data.rows || 1;  //总页数
+            this.magnifyImg(this.$refs.table.$el)
+         } catch (error) {
+           throw(error)
+         }
+    },   
+    magnifyImg(el){  //图片放大功能
+           this.$nextTick(()=>{
+              Viewer(el)
+           })
     },
     //通过审核
-    through (row) {
-      this.$prompt('请输入转账电话', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /^1[3456789]\d{9}$/,
-        inputValue: '13811959239',
-        inputErrorMessage: '手机号错误'
-      }).then(async (current) => {
-        try {
-
-          this.throughLoading = true
-          const res = await this.$axios.post('admin/SmCash/cashHandle', { token: this.token, sm_id: row.sm_id, id: row.id, total_money: row.total_money, main_phone: current.value })
-          this.throughLoading = false
-          if (res.data.code == 1) {
-            this.$message({ message: res.data.msg, type: 'success' })
-            this.init()
-          } else {
-            this.$message.error(res.data.msg)
-          }
+    through (row,index) {
+     this.$confirm('是否通过 ?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+           try {
+              this.throughLoading[index] = true
+              const res = await this.$axios.post('admin/SmCash/cashHandle', { token: this.token, sm_id: row.sm_id, id: row.id, total_money: row.total_money,type:row.type })
+              this.throughLoading[index] = false
+              if (res.data.code == 1) {
+                this.$message({ message: res.data.msg, type: 'success' })
+                this.init()
+              } else {
+                this.$message.error(res.data.msg)
+              }
         } catch (err) {
+           this.throughLoading[index] = false
           throw (err)
         }
-      }).catch(() => { });
+        }).catch(async () => {});
     },
     //驳回
-    reject (row) {
-
+    reject (row,index) {
       this.$prompt('请输入驳回理由', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -212,9 +239,9 @@ export default {
         inputErrorMessage: '驳回理由不能为空'
       }).then(async ({ value }) => {
         try {
-          this.rejectLoading = true
-          const res = await this.$axios.post('admin/SmCash/cashReject', { token: this.token, sm_id: row.sm_id, reason: value, id: row.id, total_money: row.total_money })
-          this.rejectLoading = false
+          this.rejectLoading[index] = true
+          const res = await this.$axios.post('admin/SmCash/cashReject', { token: this.token, sm_id: row.sm_id, reason: value, id: row.id, total_money: row.total_money,type:row.type })
+          this.rejectLoading[index] = false
           if (res.data.code == 1) {
             this.$message({ message: res.data.msg, type: 'success' })
             this.init()
@@ -222,6 +249,7 @@ export default {
             this.$message.errof(res.data.msg)
           }
         } catch (err) {
+          this.rejectLoading[index] = false
           throw (err)
         }
       }).catch(() => { });
@@ -286,5 +314,14 @@ export default {
   white-space: nowrap !important;
   text-overflow: ellipsis !important;
   overflow: hidden !important;
+}
+.deliveryImg{
+    width: 50px;
+    height: 50px;
+    vertical-align: middle;
+}
+ .popoverTable {
+      max-height: 400px;
+      overflow: auto;
 }
 </style>

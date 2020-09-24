@@ -793,6 +793,51 @@ const routes = [
         meta: { auth: true }
 
     },
+
+    {  //供应商-滤芯审核
+        path: "/supplier/filterElement",
+        redirect: '/supplier/filterElement/unaudited'
+    },
+
+    {  //供应商-滤芯审核-未审核
+        path: "/supplier/filterElement/unaudited",
+        component: () => import('@/pages/supplier/filterElement/unaudited'),
+        meta: { auth: true }
+    },
+    {  //供应商-滤芯审核-已审核
+        path: "/supplier/filterElement/audited",
+        component: () => import('@/pages/supplier/filterElement/audited'),
+        meta: { auth: true }
+    },
+    {  //供应商-滤芯审核-已驳回
+        path: "/supplier/filterElement/rejected",
+        component: () => import('@/pages/supplier/filterElement/rejected'),
+        meta: { auth: true }
+    },
+
+
+    {  //供应商-活动产品审核
+        path: "/supplier/activitiesProducts",
+        redirect: '/supplier/activitiesProducts/unaudited'
+    },
+
+    {  //供应商-活动产品审核-未审核
+        path: "/supplier/activitiesProducts/unaudited",
+        component: () => import('@/pages/supplier/activitiesProducts/unaudited'),
+        meta: { auth: true }
+    },
+    {  //供应商-活动产品审核-已审核
+        path: "/supplier/activitiesProducts/audited",
+        component: () => import('@/pages/supplier/activitiesProducts/audited'),
+        meta: { auth: true }
+    },
+    {  //供应商-活动产品审核-已驳回
+        path: "/supplier/activitiesProducts/rejected",
+        component: () => import('@/pages/supplier/activitiesProducts/rejected'),
+        meta: { auth: true }
+    },
+
+
     {  //供应商油品信息列表
         path: '/supplier/oilInformation',
         component: () => import('@/pages/supplier/oilInformation'),
@@ -803,6 +848,10 @@ const routes = [
         component: () => import('@/pages/supplier/oilDelivery'),
         meta: { auth: true }
     },
+
+
+    
+
     {
         path: "/supplier/applySettlement",
         redirect: '/supplier/applySettlement/unaudited'

@@ -29,12 +29,27 @@
                          label="用户电话"
                          prop="phone"></el-table-column>
         <el-table-column align="center"
+                         label="地区">
+                           <template slot-scope="scope">
+                               <el-popover
+                                  placement="bottom"
+                                  width="200"
+                                  trigger="hover"
+                                  :content="`${scope.row.province}${scope.row.city}${scope.row.county}`">
+                                  <el-button slot="reference" type="text" class="ellipsis">{{`${scope.row.province}${scope.row.city}${scope.row.county}`}}</el-button>
+                              </el-popover> 
+                           </template>
+                         </el-table-column>
+        <el-table-column align="center"
+                         label="类型"
+                         prop="user_status"></el-table-column>
+        <el-table-column align="center"
                          label="驳回人"
                          prop="audit_person"></el-table-column>
         <el-table-column align="center"
                          label="驳回理由">
           <template slot-scope="scope">
-            <el-popover placement="top-start"
+            <el-popover placement="bottom"
                         width="200"
                         trigger="hover"
                         :content="scope.row.reason">
@@ -46,9 +61,9 @@
         </el-table-column>
         <el-table-column align="center"
                          label="驳回时间"
-                         prop="audit_time">
+                        >
           <template slot-scope="scope">
-            {{scope.row.audit_time | datetime}}
+            {{scope.row.payment_time }}
           </template>
         </el-table-column>
 

@@ -28,18 +28,30 @@
         <el-table-column align="center"
                          label="用户电话"
                          prop="phone"></el-table-column>
+       
         <el-table-column align="center"
-                         label="服务工号"
-                         prop="promo_code"></el-table-column>
-
+                         label="地区">
+                           <template slot-scope="scope">
+                               <el-popover
+                                  placement="bottom"
+                                  width="200"
+                                  trigger="hover"
+                                  :content="`${scope.row.province}${scope.row.city}${scope.row.county}`">
+                                  <el-button slot="reference" type="text" class="ellipsis">{{`${scope.row.province}${scope.row.city}${scope.row.county}`}}</el-button>
+                              </el-popover> 
+                           </template>
+                         </el-table-column>
+        <el-table-column align="center"
+                         label="类型"
+                         prop="user_status"></el-table-column>
         <el-table-column align="center"
                          label="审核人"
                          prop="audit_person"></el-table-column>
         <el-table-column align="center"
                          label="审核时间"
-                         prop="audit_time">
+                         >
           <template slot-scope="scope">
-            {{scope.row.audit_time | datetime}}
+            {{scope.row.payment_time}}
           </template>
         </el-table-column>
 
@@ -137,6 +149,16 @@ export default {
 }
 </script>
 <style scoped>
+.ellipsis {
+  width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  margin: 0 auto;
+  text-align: center;
+}
 .car_img {
   width: 50px;
   height: 50px;

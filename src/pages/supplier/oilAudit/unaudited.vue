@@ -8,13 +8,20 @@
                    :v-key="item.id">
         {{item.name}}
       </router-link>
-
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele"
-             style="float:left"><i></i>供应商-油品审核 </div>
+        <div class="quote-ele"><i></i>供应商-油品审核-未审核</div>
+        <div class="quote-nav">
+          <router-link :class="thCurId==item.id? 'cur':''"
+                       v-for="item in threeAuthList"
+                       :key="item.id"
+                       :to="{path:item.action,query:{id:curId}}">
+            {{item.name}}
+          </router-link>
+        </div>
       </div>
+
       <table class="table">
         <tr>
           <th>供应商名称</th>
@@ -104,14 +111,19 @@
           </tr>
         </table>
       </el-dialog>
-      <div class="page_center"
-           v-show="page&&page>1">
+
+      <!-- 分页 -->
+      <div class="page_center">
         <paging :page-count="pageCount"
                 :page="page"
-                @index="paging"></paging>
+                @index="(e)=>{
+                    page = e,
+                    init()
+                }"></paging>
         <!--分页的组件-->
       </div>
     </div>
+
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -120,12 +132,14 @@ export default {
   data () {
     return {
       authList: [],
+      threeAuthList: [],
       list: [],
       seCurId: '',
       token: window.sessionStorage.getItem('bbytoken'), //token令牌
       page: 0,
       pageCount: 0,
       detailList: [],
+      
       detailVisible: false, //详情弹框状态
       throughLoading: [], //通过加载Loading
       rejectLoading: [], //驳回Loading
@@ -133,14 +147,9 @@ export default {
   },
 
   methods: {
-    paging (e) {  //获取供应商列表当前页
-      this.page = e
-      this.init()
-    },
-
     async init () {
       try {
-        const res = await this.$axios.post('admin/SmAudit/smOilUnAuditList', { token: this.token, page: this.page })
+        const res = await this.$axios.post('admin/SmAudit/smOilUnAuditList', { token: this.token, page: this.page, status: 0 })
         this.list = res.data.data.list || []
         this.pageCount = res.data.data.rows || 0
         this.$nextTick(() => {
@@ -159,7 +168,6 @@ export default {
     },
     //通过审核
     through (item, index) {
-
       const h = this.$createElement
       const newDatas = [item.agent_id > 0 && h('p', null, `原运营商余额: ${item.balance}元`), h('p', null, '请输入质保金')]
       this.$prompt('提示', {
@@ -186,17 +194,14 @@ export default {
     },
     //驳回
     reject (sm_id, index) {
-
       this.$prompt('请输入驳回理由', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputPattern: /\S/,
         inputErrorMessage: '驳回理由不能为空'
       }).then(async ({ value }) => {
-
         try {
           this.rejectLoading[index] = true
-
           const res = await this.$axios.post('admin/SmAudit/rejectOil', { token: this.token, sm_id: sm_id, reason: value })
           this.rejectLoading[index] = false
           if (res.data.code == 1) {
@@ -210,49 +215,64 @@ export default {
         }
       }).catch(() => { });
     },
-
-    // 权限列表,当前所在权限页  
-    erAuth () {
+    Auth () {  //权限列表
       var id = this.$route.query.id;
       this.curId = id;
       this.$axios.post('admin/Auth/erAuth', {
         token: window.sessionStorage.getItem('bbytoken'),
         id: id
-      }).then(res => {
-        if (res.data.code == 1) {
-          var arr = res.data.data || [];
-          this.authList = arr;
-
-        } else {
-          this.$alert(res.data.msg, '提示', {
-            type: 'error'
-          });
-        }
       })
+        .then(res => {
+
+          if (res.data.code == 1) {
+            var arr = res.data.data;
+            for (var i = 0; i < arr.length; i++) {
+              if (arr[i].son) {
+                if (arr[i].name == '油品审核') {
+                  this.seCurId = arr[i].id;
+                  this.threeAuthList = arr[i].son;
+                }
+                for (var j = 0; j < arr[i].son.length; j++) {
+                  if (arr[i].action != arr[i].son[j].action) {
+                    arr[i].action = arr[i].son[0].action;
+                  }
+                  if (arr[i].son[j].name == '未审核' && arr[i].name == '油品审核') {
+                    this.thCurId = arr[i].son[j].id;
+                  }
+                }
+              }
+            }
+            this.authList = arr;
+          } else {
+            this.$alert(res.data.msg, '提示', { type: 'error' });
+          }
+        })
         .catch(err => {
           alert(err);
         })
     }
   },
-  created () {
-    this.erAuth()
-  },
   mounted () {
-    this.init() //初始化数据  
+    this.Auth()
+    this.init()
   },
 }
 </script>
 <style scoped>
+.ellipsis {
+  width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  margin: 0 auto;
+  text-align: center;
+}
 .table img {
   width: 50px;
   height: 50px;
   vertical-align: middle;
   margin: 10px 0;
-}
-.ellipsis {
-  width: 80px !important;
-  white-space: nowrap !important;
-  text-overflow: ellipsis !important;
-  overflow: hidden !important;
 }
 </style>

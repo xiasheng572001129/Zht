@@ -6,8 +6,8 @@ import 'viewerjs/dist/viewer.css';
  */
 
 export default function $Viewer (el) {
-   
     if (Array.isArray(el)) {
+
         el.forEach(e => {
             new Viewer(e)
         })

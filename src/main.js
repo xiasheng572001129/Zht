@@ -5,6 +5,8 @@ import App from './App'
 import axios from 'axios'
 import Vuex from 'vuex'
 import echarts from 'echarts'
+import Viewer from 'viewerjs';
+import 'viewerjs/dist/viewer.css';
 import '../static/css/common.css'
 // 富文本编辑器
 import '../static/ud/ueditor.config.js'
@@ -44,7 +46,7 @@ Vue.config.productionTip = false
 Vue.use(Router);
 var router = new Router({
     linkActiveClass: 'cur',
-    routes: routes, 
+    routes: routes,
 })
 Vue.filter('datetime', function (timestamp) {
     if (timestamp == "") return "--"
@@ -54,7 +56,7 @@ Vue.filter('datetime', function (timestamp) {
     m = m < 10 ? ('0' + m) : m;
     var d = date.getDate();
     d = d < 10 ? ('0' + d) : d;
-    var h = date.getHours(); 
+    var h = date.getHours();
     h = h < 10 ? ('0' + h) : h;
     var minute = date.getMinutes();
     var second = date.getSeconds();

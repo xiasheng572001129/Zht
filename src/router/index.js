@@ -177,11 +177,11 @@ const routes = [
         }
     },
     {  //小程序-服务工号列表
-       path:'/SmallInvoice/severCode',
-       component: () => import("@/pages/smallProgram/severCode"),
-       meta: {
-           auth: true
-       }
+        path: '/SmallInvoice/severCode',
+        component: () => import("@/pages/smallProgram/severCode"),
+        meta: {
+            auth: true
+        }
     },
 
     { path: "/turntable/upload", component: resolve => require(["@/components/turntable/upload"], resolve), meta: { auth: true } },
@@ -771,10 +771,27 @@ const routes = [
         component: () => import('@/pages/supplier/supplierList/index'),
         meta: { auth: true }
     },
-    {  //供应商油品审核
+    {  //供应商-油品审核
         path: '/supplier/oilAudit',
-        component: () => import('@/pages/supplier/oilAudit'),
+        redirect: '/supplier/oilAudit/unaudited'
+    },
+    {  //供应商-油品审核-未审核
+        path: '/supplier/oilAudit/unaudited',
+        component: () => import('@/pages/supplier/oilAudit/unaudited'),
         meta: { auth: true }
+
+    },
+    {  //供应商-油品审核-已审核
+        path: '/supplier/oilAudit/audited',
+        component: () => import('@/pages/supplier/oilAudit/audited'),
+        meta: { auth: true }
+
+    },
+    {  //供应商-油品审核-已驳回
+        path: '/supplier/oilAudit/rejected',
+        component: () => import('@/pages/supplier/oilAudit/rejected'),
+        meta: { auth: true }
+
     },
     {  //供应商油品信息列表
         path: '/supplier/oilInformation',

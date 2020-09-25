@@ -31,7 +31,7 @@ axios.defaults.withCredentials = true;
 
 axios.defaults.baseURL = process.env.BASE_URL;  /*cc 线上 / ceshi 测试*/
 Vue.prototype.baseURL = process.env.BASE_URL
-
+Vue.prototype.uploadUrl = process.env.BASE_URL + 'admin/Prize/cbImg'
 // axios.defaults.baseURL = 'http://192.168.1.166/car/public/index.php';  /*cc 线上 / ceshi 测试*/
 // Vue.prototype.baseURL = 'http://192.168.1.166/car/public/index.php'
 //解决post发数据

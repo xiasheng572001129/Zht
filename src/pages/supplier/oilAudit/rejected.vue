@@ -22,7 +22,8 @@
         </div>
       </div>
 
-      <table class="table">
+      <table class="table"
+             ref="table">
         <tr>
           <th>供应商名称</th>
           <th>质量保证书</th>
@@ -46,6 +47,9 @@
                  ref="images">
           </td>
 
+        </tr>
+        <tr v-if="!(list && list.length>0)">
+          <td :colspan="colspan">暂无数据</td>
         </tr>
       </table>
       <el-dialog title="详情"
@@ -120,6 +124,7 @@ export default {
       authList: [],
       threeAuthList: [],
       list: [],
+      colspan: 0,  //合并的单元格
       seCurId: '',
       token: window.sessionStorage.getItem('bbytoken'), //token令牌
       page: 0,
@@ -137,6 +142,7 @@ export default {
         const res = await this.$axios.post('admin/SmAudit/smOilUnAuditList', { token: this.token, page: this.page, status: 2 })
         this.list = res.data.data.list || []
         this.pageCount = res.data.data.rows || 0
+        this.colspan = this.$refs.table.querySelectorAll('th').length  //根据th的数量来合并单元格
         this.$nextTick(() => {
           const ViewerRef = this.$refs.images
           Viewer(ViewerRef)

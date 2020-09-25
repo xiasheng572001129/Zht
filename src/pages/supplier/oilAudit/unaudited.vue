@@ -22,7 +22,8 @@
         </div>
       </div>
 
-      <table class="table">
+      <table class="table"
+             ref="table">
         <tr>
           <th>供应商名称</th>
           <th>质量保证书</th>
@@ -53,15 +54,18 @@
                        @click="detailList=item.detail,detailVisible=true,detail()">详情</el-button>
             <el-button type="success"
                        size="small"
-                       @click="through(item)"
-                       :loading='throughLoading[index]'>通过</el-button>
+                       @click="getArea(item)">通过</el-button>
             <el-button type="danger"
                        size="small"
                        @click="reject(item.sm_id,index)"
                        :loading="rejectLoading[index]">驳回</el-button>
           </td>
         </tr>
+        <tr v-if="!(list && list.length>0)">
+          <td :colspan="colspan">暂无数据</td>
+        </tr>
       </table>
+      <!-- 详情 -->
       <el-dialog title="详情"
                  center
                  :visible.sync="detailVisible">
@@ -112,6 +116,29 @@
         </table>
       </el-dialog>
 
+      <!-- 选择区域 -->
+      <el-dialog title="选择区域"
+                 :visible.sync='areaVisible'
+                 center>
+        <el-tree :data="areaList"
+                 show-checkbox
+                 node-key="id"
+                 ref="tree">
+          <span class="custom-tree-node"
+                slot-scope="{ node, data }">
+            <span>{{ data.name }}</span>
+
+          </span>
+        </el-tree>
+        <span slot="footer"
+              class="dialog-footer">
+          <h3 class="prompt">质保金（金额）：{{$refs.tree && $refs.tree.getCheckedKeys(true).length * money}}元</h3>
+          <el-button type="primary"
+                     @click="through"
+                     :loading='throughLoading'>通过</el-button>
+        </span>
+      </el-dialog>
+
       <!-- 分页 -->
       <div class="page_center">
         <paging :page-count="pageCount"
@@ -134,14 +161,18 @@ export default {
       authList: [],
       threeAuthList: [],
       list: [],
+      colspan: 0,  //合并的单元格
       seCurId: '',
       token: window.sessionStorage.getItem('bbytoken'), //token令牌
       page: 0,
       pageCount: 0,
       detailList: [],
-      
       detailVisible: false, //详情弹框状态
-      throughLoading: [], //通过加载Loading
+      currentList: {}, //当前所通过的数据
+      areaVisible: false, //选择区域弹框显示状态
+      money: 10000,  //质保金
+      areaList: [], //区域列表
+      throughLoading: false, //通过加载Loading
       rejectLoading: [], //驳回Loading
     }
   },
@@ -152,9 +183,10 @@ export default {
         const res = await this.$axios.post('admin/SmAudit/smOilUnAuditList', { token: this.token, page: this.page, status: 0 })
         this.list = res.data.data.list || []
         this.pageCount = res.data.data.rows || 0
+        this.colspan = this.$refs.table.querySelectorAll('th').length  //根据th的数量来合并单元格
         this.$nextTick(() => {
           const ViewerRef = this.$refs.images
-          Viewer(ViewerRef)
+          res.data.data && Viewer(ViewerRef)
         })
       } catch (err) {
         throw (err)
@@ -166,31 +198,38 @@ export default {
         Viewer(ViewerRef)
       })
     },
+    async getArea (item) {  //获取区域列表
+      try {
+        this.currentList = item;
+        this.areaVisible = true
+        const res = await this.$axios.post('admin/SmAudit/area', { token: this.token, type: 3 })  //type 3油品 1滤芯 2活动产品
+        this.areaList = res.data.data || []
+      } catch (error) {
+        throw (error)
+      }
+    },
     //通过审核
-    through (item, index) {
-      const h = this.$createElement
-      const newDatas = [item.agent_id > 0 && h('p', null, `原运营商余额: ${item.balance}元`), h('p', null, '请输入质保金')]
-      this.$prompt('提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        message: h('div', null, newDatas),
-        inputPattern: /\S/,
-        inputErrorMessage: '请输入质保金'
-      }).then(async ({ value }) => {
+    async through (item, index) {
+      let checkedArea = this.$refs.tree.getCheckedKeys(true)  //选中的区域
+      if (checkedArea.length <= 10 && checkedArea.length > 0) {   // 最多选10个地区 
         try {
-          this.throughLoading[index] = true
-          const res = await this.$axios.post('admin/SmAudit/passOil', { token: this.token, sm_id: item.sm_id, money: value, balance: item.balance })
-          this.throughLoading[index] = false
+          this.throughLoading = true
+          const res = await this.$axios.post("admin/SmAudit/passOil", { token: this.token, sm_id: this.currentList.sm_id, money: this.money * checkedArea.length, area: checkedArea.join(',') })
+          this.throughLoading = false
           if (res.data.code == 1) {
             this.$message({ message: res.data.msg, type: 'success' })
+            this.areaVisible = false
             this.init()
           } else {
             this.$message.error(res.data.msg)
           }
-        } catch (err) {
-          throw (err)
+        } catch (error) {
+          this.throughLoading = false
+          throw (error)
         }
-      }).catch(() => { });
+      } else {
+        this.$message({ message: '请检查是否选择地区并且地区最多选10个,请调整完后重新通过', type: 'warning', duration: 5000 })
+      }
     },
     //驳回
     reject (sm_id, index) {
@@ -273,6 +312,16 @@ export default {
   width: 50px;
   height: 50px;
   vertical-align: middle;
+  margin: 10px 0;
+}
+>>> .is-leaf + .el-checkbox .el-checkbox__inner {
+  display: inline-block;
+}
+>>> .el-checkbox .el-checkbox__inner {
+  display: none;
+}
+.prompt {
+  color: red;
   margin: 10px 0;
 }
 </style>

@@ -771,6 +771,26 @@ const routes = [
         component: () => import('@/pages/supplier/supplierList/index'),
         meta: { auth: true }
     },
+
+
+
+    { //供应商-供应类别
+        path: '/supplier/supplyCategory',
+        redirect: '/supplier/supplyCategory/maintainProduct'
+    },
+    {   //供应商-供应类别-邦保养产品
+        path: '/supplier/supplyCategory/maintainProduct',
+        component: () => import('@/pages/supplier/supplyCategory/maintainProduct'),
+        meta: { auth: true }
+
+    },
+    {   //供应商-供应类别-活动产品
+        path: '/supplier/supplyCategory/activityProduct',
+        component: () => import('@/pages/supplier/supplyCategory/activityProduct'),
+        meta: { auth: true }
+
+    },
+
     {  //供应商-油品审核
         path: '/supplier/oilAudit',
         redirect: '/supplier/oilAudit/unaudited'
@@ -850,7 +870,7 @@ const routes = [
     },
 
 
-    
+
 
     {
         path: "/supplier/applySettlement",

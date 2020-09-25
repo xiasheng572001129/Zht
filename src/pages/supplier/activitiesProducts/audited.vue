@@ -22,9 +22,9 @@
         </div>
       </div>
 
-      <table class="table">
+      <table class="table"
+             ref="table">
         <tr>
-         
           <th>供应商名称</th>
           <th>联系电话</th>
           <th>供应类型</th>
@@ -43,22 +43,23 @@
           <th>质检报告</th>
         </tr>
         <tr v-for='(item,index) in list'
-            :key="index"  ref='images'>
-           
+            :key="index"
+            ref='images'>
+
           <td>{{item.s_name}}</td>
           <td>{{item.phone}}</td>
           <td>{{item.product_name}}</td>
           <td>{{item.brand}}</td>
           <td>{{item.standard}}</td>
-          <td>{{item.price}}</td> 
-           <td>{{item.type==1 ? '滤芯' : '活动产品'}}</td>
+          <td>{{item.price}}</td>
+          <td>{{item.type==1 ? '滤芯' : '活动产品'}}</td>
           <td>{{item.set_retention_money}}</td>
           <td>{{item.my_retention_money}}</td>
           <td>{{item.audit_person}}</td>
-          <td>{{item.create_time}}</td> 
+          <td>{{item.create_time}}</td>
           <td>{{item.audit_time | datetime}}</td>
           <td>
-              <img :src="item.pic" />
+            <img :src="item.pic" />
           </td>
           <td>
             <img :src="item.quality_certificate">
@@ -67,9 +68,11 @@
             <img :src="item.quality_undertaking">
           </td>
           <td>
-            <img :src="item.quality_inspection_report" >
+            <img :src="item.quality_inspection_report">
           </td>
-         
+        </tr>
+        <tr v-if="!(list && list.length>0)">
+          <td :colspan="colspan">暂无数据</td>
         </tr>
       </table>
       <!-- 详情 -->
@@ -145,12 +148,13 @@ export default {
       authList: [],
       threeAuthList: [],
       list: [],
+      colspan: 0,  //合并的单元格
       seCurId: '',
       token: window.sessionStorage.getItem('bbytoken'), //token令牌
       page: 0,
       pageCount: 0,
       detailList: [],
-      
+
       detailVisible: false, //详情弹框状态
       throughLoading: [], //通过加载Loading
       rejectLoading: [], //驳回Loading
@@ -160,9 +164,10 @@ export default {
   methods: {
     async init () {
       try {
-        const res = await this.$axios.post('admin/SmAudit/freeList', { token: this.token, page: this.page, status: 1,type:2 })
+        const res = await this.$axios.post('admin/SmAudit/freeList', { token: this.token, page: this.page, status: 1, type: 2 })
         this.list = res.data.data.list || []
         this.pageCount = res.data.data.rows || 0
+        this.colspan = this.$refs.table.querySelectorAll('th').length  //根据th的数量来合并单元格
         this.$nextTick(() => {   //图片放大
           const ViewerRef = this.$refs.images
           res.data.data.list && Viewer(ViewerRef)
@@ -213,7 +218,7 @@ export default {
       }).then(async ({ value }) => {
         try {
           this.rejectLoading[index] = true
-          const res = await this.$axios.post('admin/SmAudit/rejectFree', { token: this.token, sm_id: item.sm_id, reason: value,id:item.id })
+          const res = await this.$axios.post('admin/SmAudit/rejectFree', { token: this.token, sm_id: item.sm_id, reason: value, id: item.id })
           this.rejectLoading[index] = false
           if (res.data.code == 1) {
             this.$message({ message: res.data.msg, type: 'success' })

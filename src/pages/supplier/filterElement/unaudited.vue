@@ -38,6 +38,7 @@
           <th>质量保证书</th>
           <th>质量承保书</th>
           <th>质检报告</th>
+          <th>申请状态</th>
           <th>操作</th>
         </tr>
         <tr v-for='(item,index) in list'
@@ -63,6 +64,7 @@
           <td>
             <img :src="item.quality_inspection_report">
           </td>
+          <td>{{item.update == 0 ? '首次' : '二次修改'}}</td>
           <td>
 
             <el-button type="success"
@@ -231,7 +233,7 @@ export default {
     async getArea (item) {  //获取区域列表
       try {
         this.areaVisible = true
-        const res = await this.$axios.post('admin/SmAudit/area', { token: this.token, type: 3 })  //type 3油品 1滤芯 2活动产品
+        const res = await this.$axios.post('admin/SmAudit/area', { token: this.token, type: 1 })  //type 3油品 1滤芯 2活动产品
         this.areaList = res.data.data || []
       } catch (error) {
         throw (error)

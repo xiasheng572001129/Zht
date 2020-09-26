@@ -205,8 +205,8 @@ export default {
         if (valid) {
           try {
             this.loading = true
-            let identity = this.listQuery.identitys.join(',')  //身份
-            const res = await this.$axios.post("admin/SmSet/updProductType", { token: this.token, ration: this.listQuery.Whether == 1 ? this.listQuery.ration : 0, id: this.listQuery.id, name: this.listQuery.name, photo: this.listQuery.photo, type: this.listQuery.type, identity: identity })
+
+            const res = await this.$axios.post("admin/SmSet/updProductType", { token: this.token, ration: this.listQuery.Whether == 1 ? this.listQuery.ration : 0, id: this.listQuery.id, name: this.listQuery.name, photo: this.listQuery.photo, type: this.listQuery.type })
             this.loading = false
             if (res.data.code == 1) {
               this.$message({ message: res.data.msg, type: 'success' })

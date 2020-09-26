@@ -29,7 +29,7 @@
           <th>质量保证书</th>
           <th>质量承保书</th>
           <th>质检报告</th>
-          <th>质保金（元）</th>
+          <th>申请状态</th>
           <th>申请时间</th>
           <th>操作</th>
         </tr>
@@ -49,7 +49,7 @@
             <img :src="item.quality_inspection_report"
                  ref="images">
           </td>
-          <td>{{item.set_retention_money}}</td>
+          <td>{{item.update == 0 ? '首次' : '二次修改'}}</td>
           <td>{{item.create_time}}</td>
           <td>
             <el-button type="primary"

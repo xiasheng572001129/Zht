@@ -202,8 +202,8 @@
                  width="30%">
         <div class="QualityMoney">
           <p>油品质保金：{{QualityMoney.list.bc_set_retention_money}}</p>
-          <p>滤芯质保金：{{QualityMoney.list.mg_set_retention_money}}</p>
           <p>油品已缴纳质保金：{{QualityMoney.list.bc_my_retention_money}}</p>
+          <p>滤芯质保金：{{QualityMoney.list.mg_set_retention_money}}</p>
           <p>滤芯已缴纳质保金：{{QualityMoney.list.mg_my_retention_money}}</p>
         </div>
       </el-dialog>
@@ -475,34 +475,40 @@
                  :visible.sync='product.visible'
                  width="30%">
 
-        <div class="filter-guarantee"
-             ref="guaranteeImg">
-          <div>
-            <img :src="product.list.quality_certificate"
-                 width="80px"
-                 height="80px" />
-            <p>质量保证书</p>
-          </div>
-          <div>
-            <img :src="product.list.quality_undertaking"
-                 width="80px"
-                 height="80px" />
-            <p>质量承保书</p>
-          </div>
-          <div>
-            <img :src="product.list.quality_inspection_report"
-                 width="80px"
-                 height="80px" />
-            <p>质检报告</p>
-          </div>
+        <div v-if="JSON.stringify(product.list) != '{}'">
+          <div class="filter-guarantee"
+               ref="guaranteeImg">
+            <div>
+              <img :src="product.list.quality_certificate"
+                   width="80px"
+                   height="80px" />
+              <p>质量保证书</p>
+            </div>
+            <div>
+              <img :src="product.list.quality_undertaking"
+                   width="80px"
+                   height="80px" />
+              <p>质量承保书</p>
+            </div>
+            <div>
+              <img :src="product.list.quality_inspection_report"
+                   width="80px"
+                   height="80px" />
+              <p>质检报告</p>
+            </div>
 
+          </div>
+          <div class="filter-text">
+            <p>品牌：{{product.list.standard}}</p>
+            <p>产品名称：{{product.list.goods_brand}}</p>
+            <p>已缴纳质保金：{{product.list.my_retention_money}}</p>
+            <p>需缴纳质保金：{{product.list.set_retention_money}}</p>
+          </div>
         </div>
-        <div class="filter-text">
-          <p>品牌：{{product.list.standard}}</p>
-          <p>产品名称：{{product.list.goods_brand}}</p>
-          <p>已缴纳质保金：{{product.list.my_retention_money}}</p>
-          <p>需缴纳质保金：{{product.list.set_retention_money}}</p>
-        </div>
+        <h3 v-else
+            class="noMore">
+          暂无更多
+        </h3>
       </el-dialog>
 
       <!-- 地区详情 -->
@@ -873,6 +879,9 @@ export default {
   margin-bottom: 7px;
 }
 .noRegion {
+  text-align: center;
+}
+.noMore {
   text-align: center;
 }
 </style>

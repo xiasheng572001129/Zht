@@ -32,16 +32,16 @@
             <!-- <th>售卡数量</th> -->
             <th>账户余额</th>
             <!-- <th>保养次数</th> -->
-            <th>设置供应商</th>
+            <!-- <th>设置供应商</th> -->
             <th>服务车数量</th>
             <th>车补</th>
             <th>配送费( 元/升 )</th>
-            <th>滤芯补贴金额( 元 )</th>
+            <!-- <th>滤芯补贴金额( 元 )</th> -->
             <!-- <th>推荐人</th> -->
             <th>操作</th>
             <!-- <th>服务押金</th> -->
             <th>是否有服务车</th>
-            <th>滤芯补助</th>
+            <!-- <th>滤芯补助</th> -->
             <!-- <th>服务车补贴</th> -->
           </tr>
         </thead>
@@ -63,10 +63,10 @@
             </td> -->
             <td>{{item.balance}}</td>
 
-            <td>
+            <!-- <td>
               <a href="javascript:;"
                  @click="supplier=true,form['aid']=item.aid,handleSetSupplier(item.aid)">{{item.sm_name || '无'}}</a>
-            </td>
+            </td> -->
             <td>
               {{item.serve_car}}台
             </td>
@@ -95,9 +95,9 @@
                         style="width:50%"
                         @change="ModifyDelivery(item.aid,$event)" />
             </td>
-            <td>
+            <!-- <td>
               {{item.core_fee}}元
-            </td>
+            </td> -->
             <td>
               <a href="javascript:;"
                  @click="ShutDown(item.aid,item.company,item.leader)">关停</a>
@@ -114,7 +114,7 @@
                          @change='switchChange(item.if_serve,item.aid)'>
               </el-switch>
             </td>
-            <td>
+            <!-- <td>
               <el-switch v-model="item.core_type"
                          :active-value='1'
                          :inactive-value='2'
@@ -122,7 +122,7 @@
                          inactive-color="#ff4949"
                          @change='coreChange(item.core_type,item.aid)'>
               </el-switch>
-            </td>
+            </td> -->
             <!-- <td>
               <el-input style="width:100px;"
                         class=""
@@ -639,7 +639,7 @@ export default {
         }).catch(err => { })
     },
     //点击关停
-    ShutDown (aid, company, leader, ) {
+    ShutDown (aid, company, leader,) {
       this.ReasonDialogVisible = true
       this.obj = {
         aid: aid,

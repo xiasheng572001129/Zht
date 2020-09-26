@@ -67,7 +67,7 @@
             <th>技师数量</th>
             <th>邦保养次数</th>
             <!-- <th>推荐人</th> -->
-            <th>设置供应商</th>
+            <!-- <th>设置供应商</th> -->
             <th>详情</th>
             <th>操作</th>
             <th>维修厂类型</th>
@@ -76,7 +76,7 @@
             <th>是否有服务车</th>
             <th>服务车补贴</th>
             <!-- <th>升级授权店</th> -->
-            <th>转化管理押金</th>
+            <!-- <th>转化管理押金</th> -->
           </tr>
         </thead>
         <tbody>
@@ -104,8 +104,8 @@
                 {{item.share_person==2 ? '设置推荐人' : '查看推荐人'}}
               </a>
             </td> -->
-            <td><a href="javascript:;"
-                 @click="isShowSupplier=true,sid=item.id,handleSupplier(item.id)">设置</a></td>
+            <!-- <td><a href="javascript:;"
+                 @click="isShowSupplier=true,sid=item.id,handleSupplier(item.id)">设置</a></td> -->
             <td>
               <router-link :to="{name:'shoplist_listDetail',query:{id:item.id}}">查看</router-link>
             </td>
@@ -145,13 +145,13 @@
                          :loading="loading[index]"
                          :disabled="item.type_shop==2">{{item.type_shop==1 ?'升级' : '已升级'}}</el-button>
             </td> -->
-            <td>
+            <!-- <td>
               <el-button type="primary"
                          size="small"
                          :loading="conversionLoading[index]"
                          @click="conversion(item,index)"
                          :disabled="item.mold==3">{{item.mold==3? '已转化' : '转化'}}</el-button>
-            </td>
+            </td> -->
           </tr>
         </tbody>
       </table>

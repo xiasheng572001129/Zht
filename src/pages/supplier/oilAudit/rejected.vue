@@ -29,6 +29,11 @@
           <th>质量保证书</th>
           <th>质量承保书</th>
           <th>质检报告</th>
+          <th>质保金（元）</th>
+          <th>驳回人</th>
+          <th>驳回理由</th>
+          <th>申请时间</th>
+          <th>驳回时间</th>
         </tr>
         <tr v-for='(item,index) in list'
             :key="index">
@@ -46,7 +51,20 @@
             <img :src="item.quality_inspection_report"
                  ref="images">
           </td>
-
+          <td>{{item.set_retention_money}}</td>
+          <td>{{item.audit_person}}</td>
+          <td>
+            <el-popover placement="bottom"
+                        width="200"
+                        trigger="hover"
+                        :content="item.reason">
+              <el-button slot="reference"
+                         class="ellipsis"
+                         type="text">{{item.reason}}</el-button>
+            </el-popover>
+          </td>
+          <td>{{item.create_time}}</td>
+          <td>{{item.audit_time | datetime}}</td>
         </tr>
         <tr v-if="!(list && list.length>0)">
           <td :colspan="colspan">暂无数据</td>
@@ -145,7 +163,7 @@ export default {
         this.colspan = this.$refs.table.querySelectorAll('th').length  //根据th的数量来合并单元格
         this.$nextTick(() => {
           const ViewerRef = this.$refs.images
-          Viewer(ViewerRef)
+          res.data.data && Viewer(ViewerRef)
         })
       } catch (err) {
         throw (err)

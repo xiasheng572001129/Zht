@@ -32,7 +32,7 @@
           <th>产品名称</th>
           <th>品牌</th>
           <th>金额（元）</th>
-          <th>类型</th>
+
           <th>驳回人</th>
           <th>驳回理由</th>
           <th>申请时间</th>
@@ -52,7 +52,7 @@
           <td>{{item.brand}}</td>
           <td>{{item.standard}}</td>
           <td>{{item.price}}</td>
-          <td>{{item.type==1 ? '滤芯' : '活动产品'}}</td>
+
           <td>{{item.audit_person}}</td>
           <td>
             <el-popover placement="top-start"

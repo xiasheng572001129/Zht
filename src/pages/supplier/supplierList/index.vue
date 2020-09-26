@@ -34,7 +34,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="已缴纳质保金"
+        <el-table-column label="质保金"
                          prop="name"
                          align="center">
           <template slot-scope="scope">

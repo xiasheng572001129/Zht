@@ -45,11 +45,11 @@
             {{scope.row.ration>0 ? scope.row.ration : '无'}}
           </template>
         </el-table-column>
-        <el-table-column label="身份"
+        <!-- <el-table-column label="身份"
                          align="center"
                          prop="identity">
 
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="添加时间"
                          prop="create_time"
                          align="center"></el-table-column>
@@ -89,7 +89,7 @@
                         v-model="listQuery.ration" />
             </el-form-item>
           </el-form-item>
-          <el-form-item label="身份："
+          <!-- <el-form-item label="身份："
                         prop="identitys">
             <el-checkbox-group v-model="listQuery.identitys">
               <el-checkbox label="1">保险</el-checkbox>
@@ -97,7 +97,7 @@
               <el-checkbox label="3">会员</el-checkbox>
               <el-checkbox label="4">老兵</el-checkbox>
             </el-checkbox-group>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="产品图片："
                         prop="photo">
             <el-upload :action="uploadUrl"
@@ -156,7 +156,7 @@ export default {
         ration: '',  //库存数
         photo: '', //产品图片
         Whether: '', //是否有库存
-        identitys: [], //身份
+        // identitys: [], //身份
         type: 2  //1邦保养产品 2活动产品
       },
       dialogVisible: false, //图片显示的状态
@@ -166,7 +166,7 @@ export default {
         ration: { required: true, message: '请输入库存数', trigger: 'blur' },
         photo: { required: true, message: '请上传产品图片', trigger: 'blur' },
         Whether: { required: true, message: '请选择是否有库存', trigger: 'blur' },
-        identitys: { required: true, message: '请选择身份', trigger: 'blur' }
+        // identitys: { required: true, message: '请选择身份', trigger: 'blur' }
       },
       loading: false, //loading
     }
@@ -189,7 +189,7 @@ export default {
       this.state = 1     // 1 修改 0添加
       this.viisble = true  //打开修改弹框
       this.$nextTick(() => {
-        this.listQuery = Object.assign(this.listQuery, { name: item.name, ration: item.ration, photo: item.photo, Whether: item.ration > 0 ? '1' : '0', id: item.id, identitys: item.identitys })
+        this.listQuery = Object.assign(this.listQuery, { name: item.name, ration: item.ration, photo: item.photo, Whether: item.ration > 0 ? '1' : '0', id: item.id })
       })
     },
     handleSuccess (url) {  //上传成功的产品图片

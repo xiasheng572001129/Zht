@@ -29,6 +29,10 @@
           <th>质量保证书</th>
           <th>质量承保书</th>
           <th>质检报告</th>
+          <th>质保金（元）</th>
+          <th>审核人</th>
+          <th>申请时间</th>
+          <th>审核时间</th>
         </tr>
         <tr v-for='(item,index) in list'
             :key="index">
@@ -46,7 +50,10 @@
             <img :src="item.quality_inspection_report"
                  ref="images">
           </td>
-
+          <td>{{item.set_retention_money}}</td>
+          <td>{{item.audit_person}}</td>
+          <td>{{item.create_time}}</td>
+          <td>{{item.audit_time | datetime}}</td>
         </tr>
         <tr v-if="!(list && list.length>0)">
           <td :colspan="colspan">暂无数据</td>

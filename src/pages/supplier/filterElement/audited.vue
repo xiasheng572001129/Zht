@@ -32,7 +32,7 @@
           <th>产品名称</th>
           <th>品牌</th>
           <th>金额（元）</th>
-          <th>类型</th>
+
           <th>质保金</th>
           <th>已缴纳质保金</th>
           <th>审核人</th>
@@ -53,7 +53,7 @@
           <td>{{item.brand}}</td>
           <td>{{item.standard}}</td>
           <td>{{item.price}}</td>
-          <td>{{item.type==1 ? '滤芯' : '活动产品'}}</td>
+
           <td>{{item.set_retention_money}}</td>
           <td>{{item.my_retention_money}}</td>
           <td>{{item.audit_person}}</td>
@@ -172,7 +172,7 @@ export default {
         this.colspan = this.$refs.table.querySelectorAll('th').length  //根据th的数量来合并单元格
         this.$nextTick(() => {   //图片放大
           const ViewerRef = this.$refs.images
-          Viewer(ViewerRef)
+          res.data.data && Viewer(ViewerRef)
         })
       } catch (err) {
         throw (err)

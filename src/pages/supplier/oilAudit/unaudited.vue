@@ -29,7 +29,8 @@
           <th>质量保证书</th>
           <th>质量承保书</th>
           <th>质检报告</th>
-
+          <th>质保金（元）</th>
+          <th>申请时间</th>
           <th>操作</th>
         </tr>
         <tr v-for='(item,index) in list'
@@ -48,18 +49,22 @@
             <img :src="item.quality_inspection_report"
                  ref="images">
           </td>
+          <td>{{item.set_retention_money}}</td>
+          <td>{{item.create_time}}</td>
           <td>
             <el-button type="primary"
                        size="small"
                        @click="detailList=item.detail,detailVisible=true,detail()">详情</el-button>
             <el-button type="success"
                        size="small"
-                       @click="getArea(item)">通过</el-button>
+                       @click="whetherUpdate(item,index)"
+                       :loading='loading[index]'>通过</el-button>
             <el-button type="danger"
                        size="small"
-                       @click="reject(item.sm_id,index)"
+                       @click="reject(item,index)"
                        :loading="rejectLoading[index]">驳回</el-button>
           </td>
+
         </tr>
         <tr v-if="!(list && list.length>0)">
           <td :colspan="colspan">暂无数据</td>
@@ -172,6 +177,7 @@ export default {
       areaVisible: false, //选择区域弹框显示状态
       money: 10000,  //质保金
       areaList: [], //区域列表
+      loading: [],
       throughLoading: false, //通过加载Loading
       rejectLoading: [], //驳回Loading
     }
@@ -198,9 +204,22 @@ export default {
         Viewer(ViewerRef)
       })
     },
+    whetherUpdate (item, index) {  //是否修改修改过信息
+      this.currentList = item;
+      if (item.update == 1) {  // update 1 修改过信息,不需要添加地区和质保金,可直接通过     0没有修改过信息添加地区和质保金
+        this.$confirm(' 是否通过?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.passOil({}, this.loading[index])
+        }).catch(() => { });
+      } else {
+        this.getArea(item)
+      }
+    },
     async getArea (item) {  //获取区域列表
       try {
-        this.currentList = item;
         this.areaVisible = true
         const res = await this.$axios.post('admin/SmAudit/area', { token: this.token, type: 3 })  //type 3油品 1滤芯 2活动产品
         this.areaList = res.data.data || []
@@ -208,31 +227,34 @@ export default {
         throw (error)
       }
     },
-    //通过审核
+    //通过审核  
     async through (item, index) {
       let checkedArea = this.$refs.tree.getCheckedKeys(true)  //选中的区域
       if (checkedArea.length <= 10 && checkedArea.length > 0) {   // 最多选10个地区 
-        try {
-          this.throughLoading = true
-          const res = await this.$axios.post("admin/SmAudit/passOil", { token: this.token, sm_id: this.currentList.sm_id, money: this.money * checkedArea.length, area: checkedArea.join(',') })
-          this.throughLoading = false
-          if (res.data.code == 1) {
-            this.$message({ message: res.data.msg, type: 'success' })
-            this.areaVisible = false
-            this.init()
-          } else {
-            this.$message.error(res.data.msg)
-          }
-        } catch (error) {
-          this.throughLoading = false
-          throw (error)
-        }
+        this.passOil({ money: this.money * checkedArea.length, area: checkedArea.join(',') }, this.throughLoading)
       } else {
         this.$message({ message: '请检查是否选择地区并且地区最多选10个,请调整完后重新通过', type: 'warning', duration: 5000 })
       }
     },
+    async passOil (params, loading) {  //油品审核
+      try {
+        loading = true
+        const res = await this.$axios.post("admin/SmAudit/passOil", Object.assign({}, { token: this.token, sm_id: this.currentList.sm_id, update: this.currentList.update }, params))
+        loading = false
+        if (res.data.code == 1) {
+          this.$message({ message: res.data.msg, type: 'success' })
+          this.areaVisible = false
+          this.init()
+        } else {
+          this.$message.error(res.data.msg)
+        }
+      } catch (error) {
+        loading = false
+        throw (error)
+      }
+    },
     //驳回
-    reject (sm_id, index) {
+    reject (item, index) {
       this.$prompt('请输入驳回理由', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -241,7 +263,7 @@ export default {
       }).then(async ({ value }) => {
         try {
           this.rejectLoading[index] = true
-          const res = await this.$axios.post('admin/SmAudit/rejectOil', { token: this.token, sm_id: sm_id, reason: value })
+          const res = await this.$axios.post('admin/SmAudit/rejectOil', { token: this.token, sm_id: item.sm_id, reason: value, update: item.update })
           this.rejectLoading[index] = false
           if (res.data.code == 1) {
             this.$message({ message: res.data.msg, type: 'success' })

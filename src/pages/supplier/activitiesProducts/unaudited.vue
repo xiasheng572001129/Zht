@@ -32,7 +32,7 @@
           <th>产品名称</th>
           <th>品牌</th>
           <th>金额（元）</th>
-          <th>类型</th>
+
           <th>申请时间</th>
           <th>产品图片</th>
           <th>质量保证书</th>
@@ -49,7 +49,7 @@
           <td>{{item.brand}}</td>
           <td>{{item.standard}}</td>
           <td>{{item.price}}</td>
-          <td>{{item.type==1 ? '滤芯' : '活动产品'}}</td>
+
           <td>{{item.create_time}}</td>
           <td>
             <img :src="item.pic" />
@@ -64,9 +64,7 @@
             <img :src="item.quality_inspection_report">
           </td>
           <td>
-            <el-button type="primary"
-                       size="small"
-                       @click="detailList=item.detail,detailVisible=true,detail()">详情</el-button>
+
             <el-button type="success"
                        size="small"
                        @click="getArea(item)">通过</el-button>
@@ -80,74 +78,58 @@
           <td :colspan="colspan">暂无数据</td>
         </tr>
       </table>
-      <!-- 详情 -->
-      <el-dialog title="详情"
-                 center
-                 :visible.sync="detailVisible">
-        <table class="table">
-          <tr>
-            <th>油品名称</th>
-            <th>总后台的油品名称</th>
-            <th>油品介绍</th>
-            <th>升数</th>
-            <th>结算价</th>
-            <th>型号</th>
-            <th>油品图片</th>
-          </tr>
-          <tr v-for='(item,index) in detailList'
-              :key="index">
-            <td>
-              {{item.oil_name}}
-            </td>
-            <td>
-              {{item.little_name}}
-            </td>
-            <td>
-              <el-popover placement="top-start"
-                          title="油品介绍"
-                          width="200"
-                          trigger="hover"
-                          :content="item.about">
-                <el-button slot="reference"
-                           type="text"
-                           class="ellipsis"
-                           style="width:100px">{{item.about}}</el-button>
-              </el-popover>
-            </td>
-            <td>
-              {{item.rise}}
-            </td>
-            <td>
-              {{item.price}}
-            </td>
-            <td>
-              {{item.standard}}
-            </td>
-            <td>
-              <img :src="item.cover"
-                   ref="images">
-            </td>
-          </tr>
-        </table>
-      </el-dialog>
 
       <!-- 选择区域 -->
       <el-dialog title="选择区域"
                  :visible.sync='areaVisible'
-                 center>
-        <el-tree :data="areaList"
-                 show-checkbox
-                 node-key="id"
-                 ref="tree">
-          <span class="custom-tree-node"
-                slot-scope="{ node, data }">
-            <span>{{ data.name }}</span>
+                 center
+                 @close='()=>{
+                       $refs.ruleForm.resetFields()
+                 }'>
+        <div class="SelectArea">
+          <el-form :model="listQuery"
+                   label-width="100px"
+                   :rules="rules"
+                   ref="ruleForm">
+            <el-form-item label="活动名称："
+                          prop="activity_name">
+              <el-input placeholder="请输入活动名称"
+                        v-model="listQuery.activity_name" />
+            </el-form-item>
+            <el-form-item label="身份："
+                          prop="identity">
+              <el-radio-group v-model="listQuery.identity">
+                <el-radio label="1">保险</el-radio>
+                <el-radio label="2">邦保养</el-radio>
+                <el-radio label="3">会员</el-radio>
+                <el-radio label="4">老兵</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="活动日期："
+                          prop="date">
+              <el-date-picker v-model="listQuery.date"
+                              type="daterange"
+                              value-format='yyyy-MM-dd'
+                              range-separator="至"
+                              start-placeholder="开始日期"
+                              end-placeholder="结束日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-form>
+          <el-tree :data="areaList"
+                   show-checkbox
+                   node-key="id"
+                   ref="tree">
+            <span class="custom-tree-node"
+                  slot-scope="{ node, data }">
+              <span>{{ data.name }}</span>
 
-          </span>
-        </el-tree>
+            </span>
+          </el-tree>
+        </div>
         <span slot="footer"
               class="dialog-footer">
-          <h3 class="prompt">质保金（金额）：{{$refs.tree && $refs.tree.getCheckedKeys(true).length * money}}元</h3>
+
           <el-button type="primary"
                      @click="through"
                      :loading='throughLoading'>通过</el-button>
@@ -186,7 +168,16 @@ export default {
       areaVisible: false, //选择区域弹框显示状态
       money: 10000,  //质保金
       areaList: [], //区域列表
-      detailVisible: false, //详情弹框状态
+      listQuery: {  //form 数据
+        'activity_name': '', //活动名称
+        identity: '1', //身份
+        date: '',
+      },
+      rules: {  //form表单验证
+        activity_name: { required: true, message: '请输入活动名称', trigger: 'blur' },
+        identity: { required: true, message: '请选择身份', trigger: 'blur' },
+        date: { required: true, message: '请选择活动日期', trigger: 'blur' },
+      },
       throughLoading: false, //通过加载Loading
       rejectLoading: [], //驳回Loading
     }
@@ -213,6 +204,7 @@ export default {
         Viewer(ViewerRef)
       })
     },
+
     async getArea (item) {  //获取区域列表
       try {
         this.currentList = item;
@@ -224,24 +216,32 @@ export default {
       }
     },
     //通过审核
-    async through (item, index) {
+    through (item, index) {
       let checkedArea = this.$refs.tree.getCheckedKeys(true)  //选中的区域
       if (checkedArea.length <= 10 && checkedArea.length > 0) {   // 最多选10个地区 
-        try {
-          this.throughLoading = true
-          const res = await this.$axios.post("admin/SmAudit/passFree", { token: this.token, sm_id: this.currentList.sm_id, id: this.currentList.id, money: this.money * checkedArea.length, area: checkedArea.join(',') })
-          this.throughLoading = false
-          if (res.data.code == 1) {
-            this.$message({ message: res.data.msg, type: 'success' })
-            this.areaVisible = false
-            this.init()
+        this.$refs['ruleForm'].validate(async (valid) => {   //form表单验证
+          if (valid) {
+            try {
+              this.throughLoading = true
+              var [start_time = start_time ? start_time : '', end_time = end_time ? end_time : ''] = this.listQuery.date // start_time 活动开始时间   end_time 活动结束时间  
+              const res = await this.$axios.post("admin/SmAudit/passFree", { token: this.token, sm_id: this.currentList.sm_id, id: this.currentList.id, activity_name: this.listQuery.activity_name, identity: this.listQuery.identity, start_time: start_time, end_time: end_time, area: checkedArea.join(',') })
+              this.throughLoading = false
+              if (res.data.code == 1) {
+                this.$message({ message: res.data.msg, type: 'success' })
+                this.areaVisible = false
+                this.init()
+              } else {
+                this.$message.error(res.data.msg)
+              }
+            } catch (error) {
+              this.throughLoading = false
+              throw (error)
+            }
           } else {
-            this.$message.error(res.data.msg)
+            return false;
           }
-        } catch (error) {
-          this.throughLoading = false
-          throw (error)
-        }
+        });
+
       } else {
         this.$message({ message: '请检查是否选择地区并且地区最多选10个,请调整完后重新通过', type: 'warning', duration: 5000 })
       }
@@ -328,6 +328,10 @@ export default {
   height: 50px;
   vertical-align: middle;
   margin: 10px 0;
+}
+.SelectArea {
+  max-height: 400px;
+  overflow: auto;
 }
 >>> .is-leaf + .el-checkbox .el-checkbox__inner {
   display: inline-block;

@@ -224,7 +224,7 @@ export default {
             try {
               this.throughLoading = true
               var [start_time = start_time ? start_time : '', end_time = end_time ? end_time : ''] = this.listQuery.date // start_time 活动开始时间   end_time 活动结束时间  
-              const res = await this.$axios.post("admin/SmAudit/passFree", { token: this.token, sm_id: this.currentList.sm_id, id: this.currentList.id, activity_name: this.listQuery.activity_name, identity: this.listQuery.identity, start_time: start_time, end_time: end_time, area: checkedArea.join(',') })
+              const res = await this.$axios.post("admin/SmAudit/passFree", { token: this.token, sm_id: this.currentList.sm_id, id: this.currentList.id, area: this.currentList.area, activity_name: this.listQuery.activity_name, identity: this.listQuery.identity, start_time: start_time, end_time: end_time, area: checkedArea.join(',') })
               this.throughLoading = false
               if (res.data.code == 1) {
                 this.$message({ message: res.data.msg, type: 'success' })

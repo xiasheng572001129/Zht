@@ -57,7 +57,7 @@
                        @click="detailList=item.detail,detailVisible=true,detail()">详情</el-button>
             <el-button type="success"
                        size="small"
-                       @click="whetherUpdate(item,index)"
+                       @click="through(item,index)"
                        :loading='loading[index]'>通过</el-button>
             <el-button type="danger"
                        size="small"
@@ -122,7 +122,7 @@
       </el-dialog>
 
       <!-- 选择区域 -->
-      <el-dialog title="选择区域"
+      <!-- <el-dialog title="选择区域"
                  :visible.sync='areaVisible'
                  center>
         <el-tree :data="areaList"
@@ -142,7 +142,7 @@
                      @click="through"
                      :loading='throughLoading'>通过</el-button>
         </span>
-      </el-dialog>
+      </el-dialog> -->
 
       <!-- 分页 -->
       <div class="page_center">
@@ -204,55 +204,81 @@ export default {
         Viewer(ViewerRef)
       })
     },
-    whetherUpdate (item, index) {  //是否修改修改过信息
-      this.currentList = item;
-      if (item.update == 1) {  // update 1 修改过信息,不需要添加地区和质保金,可直接通过     0没有修改过信息添加地区和质保金
-        this.$confirm(' 是否通过?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.passOil({}, this.loading[index])
-        }).catch(() => { });
-      } else {
-        this.getArea(item)
-      }
-    },
-    async getArea (item) {  //获取区域列表
-      try {
-        this.areaVisible = true
-        const res = await this.$axios.post('admin/SmAudit/area', { token: this.token, type: 3 })  //type 3油品 1滤芯 2活动产品
-        this.areaList = res.data.data || []
-      } catch (error) {
-        throw (error)
-      }
-    },
-    //通过审核  
-    async through (item, index) {
-      let checkedArea = this.$refs.tree.getCheckedKeys(true)  //选中的区域
-      if (checkedArea.length <= 10 && checkedArea.length > 0) {   // 最多选10个地区 
-        this.passOil({ money: this.money * checkedArea.length, area: checkedArea.join(',') }, this.throughLoading)
-      } else {
-        this.$message({ message: '请检查是否选择地区并且地区最多选10个,请调整完后重新通过', type: 'warning', duration: 5000 })
-      }
-    },
-    async passOil (params, loading) {  //油品审核
-      try {
-        loading = true
-        const res = await this.$axios.post("admin/SmAudit/passOil", Object.assign({}, { token: this.token, sm_id: this.currentList.sm_id, update: this.currentList.update }, params))
-        loading = false
-        if (res.data.code == 1) {
-          this.$message({ message: res.data.msg, type: 'success' })
-          this.areaVisible = false
-          this.init()
-        } else {
-          this.$message.error(res.data.msg)
+    // whetherUpdate (item, index) {  //是否修改修改过信息
+    //   this.currentList = item;
+    //   if (item.update == 1) {  // update 1 修改过信息,不需要添加地区和质保金,可直接通过     0没有修改过信息添加地区和质保金
+    //     this.$confirm(' 是否通过?', '提示', {
+    //       confirmButtonText: '确定',
+    //       cancelButtonText: '取消',
+    //       type: 'warning'
+    //     }).then(() => {
+    //       this.passOil({}, this.loading[index])
+    //     }).catch(() => { });
+    //   } else {
+    //     this.getArea(item)
+    //   }
+    // },
+    // async getArea (item) {  //获取区域列表
+    //   try {
+    //     this.areaVisible = true
+    //     const res = await this.$axios.post('admin/SmAudit/area', { token: this.token, type: 3 })  //type 3油品 1滤芯 2活动产品
+    //     this.areaList = res.data.data || []
+    //   } catch (error) {
+    //     throw (error)
+    //   }
+    // },
+    // //通过审核  
+    // async through (item, index) {
+    //   let checkedArea = this.$refs.tree.getCheckedKeys(true)  //选中的区域
+    //   if (checkedArea.length <= 10 && checkedArea.length > 0) {   // 最多选10个地区 
+    //     this.passOil({ money: this.money * checkedArea.length, area: checkedArea.join(',') }, this.throughLoading)
+    //   } else {
+    //     this.$message({ message: '请检查是否选择地区并且地区最多选10个,请调整完后重新通过', type: 'warning', duration: 5000 })
+    //   }
+    // },
+    // async passOil (params, loading) {  //油品审核
+    //   try {
+    //     loading = true
+    //     const res = await this.$axios.post("admin/SmAudit/passOil", Object.assign({}, { token: this.token, sm_id: this.currentList.sm_id, update: this.currentList.update }, params))
+    //     loading = false
+    //     if (res.data.code == 1) {
+    //       this.$message({ message: res.data.msg, type: 'success' })
+    //       this.areaVisible = false
+    //       this.init()
+    //     } else {
+    //       this.$message.error(res.data.msg)
+    //     }
+    //   } catch (error) {
+    //     loading = false
+    //     throw (error)
+    //   }
+    // },
+
+    through (item, index) {  //通过审核,填写质保金
+      this.$prompt('请输质保金', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /\S/,
+        inputErrorMessage: '质保金不能为空'
+      }).then(async ({ value }) => {
+        try {
+          this.loading[index] = true
+          const res = await this.$axios.post('admin/SmAudit/passOil', { token: this.token, sm_id: item.sm_id, money: value, area: item.area })  //money 质保金
+          this.loading[index] = false
+          if (res.data.code == 1) {
+            this.$message({ message: res.data.msg, type: "success" })
+            this.init()
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        } catch (error) {
+          this.loading[index] = false
+          throw (error)
         }
-      } catch (error) {
-        loading = false
-        throw (error)
-      }
+      }).catch(() => { });
     },
+
+
     //驳回
     reject (item, index) {
       this.$prompt('请输入驳回理由', '提示', {

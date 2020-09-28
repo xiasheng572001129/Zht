@@ -251,7 +251,7 @@ export default {
     async passFree (params, loading) {  //滤芯审核
       try {
         loading = true
-        const res = await this.$axios.post("admin/SmAudit/passFree", Object.assign({}, { token: this.token, sm_id: this.currentList.sm_id, update: this.currentList.update, id: this.currentList.id }, params))
+        const res = await this.$axios.post("admin/SmAudit/filterAudit", Object.assign({}, { token: this.token, sm_id: this.currentList.sm_id, update: this.currentList.update, id: this.currentList.id, area: this.currentList.area }, params))
         loading = false
         if (res.data.code == 1) {
           this.$message({ message: res.data.msg, type: 'success' })
@@ -275,7 +275,7 @@ export default {
       }).then(async ({ value }) => {
         try {
           this.rejectLoading[index] = true
-          const res = await this.$axios.post('admin/SmAudit/rejectFree', { token: this.token, sm_id: item.sm_id, reason: value, id: item.id, update: item.update })
+          const res = await this.$axios.post('admin/SmAudit/rejectFilter', { token: this.token, sm_id: item.sm_id, reason: value, id: item.id, update: item.update })
           this.rejectLoading[index] = false
           if (res.data.code == 1) {
             this.$message({ message: res.data.msg, type: 'success' })

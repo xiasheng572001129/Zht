@@ -62,12 +62,13 @@
                        inactive-color="#ff4949"
                        @change="(value)=>changeOpen(value,scope.row)">
             </el-switch>
-            <el-button type="primary"
+            <!-- <el-button type="primary"
                        size="small"
                        style="margin-left:10px"
                        @click="serviceForever(scope.row,scope.$index)"
                        :loading='Loading[scope.$index]'
-                       :disabled='scope.row.forever_status==1'>长期有效</el-button>
+                       :disabled='scope.row.forever_status==1'>长期有效</el-button> -->
+
           </template>
         </el-table-column>
 
@@ -111,6 +112,7 @@ export default {
       try {
         const res = await this.$axios.post('admin/UserServiceCode/index', { token: this.token, page: this.page })
         this.list = res.data.data.list || []
+
         this.pageCount = res.data.data.rows || 0;
       } catch (err) {
         throw (err)
@@ -139,28 +141,28 @@ export default {
         item.job_status = item.job_status == 1 ? 2 : 1
       });
     },
-    serviceForever (item, index) {   //服务工号长期有效
-      this.$confirm('此操将开启长期有效, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async () => {
-        try {
-          this.Loading[index] = true
-          const res = await this.$axios.post('admin/UserServiceCode/serviceForever', { token: this.token, uid: item.uid, id: item.id, forever_status: 1 })
-          this.Loading[index] = false
-          if (res.data.code == 1) {
-            this.$message({ message: res.data.msg, type: "success" })
-            this.init()
-          } else {
-            this.$message.error(res.data.msg)
-          }
-        } catch (error) {
-          this.Loading[index] = false
-          throw (error)
-        }
-      }).catch(() => { });
-    },
+    // serviceForever (item, index) {   //服务工号长期有效
+    //   this.$confirm('此操将开启长期有效, 是否继续?', '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   }).then(async () => {
+    //     try {
+    //       this.Loading[index] = true
+    //       const res = await this.$axios.post('admin/UserServiceCode/serviceForever', { token: this.token, uid: item.uid, id: item.id, forever_status: 1 })
+    //       this.Loading[index] = false
+    //       if (res.data.code == 1) {
+    //         this.$message({ message: res.data.msg, type: "success" })
+    //         this.init()
+    //       } else {
+    //         this.$message.error(res.data.msg)
+    //       }
+    //     } catch (error) {
+    //       this.Loading[index] = false
+    //       throw (error)
+    //     }
+    //   }).catch(() => { });
+    // },
     erAuth () {
       var id = this.$route.query.id;
       this.curId = id;
@@ -169,7 +171,6 @@ export default {
         id: id
       })
         .then(res => {
-
           if (res.data.code == 1) {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {

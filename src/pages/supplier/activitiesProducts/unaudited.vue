@@ -67,7 +67,7 @@
 
             <el-button type="success"
                        size="small"
-                       @click="getArea(item)">通过</el-button>
+                       @click="areaVisible=true,currentList=item">通过</el-button>
             <el-button type="danger"
                        size="small"
                        @click="reject(item,index)"
@@ -80,7 +80,7 @@
       </table>
 
       <!-- 选择区域 -->
-      <el-dialog title="选择区域"
+      <el-dialog title="通过"
                  :visible.sync='areaVisible'
                  center
                  @close='()=>{
@@ -116,7 +116,7 @@
               </el-date-picker>
             </el-form-item>
           </el-form>
-          <el-tree :data="areaList"
+          <!-- <el-tree :data="areaList"
                    show-checkbox
                    node-key="id"
                    ref="tree">
@@ -125,7 +125,7 @@
               <span>{{ data.name }}</span>
 
             </span>
-          </el-tree>
+          </el-tree> -->
         </div>
         <span slot="footer"
               class="dialog-footer">
@@ -205,48 +205,73 @@ export default {
       })
     },
 
-    async getArea (item) {  //获取区域列表
-      try {
-        this.currentList = item;
-        this.areaVisible = true
-        const res = await this.$axios.post('admin/SmAudit/area', { token: this.token, type: 2 })  //type 3油品 1滤芯 2活动产品
-        this.areaList = res.data.data || []
-      } catch (error) {
-        throw (error)
-      }
-    },
+    // async getArea (item) {  //获取区域列表
+    //   try {
+    //     this.currentList = item;
+    //     this.areaVisible = true
+    //     const res = await this.$axios.post('admin/SmAudit/area', { token: this.token, type: 2 })  //type 3油品 1滤芯 2活动产品
+    //     this.areaList = res.data.data || []
+    //   } catch (error) {
+    //     throw (error)
+    //   }
+    // },
+    // //通过审核
+    // through (item, index) {
+    //   let checkedArea = this.$refs.tree.getCheckedKeys(true)  //选中的区域
+    //   if (checkedArea.length <= 10 && checkedArea.length > 0) {   // 最多选10个地区 
+    //     this.$refs['ruleForm'].validate(async (valid) => {   //form表单验证
+    //       if (valid) {
+    //         try {
+    //           this.throughLoading = true
+    //           var [start_time = start_time ? start_time : '', end_time = end_time ? end_time : ''] = this.listQuery.date // start_time 活动开始时间   end_time 活动结束时间  
+    //           const res = await this.$axios.post("admin/SmAudit/passFree", { token: this.token, sm_id: this.currentList.sm_id, id: this.currentList.id, area: this.currentList.area, activity_name: this.listQuery.activity_name, identity: this.listQuery.identity, start_time: start_time, end_time: end_time, area: this.currentList.area })
+    //           this.throughLoading = false
+    //           if (res.data.code == 1) {
+    //             this.$message({ message: res.data.msg, type: 'success' })
+    //             this.areaVisible = false
+    //             this.init()
+    //           } else {
+    //             this.$message.error(res.data.msg)
+    //           }
+    //         } catch (error) {
+    //           this.throughLoading = false
+    //           throw (error)
+    //         }
+    //       } else {
+    //         return false;
+    //       }
+    //     });
+
+    //   } else {
+    //     this.$message({ message: '请检查是否选择地区并且地区最多选10个,请调整完后重新通过', type: 'warning', duration: 5000 })
+    //   }
+    // },
+    //驳回
     //通过审核
     through (item, index) {
-      let checkedArea = this.$refs.tree.getCheckedKeys(true)  //选中的区域
-      if (checkedArea.length <= 10 && checkedArea.length > 0) {   // 最多选10个地区 
-        this.$refs['ruleForm'].validate(async (valid) => {   //form表单验证
-          if (valid) {
-            try {
-              this.throughLoading = true
-              var [start_time = start_time ? start_time : '', end_time = end_time ? end_time : ''] = this.listQuery.date // start_time 活动开始时间   end_time 活动结束时间  
-              const res = await this.$axios.post("admin/SmAudit/passFree", { token: this.token, sm_id: this.currentList.sm_id, id: this.currentList.id, area: this.currentList.area, activity_name: this.listQuery.activity_name, identity: this.listQuery.identity, start_time: start_time, end_time: end_time, area: checkedArea.join(',') })
-              this.throughLoading = false
-              if (res.data.code == 1) {
-                this.$message({ message: res.data.msg, type: 'success' })
-                this.areaVisible = false
-                this.init()
-              } else {
-                this.$message.error(res.data.msg)
-              }
-            } catch (error) {
-              this.throughLoading = false
-              throw (error)
+      this.$refs['ruleForm'].validate(async (valid) => {   //form表单验证
+        if (valid) {
+          try {
+            this.throughLoading = true
+            var [start_time = start_time ? start_time : '', end_time = end_time ? end_time : ''] = this.listQuery.date // start_time 活动开始时间   end_time 活动结束时间  
+            const res = await this.$axios.post("admin/SmAudit/passFree", { token: this.token, sm_id: this.currentList.sm_id, id: this.currentList.id, area: this.currentList.area, activity_name: this.listQuery.activity_name, identity: this.listQuery.identity, start_time: start_time, end_time: end_time, area: this.currentList.area })
+            this.throughLoading = false
+            if (res.data.code == 1) {
+              this.$message({ message: res.data.msg, type: 'success' })
+              this.areaVisible = false
+              this.init()
+            } else {
+              this.$message.error(res.data.msg)
             }
-          } else {
-            return false;
+          } catch (error) {
+            this.throughLoading = false
+            throw (error)
           }
-        });
-
-      } else {
-        this.$message({ message: '请检查是否选择地区并且地区最多选10个,请调整完后重新通过', type: 'warning', duration: 5000 })
-      }
+        } else {
+          return false;
+        }
+      });
     },
-    //驳回
     reject (item, index) {
       this.$prompt('请输入驳回理由', '提示', {
         confirmButtonText: '确定',

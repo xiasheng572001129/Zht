@@ -202,7 +202,7 @@ export default {
   methods: {
     async init () {
       try {
-        const res = await this.$axios.post('admin/SmAudit/freeList', { token: this.token, page: this.page, status: 1, type: 2 })
+        const res = await this.$axios.post('admin/SmAudit/freeList', { token: this.token, page: this.page, status: 2, type: 2 })
         this.list = res.data.data.list || []
         this.pageCount = res.data.data.rows || 0
         this.colspan = this.$refs.table.querySelectorAll('th').length  //根据th的数量来合并单元格

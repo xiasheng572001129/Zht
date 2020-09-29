@@ -68,7 +68,6 @@
                        @click="serviceForever(scope.row,scope.$index)"
                        :loading='Loading[scope.$index]'
                        :disabled='scope.row.forever_status==1'>长期有效</el-button> -->
-
           </template>
         </el-table-column>
 

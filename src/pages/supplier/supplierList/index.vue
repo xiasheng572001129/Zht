@@ -437,40 +437,46 @@
                  center
                  :visible.sync='filter.visible'
                  width="30%">
+        <div v-if="JSON.stringify(filter.list) != '{}'">
+          <div class="filter-guarantee"
+               ref="guaranteeImg">
+            <div>
+              <img :src="filter.list.quality_certificate"
+                   width="80px"
+                   height="80px" />
+              <p>质量保证书</p>
+            </div>
+            <div>
+              <img :src="filter.list.quality_undertaking"
+                   width="80px"
+                   height="80px" />
+              <p>质量承保书</p>
+            </div>
+            <div>
+              <img :src="filter.list.quality_inspection_report"
+                   width="80px"
+                   height="80px" />
+              <p>质检报告</p>
+            </div>
 
-        <div class="filter-guarantee"
-             ref="guaranteeImg">
-          <div>
-            <img :src="filter.list.quality_certificate"
-                 width="80px"
-                 height="80px" />
-            <p>质量保证书</p>
           </div>
-          <div>
-            <img :src="filter.list.quality_undertaking"
-                 width="80px"
-                 height="80px" />
-            <p>质量承保书</p>
-          </div>
-          <div>
-            <img :src="filter.list.quality_inspection_report"
-                 width="80px"
-                 height="80px" />
-            <p>质检报告</p>
-          </div>
+          <div class="filter-text">
+            <p>品牌：{{filter.list.standard}}</p>
+            <p>产品名称：{{filter.list.goods_brand}}</p>
 
+            <p>已缴纳质保金：{{filter.list.my_retention_money}}</p>
+            <p>需缴纳质保金：{{filter.list.set_retention_money}}</p>
+          </div>
         </div>
-        <div class="filter-text">
-          <p>品牌：{{filter.list.standard}}</p>
-          <p>产品名称：{{filter.list.goods_brand}}</p>
 
-          <p>已缴纳质保金：{{filter.list.my_retention_money}}</p>
-          <p>需缴纳质保金：{{filter.list.set_retention_money}}</p>
-        </div>
+        <h3 v-else
+            class="noMore">
+          暂无更多
+        </h3>
       </el-dialog>
 
       <!-- 活动产品 -->
-      <el-dialog title="机滤"
+      <el-dialog title="活动产品"
                  center
                  :visible.sync='product.visible'
                  width="30%">
@@ -738,7 +744,9 @@ export default {
         this.oilInfo.visible = true
         const res = await this.$axios.post('admin/SmList/getOilIndexList', { token: this.token, sm_id: item.sm_id })
         this.oilInfo.list = res.data.data || {}
-        this.magnifyImg(this.$refs.guaranteeImg)
+        this.$nextTick(() => {
+          res.data.data && this.magnifyImg(this.$refs.guaranteeImg)
+        })
       } catch (error) {
         throw (error)
       }
@@ -748,7 +756,10 @@ export default {
         this.filter.visible = true
         const res = await this.$axios.post('admin/SmList/getFreeIndexList', { token: this.token, sm_id: item.sm_id, type: 1 })
         this.filter.list = res.data.data || {}
-        this.magnifyImg(this.$refs.guaranteeImg)
+        this.$nextTick(() => {
+          res.data.data && this.magnifyImg(this.$refs.guaranteeImg)
+        })
+
       } catch (error) {
         throw (error)
       }
@@ -758,7 +769,9 @@ export default {
         this.product.visible = true
         const res = await this.$axios.post('admin/SmList/getFreeIndexList', { token: this.token, sm_id: item.sm_id, type: 2 })
         this.product.list = res.data.data || {}
-        this.magnifyImg(this.$refs.guaranteeImg)
+        this.$nextTick(() => {
+          res.data.data && this.magnifyImg(this.$refs.guaranteeImg)
+        })
       } catch (error) {
         throw (error)
       }

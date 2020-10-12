@@ -274,7 +274,6 @@ export default {
         id: id
       })
         .then(res => {
-
           if (res.data.code == 1) {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {

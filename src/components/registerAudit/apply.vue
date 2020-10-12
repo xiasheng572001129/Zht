@@ -225,7 +225,8 @@
                     <div>配送费元/升</div>
                     <div class="right_border-bottom">
                       <input type="text"
-                             v-model="delivery_fee">
+                             v-model="prosyList.delivery_fee"
+                             disabled>
                     </div>
                   </li>
                   <!-- <li>
@@ -390,7 +391,7 @@ export default {
       this.init()
     },
     init () {
-      this.$axios.post('admin/AgentAuditList/index', { token: this.token, page: this.page, status: 0,audit_status:0 })
+      this.$axios.post('admin/AgentAuditList/index', { token: this.token, page: this.page, status: 0, audit_status: 0 })
         .then(res => {
           this.list = res.data.data.list;
           this.pageCount = res.data.data.rows;
@@ -456,6 +457,7 @@ export default {
       try {
         const res = await this.$axios.post('admin/AgentIncRation/selectAgent', { token: this.token, id: id, aid: aid })
         this.prosyList = res.data.data || [];
+        console.log(this.prosyList)
         this.gid = this.prosyList && this.prosyList.id ? this.prosyList.id : this.prosyList[0].id
       } catch (error) {
         throw (error)
@@ -504,7 +506,7 @@ export default {
         try {
           this.adoptLoading = true
           console.log('-------------------')
-          const res = await this.$axios.post('admin/AgentAuditList/adopt', { token: this.token, delay_fine: this.delay_fine, gid: this.gid, number: this.choose == 2 || this.type == 2 ? this.CurrentGroup : '', aid: this.aid, type: this.Type, id: this.id, old_aid: this.type == 1 && this.old_aid, cancel_id: this.type == 1 && this.cancel_id, delivery_fee: this.delivery_fee, cid: this.regionList.cityId })
+          const res = await this.$axios.post('admin/AgentAuditList/adopt', { token: this.token, delay_fine: this.delay_fine, gid: this.gid, number: this.choose == 2 || this.type == 2 ? this.CurrentGroup : '', aid: this.aid, type: this.Type, id: this.id, old_aid: this.type == 1 && this.old_aid, cancel_id: this.type == 1 && this.cancel_id, delivery_fee: this.prosyList.delivery_fee, cid: this.regionList.cityId })
           this.adoptLoading = false
           if (res.data.code == 1) {
             this.materialVisible = false

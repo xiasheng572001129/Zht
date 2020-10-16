@@ -486,8 +486,6 @@ export default {
           }
         } catch (error) {
           this.rejectLoading = false
-
-
           throw (error)
         }
       }).catch(() => { });
@@ -505,7 +503,6 @@ export default {
       }).then(async () => {
         try {
           this.adoptLoading = true
-          console.log('-------------------')
           const res = await this.$axios.post('admin/AgentAuditList/adopt', { token: this.token, delay_fine: this.delay_fine, gid: this.gid, number: this.choose == 2 || this.type == 2 ? this.CurrentGroup : '', aid: this.aid, type: this.Type, id: this.id, old_aid: this.type == 1 && this.old_aid, cancel_id: this.type == 1 && this.cancel_id, delivery_fee: this.prosyList.delivery_fee, cid: this.regionList.cityId })
           this.adoptLoading = false
           if (res.data.code == 1) {
@@ -541,7 +538,6 @@ export default {
       id: id
     })
       .then(res => {
-
         if (res.data.code == 1) {
           var arr = res.data.data;
           for (var i = 0; i < arr.length; i++) {

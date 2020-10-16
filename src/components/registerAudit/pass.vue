@@ -47,7 +47,6 @@
             {{scope.row.audit_time | datetime}}
           </template>
         </el-table-column>
-
       </el-table>
       <!-- 分页 -->
       <div :class="list.length<=7?'page-nav':'page_center'"
@@ -108,7 +107,7 @@ export default {
       this.init();
     },
     init: function () {
-      this.$axios.post('admin/AgentAuditList/index', { token: this.token, page: this.page, status: 1,audit_status:1 })
+      this.$axios.post('admin/AgentAuditList/index', { token: this.token, page: this.page, status: 1, audit_status: 1 })
         .then(res => {
 
           if (res.data.data.list)

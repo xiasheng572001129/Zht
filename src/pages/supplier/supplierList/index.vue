@@ -13,7 +13,12 @@
     <div class="container">
       <div class="quote">
         <div class="quote-ele"
-             style="float:left"><i></i>供应商-供应商列表 </div>
+             style="float:left"><i></i>供应商-供应商列表
+
+        </div>
+        <el-button type="primary"
+                   class="allRegion"
+                   @click="allRegion.visible=true,getProvince()">全国地区</el-button>
       </div>
       <el-table :data="list">
         <el-table-column label="供应商名称"
@@ -75,6 +80,15 @@
           <template slot-scope="scope">
             <el-button type="text"
                        @click="region.visible=true,region.sm_id=scope.row.sm_id,getRegion()">详情</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作"
+                         align="center">
+          <template slot-scope="scope">
+            <el-button type="primary"
+                       size="small"
+                       @click="CancelCooperation(scope.row,scope.$index)"
+                       :loading='loading[scope.$index]'>取消合作</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -548,6 +562,7 @@
                   </ul>
                 </li>
               </ul>
+
               <p v-else
                  class="noRegion">暂无地区</p>
             </el-tab-pane>
@@ -604,6 +619,73 @@
         </div>
       </el-dialog>
 
+      <!-- 全国地区 -->
+      <el-dialog title="全国地区"
+                 center
+                 :visible.sync='allRegion.visible'
+                 @close="allRegion.province='',allRegion.UnselectedAndSelectedAreas=[],allRegion.type='3'">
+        <div>
+          <el-tabs v-model="allRegion.type"
+                   @tab-click="allRegion.province='',allRegion.UnselectedAndSelectedAreas=[]">
+            <el-tab-pane label="油品"
+                         name="3">
+              <el-select placeholder="请选择省"
+                         v-model="allRegion.province"
+                         @change="getAllRegion()">
+                <el-option v-for="(item,index) in allRegion.provinceList"
+                           :key="index"
+                           :label="item.name"
+                           :value="item.id"></el-option>
+              </el-select>
+              <div class="city">
+                <span v-for="(item,index) in allRegion.UnselectedAndSelectedAreas"
+                      :key="index"
+                      :class="item.disabled ? 'selectedColor' : 'unselectedColor'">
+                  {{item.name}}
+                </span>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="滤芯"
+                         name="1">
+              <el-select placeholder="请选择省"
+                         v-model="allRegion.province"
+                         @change="getAllRegion()">
+                <el-option v-for="(item,index) in allRegion.provinceList"
+                           :key="index"
+                           :label="item.name"
+                           :value="item.id"></el-option>
+              </el-select>
+              <div class="city">
+                <span v-for="(item,index) in allRegion.UnselectedAndSelectedAreas"
+                      :key="index"
+                      :class="item.disabled ? 'selectedColor' : 'unselectedColor'">
+                  {{item.name}}
+                </span>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="活动产品"
+                         name="2">
+              <el-select placeholder="请选择省"
+                         v-model="allRegion.province"
+                         @change="getAllRegion()">
+                <el-option v-for="(item,index) in allRegion.provinceList"
+                           :key="index"
+                           :label="item.name"
+                           :value="item.id"></el-option>
+              </el-select>
+              <div class="city">
+                <span v-for="(item,index) in allRegion.UnselectedAndSelectedAreas"
+                      :key="index"
+                      :class="item.disabled ? 'selectedColor' : 'unselectedColor'">
+                  {{item.name}}
+                </span>
+              </div>
+            </el-tab-pane>
+
+          </el-tabs>
+        </div>
+      </el-dialog>
+
       <!-- 分页 -->
       <div class="page_center">
         <paging :page-count="pageCount"
@@ -618,6 +700,7 @@
 </template>
 <script type="text/ecmascript-6">
 import Viewer from '@/utils/Viewer'
+import { getPro } from '@/utils'
 export default {
   data () {
     return {
@@ -627,6 +710,7 @@ export default {
       token: window.sessionStorage.getItem('bbytoken'), //token令牌
       page: 0,  //供应商列表当前页数
       pageCount: 0, //供应商列表总页数
+      loading: [],  //取消合作loading
       income: {  //总收入
         incomeVisible: false, //总收入详情状态
         page: 0, //当前页数
@@ -664,6 +748,14 @@ export default {
         list: [],
         sm_id: 0, //供应商id
         type: '3',
+      },
+      allRegion: {  //全国地区
+        visible: false,
+        list: [],
+        provinceList: [],
+        province: '',
+        type: '3',
+        UnselectedAndSelectedAreas: [],  //没有选择和已选择地区
       }
     }
   },
@@ -786,6 +878,47 @@ export default {
         throw (error)
       }
     },
+    async getProvince () {   //获取省
+      try {
+        const res = await getPro()
+        this.allRegion.provinceList = res
+      } catch (error) {
+        this.$message.error('接口报错,请检查')
+        throw (error)
+      }
+    },
+    async getAllRegion () {   //全国地区  已选择和未选择   
+      try {
+        const res = await this.$axios.post("admin/SmAudit/area", { token: this.token, type: this.allRegion.type, province: this.allRegion.province })
+        this.allRegion.UnselectedAndSelectedAreas = res.data.data || []
+      } catch (error) {
+        this.$message.error('接口报错,请检查')
+        throw (error)
+      }
+    },
+    CancelCooperation (item, index) {   //取消合作
+      this.$confirm('是否取消合作?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        try {
+          this.loading[index] = true
+          const res = await this.$axios.post('admin/SmList/cancelAudit', { token: this.token, sm_id: item.sm_id })    //sm_id 供应商id
+          this.loading[index] = false
+          if (res.data.code == 1) {
+            this.$message({ message: res.data.msg, type: 'success' })
+            this.init()
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        } catch (error) {
+          this.loading[index] = false
+          this.$message.error('接口报错,请检查')
+          throw (error)
+        }
+      }).catch(() => { });
+    },
     magnifyImg (img) {  //图片放大功能
       this.$nextTick(() => {
         new Viewer(img)
@@ -896,5 +1029,28 @@ export default {
 }
 .noMore {
   text-align: center;
+}
+>>> .is-leaf + .el-checkbox .el-checkbox__inner {
+  display: inline-block;
+}
+>>> .el-checkbox .el-checkbox__inner {
+  display: none;
+}
+.allRegion {
+  float: right;
+  margin: 20px 50px;
+}
+.city {
+  margin-top: 20px;
+}
+.city > span {
+  display: inline-block;
+  padding: 0 20px 10px 0;
+}
+.selectedColor {
+  color: #cccccc;
+}
+.unselectedColor {
+  color: #04bbfc;
 }
 </style>

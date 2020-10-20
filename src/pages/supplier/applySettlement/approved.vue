@@ -416,4 +416,28 @@ export default {
   max-height: 400px;
   overflow: auto;
 }
+.region > li {
+  width: 50%;
+  margin-bottom: 30px;
+}
+
+.region .son {
+  margin-left: 20px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.region .son li {
+  display: block;
+}
+
+.region .grandson {
+  margin-left: 20px;
+  vertical-align: top;
+  display: inline-block;
+}
+.region .grandson li {
+  display: block;
+  margin-bottom: 7px;
+}
 </style>

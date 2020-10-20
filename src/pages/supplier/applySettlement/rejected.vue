@@ -91,6 +91,24 @@
                  }'>
         <el-table :data="moneyDetails.list"
                   ref="table">
+          <el-table-column label="维修厂名称"
+                           prop="company"
+                           align="center"
+                           min-width="100px"></el-table-column>
+          <el-table-column label="地区"
+                           align="center">
+            <template slot-scope="scope">
+              <el-popover placement="top-start"
+                          title="标题"
+                          width="200"
+                          trigger="hover"
+                          :content="`${scope.row.province}${scope.row.city}${scope.row.county}`">
+                <el-button slot="reference"
+                           type="text"
+                           class="ellipsis">{{`${scope.row.province}${scope.row.city}${scope.row.county}`}}</el-button>
+              </el-popover>
+            </template>
+          </el-table-column>
           <el-table-column label="产品名称"
                            align="center">
             <template slot-scope="scope">
@@ -394,10 +412,14 @@ export default {
   margin: 10px 0;
 }
 .ellipsis {
-  width: 80px !important;
-  white-space: nowrap !important;
-  text-overflow: ellipsis !important;
-  overflow: hidden !important;
+  width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  margin: 0 auto;
+  text-align: center;
 }
 .deliveryImg {
   width: 50px;

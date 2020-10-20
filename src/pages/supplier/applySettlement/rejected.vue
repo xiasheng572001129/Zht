@@ -29,25 +29,6 @@
                          align="center">
 
         </el-table-column>
-        <el-table-column label="开户行"
-                         prop="bank"
-                         align="center">
-
-        </el-table-column>
-        <el-table-column label="开户分行"
-                         prop="bank_branch"
-                         align="center">
-
-        </el-table-column>
-        <el-table-column label="开户人"
-                         prop="bank_name"
-                         align="center">
-        </el-table-column>
-        <el-table-column label="银行卡号"
-                         prop="account"
-                         align="center">
-
-        </el-table-column>
 
         <el-table-column label="提现金额（元）"
                          prop="total_money"
@@ -61,6 +42,13 @@
         <el-table-column label="提现类型"
                          prop="types"
                          align="center">
+        </el-table-column>
+        <el-table-column label="地区"
+                         align="center">
+          <template slot-scope="scope">
+            <el-button type="text"
+                       @click="region.visible=true,region.sm_id=scope.row.sm_id,getRegion()">详情</el-button>
+          </template>
         </el-table-column>
         <el-table-column label="驳回人"
                          prop="audit_person"
@@ -176,6 +164,95 @@
           <!--分页的组件-->
         </div>
       </el-dialog>
+
+      <!-- 地区详情 -->
+      <el-dialog title='地区详情'
+                 center
+                 :visible.sync="region.visible"
+                 @close="()=>region.type='3'"
+                 width="30%">
+        <div>
+          <el-tabs v-model="region.type"
+                   @tab-click="getRegion">
+            <el-tab-pane label="油品"
+                         name="3">
+
+              <ul class="region"
+                  v-if="region.list && region.list.length>0">
+                <li v-for="(item,index) in region.list"
+                    :key="index">
+                  {{item.name}}
+                  <ul v-if="item.son"
+                      class="son">
+                    <li v-for="(sonitem,i) in item.son"
+                        :key="i">
+                      {{sonitem.name}}
+                      <ul v-if="sonitem.son"
+                          class="grandson">
+                        <li v-for="(grandson,key) in sonitem.son"
+                            :key="key">{{grandson.name}}</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+
+              <p v-else
+                 class="noRegion">暂无地区</p>
+            </el-tab-pane>
+            <el-tab-pane label="滤芯"
+                         name="1">
+              <ul class="region"
+                  v-if="region.list && region.list.length>0">
+                <li v-for="(item,index) in region.list"
+                    :key="index">
+                  {{item.name}}
+                  <ul v-if="item.son"
+                      class="son">
+                    <li v-for="(sonitem,i) in item.son"
+                        :key="i">
+                      {{sonitem.name}}
+                      <ul v-if="sonitem.son"
+                          class="grandson">
+                        <li v-for="(grandson,key) in sonitem.son"
+                            :key="key">{{grandson.name}}</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+              <p v-else
+                 class="noRegion">暂无地区</p>
+            </el-tab-pane>
+            <el-tab-pane label="活动产品"
+                         name="2">
+              <ul class="region"
+                  v-if="region.list && region.list.length>0">
+                <li v-for="(item,index) in region.list"
+                    :key="index">
+                  {{item.name}}
+                  <ul v-if="item.son"
+                      class="son">
+                    <li v-for="(sonitem,i) in item.son"
+                        :key="i">
+                      {{sonitem.name}}
+                      <ul v-if="sonitem.son"
+                          class="grandson">
+                        <li v-for="(grandson,key) in sonitem.son"
+                            :key="key">{{grandson.name}}</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+              <p v-else
+                 class="noRegion">暂无地区</p>
+            </el-tab-pane>
+
+          </el-tabs>
+        </div>
+      </el-dialog>
+
       <div class="page_center"
            v-show="page&&page>1">
         <paging :page-count="pageCount"
@@ -209,7 +286,13 @@ export default {
         pageCount: 1, //总页数
         list: [],  //列表
         currentList: {}, //当前所打开的金额详情
-      }
+      },
+      region: {  //地区
+        visible: false,
+        list: [],
+        sm_id: 0, //供应商id
+        type: '3',
+      },
     }
   },
 
@@ -236,6 +319,16 @@ export default {
         this.moneyDetails.list = res.data.data.list || [];  //列表
         this.moneyDetails.pageCount = res.data.data.rows || 1;  //总页数
         this.magnifyImg(this.$refs.table.$el)
+      } catch (error) {
+        throw (error)
+      }
+    },
+    async getRegion (item) {  //获取地区详情
+      try {
+        this.$nextTick(async () => {
+          const res = await this.$axios.post('admin/SmList/smAreaDetail', { token: this.token, type: this.region.type, sm_id: this.region.sm_id })      //type 3油品 1滤芯 2活动产品    sm_id 供应商id
+          this.region.list = res.data.data || []   //地区列表
+        })
       } catch (error) {
         throw (error)
       }

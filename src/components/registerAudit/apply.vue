@@ -227,7 +227,7 @@
                       <input type="text"
                              v-model="prosyList.delivery_fee"
                              disabled>
-                    </div>
+                    </div>4
                   </li>
                   <!-- <li>
                     <div>市运营中心电话</div>

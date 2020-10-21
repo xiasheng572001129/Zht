@@ -71,6 +71,7 @@
       <el-dialog title="金额详情"
                  center
                  :visible.sync="moneyDetails.visible"
+                 width="70%"
                  @close='()=>{
                     moneyDetails.page = 1,  //关闭弹框清空当前页
                     moneyDetails.pageCount=1  //清空总页数
@@ -258,8 +259,7 @@
         </div>
       </el-dialog>
 
-      <div class="page_center"
-           v-show="page&&page>1">
+      <div class="page_center">
         <paging :page-count="pageCount"
                 :page="page"
                 @index="e=>{

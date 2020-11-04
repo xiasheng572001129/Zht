@@ -4,7 +4,7 @@ import routes from './router'
 import App from './App'
 import axios from 'axios'
 import Vuex from 'vuex'
-import echarts from 'echarts'
+// import echarts from 'echarts'
 import Viewer from 'viewerjs';
 import 'viewerjs/dist/viewer.css';
 import '../static/css/common.css'
@@ -17,15 +17,13 @@ import '../static/ud/ueditor.parse.min.js'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import '../static/css/iconfont.css'
-
 import { ContainerMixin, ElementMixin } from 'vue-slicksort';
-
 // // import Blob from './excel/Blob'
 // import Export2Excel from './excel/Export2Excel'
 
 Vue.use(ElementUI);
 Vue.prototype.$axios = axios;
-Vue.prototype.$echarts = echarts;
+// Vue.prototype.$echarts = echarts;
 Vue.prototype.layerHeader = process.env.NODE_ENV == 'development' ? 'http://192.168.101.18:8082/' : 'https://zd.ctbls.com/';
 axios.defaults.withCredentials = true;
 

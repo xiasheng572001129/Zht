@@ -20,11 +20,11 @@
         </div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
-                       v-for="item in threeAuthList"
+                       v-for="item in threeAuthList"    
                        :key="item.id"
                        :to="{path:item.action,query:{id:curId}}">
             {{item.name}}
-          </router-link>
+          </router-link> 
         </div>
       </div>
 
@@ -176,6 +176,10 @@ export default {
       this.viisble = true  //打开修改弹框
       this.$nextTick(() => {
         this.listQuery = Object.assign(this.listQuery, { name: item.name, ration: item.ration, photo: item.photo, Whether: item.ration > 0 ? '1' : '0', id: item.id })
+        this.$axios.post("admin/SmSet/add", {
+          type
+
+        })
       })
     },
     handleSuccess (url) {  //上传成功的产品图片

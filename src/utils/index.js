@@ -63,10 +63,40 @@ const get_County = (id) => {  //获取区/县
     })
 }
 
+
+
+const datetime = (timestamp) => {  //把时间戳转化成时间格式
+    if (timestamp == "") return "--"
+    timestamp = new Date(timestamp).getTime()
+    var date = new Date(timestamp.toString().length == 13 ? timestamp : timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    m = m < 10 ? ('0' + m) : m;
+    var d = date.getDate();
+    d = d < 10 ? ('0' + d) : d;
+    var h = date.getHours();
+    h = h < 10 ? ('0' + h) : h;
+    var minute = date.getMinutes();
+    var second = date.getSeconds();
+    minute = minute < 10 ? ('0' + minute) : minute;
+    second = second < 10 ? ('0' + second) : second;
+    return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
+}
+
+const getTime = (date) => {
+    return {
+        start_time: date && date[0] ? datetime(date[0]) : '',
+        end_time: date && date[1] ? datetime(date[1]) : ''
+    }
+}
+
+
 export {
     queryGetParamsUrl,
     getPro,
     GET_City,
     get_County,
-    AccordingName_findID
+    AccordingName_findID,
+    datetime,
+    getTime
 }

@@ -183,6 +183,15 @@ const routes = [
             auth: true
         }
     },
+    {  //小程序-红包记录
+        path: '/SmallInvoice/giftRecord',
+        component: () => import("@/pages/smallProgram/giftRecord"),
+        meta: {
+            auth: true
+        }
+    },
+
+
 
     { path: "/turntable/upload", component: resolve => require(["@/components/turntable/upload"], resolve), meta: { auth: true } },
     { path: "/turntable/GiftList", component: resolve => require(["@/components/turntable/GiftList"], resolve), meta: { auth: true } },
@@ -1411,6 +1420,18 @@ const routes = [
         meta: {
             auth: true
         }
+    },
+
+    {  //数据分析
+       path:'/dataAnalysis',
+       redirect:'/dataAnalysis/index'
+    },
+    { //数据分析列表
+         path:'/dataAnalysis/index',
+         component:()=>import("@/pages/dataAnalysis/list"),
+         math:{
+             auth:true
+         }
     }
 
 ]

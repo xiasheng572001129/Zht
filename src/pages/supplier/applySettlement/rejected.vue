@@ -334,7 +334,8 @@ export default {
           id: this.moneyDetails.currentList.id,  //提现id
           type: this.moneyDetails.currentList.type
         })
-        this.moneyDetails.list = res.data.data.list || [];  //列表
+        this.moneyDetails.list = res.data.data.list || [];  //列表 
+
         this.moneyDetails.pageCount = res.data.data.rows || 1;  //总页数
         this.magnifyImg(this.$refs.table.$el)
       } catch (error) {
@@ -372,7 +373,6 @@ export default {
               if (arr[i].name == '提现') {
                 this.seCurId = arr[i].id;
                 this.threeAuthList = arr[i].son;
-
               }
               for (var j = 0; j < arr[i].son.length; j++) {
                 if (arr[i].action != arr[i].son[j].action) {

@@ -87,6 +87,13 @@
                            label="姓名"
                            prop="name"></el-table-column>
           <el-table-column align="center"
+                           label="车牌号"
+                           prop="name">
+            <template slot-scope="scope">
+              {{scope.row.plate || '无'}}
+            </template>
+          </el-table-column>
+          <el-table-column align="center"
                            label="购买类型"
                            prop="name">
             <template slot-scope="scope">
@@ -97,7 +104,7 @@
                            label="金额"
                            prop="money"></el-table-column>
           <el-table-column align="center"
-                           label="领取时间"
+                           label="参与时间"
                            prop="create_time"></el-table-column>
         </el-table>
 

@@ -292,7 +292,7 @@ export default {
     async changeProvince (id) {  //获取市
       try {
         const res = await GET_City(id)
-        this.cityList = res || []
+        this.cityList = res || [] 
         this.currentCity = ''
 
         let cityID = res && res.length > 0 ? res[0].id : ''
@@ -543,3 +543,4 @@ export default {
   margin-left: 20px;
 }
 </style>
+-

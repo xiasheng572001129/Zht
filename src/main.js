@@ -24,7 +24,7 @@ import { ContainerMixin, ElementMixin } from 'vue-slicksort';
 Vue.use(ElementUI);
 Vue.prototype.$axios = axios;
 // Vue.prototype.$echarts = echarts;
-Vue.prototype.layerHeader = process.env.NODE_ENV == 'development' ? 'http://192.168.101.18:8082/' : 'https://zd.ctbls.com/';
+Vue.prototype.layerHeader = process.env.NODE_ENV == 'development' ? 'http://192.168.0.111:8082' : 'https://zd.ctbls.com/zht';
 axios.defaults.withCredentials = true;
 
 axios.defaults.baseURL = process.env.BASE_URL;  /*cc 线上 / ceshi 测试*/

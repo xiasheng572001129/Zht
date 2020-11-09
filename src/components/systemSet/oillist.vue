@@ -217,7 +217,7 @@ export default {
     },
     reset: function (id) {
       var that = this;
-      console.log(this)
+      console.log(this.layerHeader)
       layer.open({
         type: 2,
         area: ['80%', '80%'],

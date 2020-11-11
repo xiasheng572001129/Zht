@@ -129,6 +129,26 @@ const routes = [
     { path: '/shoplist/servicerAudit', component: servicerAudit, meta: { auth: true } }, //服务车审核-未审核
     { path: '/shoplist/hasAudit', component: () => import('@/pages/servicerAudit/hasAudit'), meta: { auth: true } },
 
+    {  //维修厂-事故维修
+        path: '/RepairShops/accidentRepair',
+        redirect: '/RepairShops/accidentRepair/unaudited'
+    },
+    {  //维修厂-事故维修-未审核
+        path: '/RepairShops/accidentRepair/unaudited',
+        component: () => import('@/pages/RepairShops/accidentRepair/unaudited'),
+        meta: {
+            auth: true
+        }
+    },
+    {  //维修厂-事故维修-已审核
+        path: '/RepairShops/accidentRepair/audited',
+        component: () => import('@/pages/RepairShops/accidentRepair/audited'),
+        meta: {
+            auth: true
+        }
+    },
+
+
     { path: '/shopcash/pass', component: shopcashPass, name: 'shopcash_pass', meta: { auth: true } },
     { path: '/shopcash/reject', component: shopcashReject, name: 'shopcash_reject', meta: { auth: true } },
     { path: '/shopcash/apply', component: shopcashApply, name: 'shopcash_apply', meta: { auth: true } },
@@ -1423,15 +1443,15 @@ const routes = [
     },
 
     {  //数据分析
-       path:'/dataAnalysis',
-       redirect:'/dataAnalysis/index'
+        path: '/dataAnalysis',
+        redirect: '/dataAnalysis/index'
     },
     { //数据分析列表
-         path:'/dataAnalysis/index',
-         component:()=>import("@/pages/dataAnalysis/list"),
-         math:{
-             auth:true
-         }
+        path: '/dataAnalysis/index',
+        component: () => import("@/pages/dataAnalysis/list"),
+        math: {
+            auth: true
+        }
     }
 
 ]

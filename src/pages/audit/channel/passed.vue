@@ -44,7 +44,7 @@
                      :label="item.company"
                      :value="item.id"></el-option>
         </el-select>
-        <!-- <el-date-picker v-model="pickerSearch"
+        <el-date-picker v-model="pickerSearch"
                         type="daterange"
                         style="width:24%;margin-right:10px"
                         @change="page=1,init()"
@@ -52,7 +52,7 @@
                         range-separator="至"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期">
-        </el-date-picker> -->
+        </el-date-picker>
         省:
         <el-select v-model="ListQuery.search['province']"
                    placeholder="请选择省"
@@ -239,6 +239,16 @@
             <span v-else>无</span>
 
           </template>
+        </el-table-column>
+        <el-table-column align="center"
+                         label="领取类型"
+                         prop="electronic_type">
+
+        </el-table-column>
+        <el-table-column align="center"
+                         label="申请时间"
+                         prop="sale_time">
+
         </el-table-column>
         <el-table-column align="center"
                          prop="review_time"

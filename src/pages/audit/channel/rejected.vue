@@ -264,6 +264,15 @@
                          class="ellipsis">{{scope.row.reason}}</el-button>
             </el-popover>
           </template>
+        </el-table-column>
+        <el-table-column align="center"
+                         label="领取类型"
+                         prop="electronic_type">
+
+        </el-table-column>
+        <el-table-column align="center"
+                         label="申请时间"
+                         prop="sale_time">
 
         </el-table-column>
         <el-table-column align="center"

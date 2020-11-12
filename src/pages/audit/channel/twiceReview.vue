@@ -21,6 +21,7 @@
           </router-link>
         </div>
       </div>
+
       <div style="margin:0 20px">
         <!-- <el-input placeholder="请输入维修厂"
                   v-model="ListQuery.company"
@@ -29,6 +30,7 @@
                      icon="el-icon-search"
                      @click="page=1,init()"></el-button>
         </el-input> -->
+
         <el-select style="margin-right:10px"
                    v-model="ListQuery.ucp_company"
                    placeholder="请选择保险公司"
@@ -156,6 +158,7 @@
                :visible.sync="detailsVisible"
                width="80%"
                @close='detailsPage=1,detailsCount=1'>
+      <div class="remind">**请审核保单生效时间与申请时间一致的免费保养**</div>
       <el-table :data="detailsList"
                 class="detailsTable">
         <el-table-column align="center"
@@ -228,6 +231,21 @@
             <span v-else>无</span>
 
           </template>
+        </el-table-column>
+        <el-table-column align="center"
+                         label="领取类型"
+                         prop="electronic_type">
+
+        </el-table-column>
+        <el-table-column align="center"
+                         label="申请时间"
+                         prop="sale_time">
+
+        </el-table-column>
+        <el-table-column align="center"
+                         label="保养时间"
+                         prop="create_time">
+
         </el-table-column>
         <!-- <el-table-column align="center"
                          prop="start_time"
@@ -658,5 +676,10 @@ button.pass {
 .regionDetail >>> .el-dialog__body {
   padding: 0px 25px 30px;
   border-top: solid 2px #eee;
+}
+.remind {
+  color: red;
+  text-align: right;
+  font-size: 16px;
 }
 </style>

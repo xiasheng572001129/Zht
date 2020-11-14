@@ -265,7 +265,7 @@
             </el-popover>
           </template>
         </el-table-column>
-        <el-table-column align="center"
+         <el-table-column align="center"
                          label="领取类型"
                          prop="electronic_type">
 

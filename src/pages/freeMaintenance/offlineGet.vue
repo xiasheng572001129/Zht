@@ -12,7 +12,7 @@
     <div class="container">
       <div class="quote">
         <div class="quote-ele">
-          <i></i>系统设置-保险公司设置-线下领取
+          <i></i>系统设置-保险公司设置-线上领取
         </div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
@@ -124,11 +124,13 @@
         </el-form>
       </el-dialog>
       <!-- 分页 -->
-      <div class="page_center"
-           v-show="pageCount&&pageCount>1">
+      <div class="page_center">
         <paging :page-count="pageCount"
                 :page="page"
-                @index="(e)=>page=e"></paging>
+                @index="(e)=>{
+                    page=e,
+                    init()
+                }"></paging>
         <!--分页的组件-->
       </div>
     </div>
@@ -290,7 +292,7 @@ export default {
                   if (arr[i].action != arr[i].son[j].action) {
                     arr[i].action = arr[i].son[0].action;
                   }
-                  if (arr[i].son[j].name == '线下领取' && arr[i].name == '保险公司设置') {
+                  if (arr[i].son[j].name == '线上领取' && arr[i].name == '保险公司设置') {
                     this.thCurId = arr[i].son[j].id;
                   }
                 }

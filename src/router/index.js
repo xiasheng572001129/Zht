@@ -148,6 +148,53 @@ const routes = [
         }
     },
 
+    {  //维修厂-体验店-注册审核
+        path: '/RepairShops/registrationAudit',
+        redirect: '/RepairShops/registrationAudit/unaudited'
+    },
+    {  //维修厂-体验店-注册审核-未审核
+        path: '/RepairShops/registrationAudit/unaudited',
+        component: () => import('@/pages/RepairShops/experienceStores/registrationAudit/unaudited'),
+        meta: {
+            auth: true
+        }
+    },
+    {  //维修厂-体验店-注册审核-已审核
+        path: '/RepairShops/registrationAudit/audited',
+        component: () => import('@/pages/RepairShops/experienceStores/registrationAudit/audited'),
+        meta: {
+            auth: true
+        }
+    },
+
+    {  //维修厂-体验店-取消合作
+        path: '/RepairShops/cancelCooperation',
+        redirect: '/RepairShops/cancelCooperation/unaudited'
+    },
+    {  //维修厂-体验店-取消合作-未审核
+        path: '/RepairShops/cancelCooperation/unaudited',
+        component: () => import('@/pages/RepairShops/experienceStores/cancelCooperation/unaudited'),
+        meta: {
+            auth: true
+        }
+    },
+    {  //维修厂-体验店-取消合作-已审核
+        path: '/RepairShops/cancelCooperation/audited',
+        component: () => import('@/pages/RepairShops/experienceStores/cancelCooperation/audited'),
+        meta: {
+            auth: true
+        }
+    },
+
+    { //维修厂-体验店-地区设置  
+        path: '/RepairShops/regionSetup',
+        component: () => import('@/pages/RepairShops/ExperienceStores/regionSetup'),
+        mata: {
+            auth: true
+        }
+    },
+
+
 
     { path: '/shopcash/pass', component: shopcashPass, name: 'shopcash_pass', meta: { auth: true } },
     { path: '/shopcash/reject', component: shopcashReject, name: 'shopcash_reject', meta: { auth: true } },

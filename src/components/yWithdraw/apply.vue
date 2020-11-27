@@ -28,17 +28,20 @@
             <th>联系电话</th>
             <th>负责人</th>
             <th>提现金额</th>
+            <th>类型</th>
             <th>账户信息</th>
             <th>申请时间</th>
             <th>操作</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in list">
+          <tr v-for="(item,index) in list"
+              :key="index">
             <td class="t-l">{{item.company}}</td>
             <td>{{item.phone}}</td>
             <td>{{item.leader}}</td>
             <td>{{item.money}}</td>
+            <td>{{item.type}}</td>
             <td>
               <el-popover placement="bottom"
                           title="账户信息详情"

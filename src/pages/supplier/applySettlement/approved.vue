@@ -358,7 +358,6 @@ export default {
               if (arr[i].name == '提现') {
                 this.seCurId = arr[i].id;
                 this.threeAuthList = arr[i].son;
-
               }
               for (var j = 0; j < arr[i].son.length; j++) {
                 if (arr[i].action != arr[i].son[j].action) {

@@ -554,3 +554,14 @@ html {
 body {
   height: 100%;
 }
+
+.ellipsis {
+    width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    margin: 0 auto;
+    text-align: center;
+}

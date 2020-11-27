@@ -94,6 +94,17 @@
                           v-model="scope.row.card_num" />
               </template>
             </el-table-column>
+            <el-table-column label="过期时间"
+                             align="center">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.month">
+                  <el-option v-for="(item,index) in 12"
+                             :key="index"
+                             :value="item"
+                             :label="item"></el-option>
+                </el-select>
+              </template>
+            </el-table-column>
             <el-table-column label="总卡数"
                              align="center"
                              prop="num">
@@ -184,6 +195,16 @@
                       v-model="channelList.num"
                       :disabled="status==1" />
           </el-form-item>
+          <el-form-item label="过期时间"
+                        prop="month">
+            <el-select v-model="channelList.month">
+              <el-option v-for="(item,index) in 12"
+                         :key="index"
+                         :value="item"
+                         :label="item"></el-option>
+            </el-select>
+          </el-form-item>
+
           <el-form-item label="图片:"
                         prop="photo">
             <el-upload :action='baseURL+"admin/Prize/cbImg"'
@@ -202,6 +223,7 @@
                        @click="status==0 ? addChannel() : ModifyImg()"
                        :loading="channelLoaading">{{status==0 ? '添加' : '修改'}}</el-button>
           </el-form-item>
+
         </el-form>
       </el-dialog>
     </div>
@@ -231,11 +253,13 @@ export default {
         name: '', //渠道名称
         num: '', //卡数量
         photo: '',  //保险公司图片
+        month: '', //过期时间
       },
       channelRules: { //添加渠道form规则验证
         name: { required: true, message: '请输入渠道名称', trigger: 'blur' },
         num: { required: true, message: '请输入添加的卡数量', trigger: 'blur' },
         photo: { required: true, message: '请上传保险公司图片', trigger: 'blur' },
+        month: { required: true, message: '请选择过期时间', trigger: 'blur' },
       },
       channelLoaading: false, //添加渠道loading
       acitivIndex: 0,
@@ -267,7 +291,6 @@ export default {
     }
   },
   methods: {
-
     async getCompanyList (id) {
       try {
         const res = await this.$axios.post('admin/ChannelSetCity/channelList', { token: this.token, city_id: id })
@@ -292,11 +315,9 @@ export default {
     async changeProvince (id) {  //获取市
       try {
         const res = await GET_City(id)
-        this.cityList = res || [] 
+        this.cityList = res || []
         this.currentCity = ''
-
         let cityID = res && res.length > 0 ? res[0].id : ''
-
         this.getCompanyList(cityID)
       } catch (error) {
         throw (error)
@@ -312,7 +333,6 @@ export default {
         fiterData.map(item => { //改变数组对象的Key值 
           results.push({ value: item.company, photo: item.photo })
         })
-
         return cb(results)
       } catch (error) {
         this.$message.error('接口报错请检查')
@@ -334,7 +354,7 @@ export default {
             if (res.data.code == 1) {
               this.$message({ message: res.data.msg, type: "success" })
               this.addChannelVisible = false
-              window.location.href = `${this.baseURL}admin/Export/freeCode?id=${res.data.data}&name=${this.channelList.name}&num=${this.channelList.num}&city_id=${id}`
+              window.location.href = `${this.baseURL}admin/Export/freeCode?id=${res.data.data}&name=${this.channelList.name}&num=${this.channelList.num}&city_id=${id}&month=${this.channelList.month}`
               this.getCompanyList(id)
             } else {
               console.log(res)
@@ -358,8 +378,6 @@ export default {
       this.$nextTick(() => {
         this.channelList = Object.assign(this.channelList, item, { name: item.company })
       })
-
-
     },
     async ModifyImg () {
       try {
@@ -393,7 +411,10 @@ export default {
       }
     },
     handleSelectionChange (val) {  //获取选中的保险公司
-      this.checkedCompany = val
+      let checkedCompany = val.map((v) => {
+        return Object.assign(v, { month: '' })
+      })
+      this.checkedCompany = checkedCompany
     },
     changeCity (id) {  //获取市
       this.init()
@@ -417,11 +438,14 @@ export default {
         }
       }).catch(() => { });
     },
+    monthChange (e) {
+
+    },
     Export () {  //导出
       let data = [];
       let required = false
       this.checkedCompany.forEach((item, index) => {
-        data.push({ city_id: item.city_id, channel_id: item.id, card_num: item.card_num })
+        data.push({ city_id: item.city_id, channel_id: item.id, card_num: item.card_num, month: item.month })
         if (item.card_num) {
           required = true
         } else {
@@ -437,6 +461,7 @@ export default {
       }
 
     },
+
     erAuth () {  //权限匹配
       var id = this.$route.query.id;
       this.curId = id;

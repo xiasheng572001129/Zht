@@ -138,6 +138,7 @@
                           trigger="click">
                 <el-button slot="reference"
                            type="text">详情</el-button>
+
                 <div class="popoverTable">
                   <el-table :data="scope.row.detail">
                     <el-table-column label="物料名称"
@@ -160,6 +161,7 @@
               </el-popover>
             </template>
           </el-table-column>
+
         </el-table>
         <div class="page_center">
           <paging :page-count="moneyDetails.pageCount"
@@ -314,6 +316,7 @@ export default {
         throw (err)
       }
     },
+
     //获取金额详情
     async getMoneyDetails (item) {
       try {
@@ -433,11 +436,9 @@ export default {
         })
     }
   },
-  created () {
-    this.erAuth()
-  },
   mounted () {
     this.init() //初始化数据  
+    this.erAuth()
   },
 }
 </script>

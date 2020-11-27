@@ -28,17 +28,20 @@
             <th>联系电话</th>
             <th>负责人</th>
             <th>提现金额</th>
+            <th>类型</th>
             <th>申请时间</th>
             <th>驳回理由</th>
             <th>驳回时间</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in list">
+          <tr v-for="(item,index) in list"
+              :key="index">
             <td class="t-l">{{item.company}}</td>
             <td>{{item.phone}}</td>
             <td>{{item.leader}}</td>
             <td>{{item.money}}</td>
+            <td>{{item.type}}</td>
             <td>{{item.create_time}}</td>
             <td>
               <a href="javascript:;"
@@ -99,7 +102,6 @@ export default {
         page: this.page
       })
         .then(res => {
-
           if (res.data.code == 1) {
             this.list = res.data.data.list;
             this.showpage(res.data.data);
@@ -110,13 +112,12 @@ export default {
         })
         .catch(err => { })
     },
-    reject (id) {
+    reject (id) {  //驳回
       this.$axios.post('admin/AgentForward/forReason', {
         token: this.token,
         id: id
       })
         .then(res => {
-
           if (res.data.data == '') layer.msg(res.data.msg);
           else
             layer.open({
@@ -130,46 +131,46 @@ export default {
             })
         }).catch(err => { })
     },
-  },
-  mounted () {
-    var id = this.$route.query.id;
-    this.curId = id;
-    this.$axios.post('admin/Auth/erAuth', {
-      token: window.sessionStorage.getItem('bbytoken'),
-      id: id
-    })
-      .then(res => {
-
-        if (res.data.code == 1) {
-          var arr = res.data.data;
-          for (var i = 0; i < arr.length; i++) {
-            if (arr[i].son) {
-              if (arr[i].name == '资金提现') {
-                this.seCurId = arr[i].id;
-                this.threeAuthList = arr[i].son;
-              }
-              for (var j = 0; j < arr[i].son.length; j++) {
-                if (arr[i].action != arr[i].son[j].action) {
-                  arr[i].action = arr[i].son[0].action;
+    Auth () {  //权限列表
+      var id = this.$route.query.id;
+      this.curId = id;
+      this.$axios.post('admin/Auth/erAuth', {
+        token: window.sessionStorage.getItem('bbytoken'),
+        id: id
+      })
+        .then(res => {
+          if (res.data.code == 1) {
+            var arr = res.data.data;
+            for (var i = 0; i < arr.length; i++) {
+              if (arr[i].son) {
+                if (arr[i].name == '资金提现') {
+                  this.seCurId = arr[i].id;
+                  this.threeAuthList = arr[i].son;
                 }
-                if (arr[i].son[j].name == '驳回列表' && arr[i].name == '资金提现') {
-                  this.thCurId = arr[i].son[j].id;
+                for (var j = 0; j < arr[i].son.length; j++) {
+                  if (arr[i].action != arr[i].son[j].action) {
+                    arr[i].action = arr[i].son[0].action;
+                  }
+                  if (arr[i].son[j].name == '驳回列表' && arr[i].name == '资金提现') {
+                    this.thCurId = arr[i].son[j].id;
+                  }
                 }
               }
             }
+            this.authList = arr;
+          } else {
+            this.$alert(res.data.msg, '提示', {
+              type: 'error'
+            });
           }
-          this.authList = arr;
-        } else {
-          this.$alert(res.data.msg, '提示', {
-            type: 'error'
-          });
-        }
-      })
-      .catch(err => {
-        alert(err);
-      })
+        })
+        .catch(err => {
+          alert(err);
+        })
+    }
   },
-  created () {
+  mounted () {
+    this.Auth()
     this.init();
   },
   watch: {

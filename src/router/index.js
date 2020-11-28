@@ -1260,6 +1260,8 @@ const routes = [
             auth: true
         }
     },
+
+
     { //系统设置-保险公司设置
         path: '/ststemSet/freeMaintenance',
         redirect: '/ststemSet/freeMaintenance/issueCamilo'
@@ -1279,6 +1281,28 @@ const routes = [
             auth: true
         }
     },
+
+
+    { //系统设置-集团客户卡密
+        path: '/ststemSet/groupCamilo',
+        redirect: '/ststemSet/groupCamilo/issueCamilo'
+
+    },
+    { //系统设置-集团客户卡密-发放卡密
+        path: '/ststemSet/groupCamilo/issueCamilo',
+        component: () => import('@/pages/groupCamilo/issueCamilo'),
+        meta: {
+            auth: true
+        }
+    },
+    { //系统设置-集团客户卡密-线下领取
+        path: '/ststemSet/groupCamilo/offlineGet',
+        component: () => import('@/pages/groupCamilo/offlineGet'),
+        meta: {
+            auth: true
+        }
+    },
+
 
 
     //兑换码

@@ -12,7 +12,7 @@
     <div class="container">
       <div class="quote">
         <div class="quote-ele">
-          <i></i>系统设置-保险客户卡密-发放卡密
+          <i></i>系统设置-集团客户卡密-发放卡密
         </div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
@@ -71,14 +71,14 @@
             <el-table-column type="selection"
                              width="55">
             </el-table-column>
-            <el-table-column label="保险公司图片"
+            <el-table-column label="单位图片"
                              align='center'>
               <template slot-scope="scope">
                 <img :src="scope.row.photo"
                      class="photo" />
               </template>
             </el-table-column>
-            <el-table-column label="保险公司"
+            <el-table-column label="单位"
                              align="center">
               <template slot-scope="scope">
                 {{scope.row.company}}
@@ -174,9 +174,9 @@
                  :model="channelList"
                  :rules="channelRules"
                  ref="channelForm">
-          <el-form-item label="保险公司名称"
+          <el-form-item label="单位名称"
                         prop="name">
-            <el-input placeholder="请输入保险公司名称"
+            <el-input placeholder="请输入单位名称"
                       v-model="channelList.name"
                       :disabled="status==1"
                       v-if="status==1" />
@@ -184,7 +184,7 @@
                              v-model="channelList.name"
                              :fetch-suggestions="querySearch"
                              @select="handleSelect"
-                             placeholder="请输入保险公司名称"
+                             placeholder="请输入单位名称"
                              v-else
                              style="width:100%"></el-autocomplete>
           </el-form-item>
@@ -292,7 +292,7 @@ export default {
   methods: {
     async getCompanyList (id) {
       try {
-        const res = await this.$axios.post('admin/ChannelSetCity/channelList', { token: this.token, city_id: id })
+        const res = await this.$axios.post('admin/GroupSetCity/channelList', { token: this.token, city_id: id })
         let data = res.data.data || []
         data.forEach(item => {
           item = Object.assign(item, { card_num: '' })
@@ -325,7 +325,7 @@ export default {
     async querySearch (queryString, cb) {  //关键字搜索
       try {
         let city_id = this.cityList[this.acitivIndex].id //市id
-        const res = await this.$axios.post('admin/ChannelSetCity/searchList', { token: this.token, city_id: city_id })
+        const res = await this.$axios.post('admin/GroupSetCity/searchList', { token: this.token, city_id: city_id })
         let restaurants = res.data.data || []   //获取所有关键字
         let results = [] //搜索的关键字
         let fiterData = queryString ? restaurants.filter(item => item.company.includes(queryString)) : []  //匹配关键字
@@ -341,14 +341,14 @@ export default {
     handleSelect (item) {  //当前选中的关键字
       this.channelList.photo = item && item.photo ? item.photo : ''   //选中当前的关键字 拿取当前的图片
     },
-    addChannel () {  //添加保险公司
+    addChannel () {  //添加单位
       console.log(this.channelList)
       this.$refs.channelForm.validate(async valid => {
         if (valid) {
           try {
             let id = this.cityList[this.acitivIndex] && this.cityList[this.acitivIndex].id
             this.channelLoaading = true
-            const res = await this.$axios.post('admin/ChannelSetCity/channelAdd', Object.assign(this.channelList, { token: this.token, city_id: id, types: 2 }))
+            const res = await this.$axios.post('admin/GroupSetCity/channelAdd', Object.assign(this.channelList, { token: this.token, city_id: id, types: 2 }))
             this.channelLoaading = false
             if (res.data.code == 1) {
               this.$message({ message: res.data.msg, type: "success" })
@@ -382,7 +382,7 @@ export default {
       try {
         let id = this.cityList[this.acitivIndex] && this.cityList[this.acitivIndex].id
         this.channelLoaading = true
-        const res = await this.$axios.post('admin/ChannelSetCity/updImg', { token: this.token, channel_id: this.channelList.id, photo: this.channelList.photo })
+        const res = await this.$axios.post('admin/GroupSetCity/updImg', { token: this.token, channel_id: this.channelList.id, photo: this.channelList.photo })
         this.channelLoaading = false
         if (res.data.code == 1) {
           this.$message({ message: res.data.msg, type: "success" })
@@ -398,7 +398,7 @@ export default {
     },
     async addCityChannel () {
       try {
-        const res = await this.$axios.post('admin/ChannelSetCity/channelCityAdd', { token: this.token, data: this.CheckedChannel, city_id: this.currentCity })
+        const res = await this.$axios.post('admin/GroupSetCity/channelCityAdd', { token: this.token, data: this.CheckedChannel, city_id: this.currentCity })
         if (res.data.code == 1) {
           this.$message({ message: res.data.msg, type: 'success' })
           this.init()
@@ -425,7 +425,7 @@ export default {
         type: 'warning'
       }).then(async () => {
         try {
-          const res = await this.$axios.post('admin/ChannelSetCity/setStatus', { token: this.token, city_id: item.city_id, channel_id: item.id })
+          const res = await this.$axios.post('admin/GroupSetCity/setStatus', { token: this.token, city_id: item.city_id, channel_id: item.id })
           if (res.data.msg) {
             this.$message({ message: res.data.msg, type: "success" })
             this.getCompanyList(item.city_id)
@@ -473,7 +473,7 @@ export default {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {
               if (arr[i].son) {
-                if (arr[i].name == '保险客户卡密') {
+                if (arr[i].name == '集团客户卡密') {
                   this.seCurId = arr[i].id;
                   this.threeAuthList = arr[i].son;
                 }
@@ -481,7 +481,7 @@ export default {
                   if (arr[i].action != arr[i].son[j].action) {
                     arr[i].action = arr[i].son[0].action;
                   }
-                  if (arr[i].son[j].name == '发放卡密' && arr[i].name == '保险客户卡密') {
+                  if (arr[i].son[j].name == '发放卡密' && arr[i].name == '集团客户卡密') {
                     this.thCurId = arr[i].son[j].id;
                   }
                 }

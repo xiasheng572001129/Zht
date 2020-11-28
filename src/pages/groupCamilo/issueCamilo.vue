@@ -200,7 +200,7 @@
               <el-option v-for="(item,index) in 12"
                          :key="index"
                          :value="item"
-                         :label="item"></el-option>
+                         :label="`${item}月`"></el-option>
             </el-select>
           </el-form-item>
 

@@ -1303,6 +1303,14 @@ const routes = [
         }
     },
 
+    { //系统设置-致敬老兵卡密
+        path: '/ststemSet/veteranCamilo',
+        component: () => import('@/pages/veteranCamilo/issueCamilo'),
+        meta: {
+            auth: true
+        }
+    },
+
 
 
     //兑换码

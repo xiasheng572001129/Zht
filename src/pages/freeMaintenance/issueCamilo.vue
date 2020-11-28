@@ -43,8 +43,7 @@
         <el-button type="primary"
                    class="addChannel"
                    @click="addChannelVisible=true,status=0"
-                   :disabled="!(cityList&&cityList.length>0)">添加保险公司</el-button>
-
+                   :disabled="!(cityList&&cityList.length>0)">添加单位</el-button>
       </div>
       <div class="main">
         <div class="main_area">
@@ -165,7 +164,7 @@
           </el-row> -->
         </div>
       </div>
-      <el-dialog :title="status==0 ? '添加保险公司' : '修改保险公司'"
+      <el-dialog :title="status==0 ? '添加单位' : '修改单位'"
                  center
                  :visible.sync="addChannelVisible"
                  width="30%"

@@ -114,6 +114,6 @@ export default {
 }
 .treeSwitch {
   position: absolute;
-  left: 20%;
+  left: 30%;
 }
 </style>

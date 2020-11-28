@@ -95,7 +95,15 @@
                         prop="name">
             <el-input placeholder="请输入保险公司名称"
                       v-model="channelList.name"
-                      :disabled="status==1" />
+                      :disabled="status==1"
+                      v-if="status==1" />
+            <el-autocomplete class="inline-input"
+                             v-model="channelList.name"
+                             :fetch-suggestions="querySearch"
+                             @select="handleSelect"
+                             placeholder="请输入保险公司名称"
+                             v-else
+                             style="width:100%"></el-autocomplete>
           </el-form-item>
           <el-form-item label="卡数量"
                         prop="num">
@@ -191,6 +199,16 @@ export default {
       return this.month ? `${year}-${month}` : ''
     }
   },
+  watch: {
+    'channelList.name': {
+      deep: true, //深度监听设置为 true
+      handler (newV) {
+        if (this.status == 0 && !newV) {  //如果没有搜到关键字,清除图片
+          this.channelList.photo = ''
+        }
+      }
+    }
+  },
   methods: {
     async init () {
       try {
@@ -202,13 +220,31 @@ export default {
       }
 
     },
+    async querySearch (queryString, cb) {  //关键字搜索
+      try {
+        const res = await this.$axios.post('admin/ChannelSetCity/searchList', { token: this.token, city_id: 0, types: 1 })
+        let restaurants = res.data.data || []   //获取所有关键字
+        let results = [] //搜索的关键字
+        let fiterData = queryString ? restaurants.filter(item => item.company.includes(queryString)) : []  //匹配关键字
+        fiterData.map(item => { //改变数组对象的Key值 
+          results.push({ value: item.company, photo: item.photo })
+        })
+        return cb(results)
+      } catch (error) {
+        this.$message.error('接口报错请检查')
+        throw (error)
+      }
+    },
+    handleSelect (item) {  //当前选中的关键字
+      this.channelList.photo = item && item.photo ? item.photo : ''   //选中当前的关键字 拿取当前的图片
+    },
     addChannel () {  //添加保险公司
       this.$refs.channelForm.validate(async valid => {
         if (valid) {
           try {
             let id = this.cityList[this.acitivIndex] && this.cityList[this.acitivIndex].id
             this.channelLoaading = true
-            const res = await this.$axios.post('admin/ChannelSetCity/channelAdd', Object.assign(this.channelList, { token: this.token, types: 1 }))
+            const res = await this.$axios.post('admin/ChannelSetCity/topAdd', Object.assign(this.channelList, { token: this.token, types: 1 }))
             this.channelLoaading = false
             if (res.data.code == 1) {
               this.$message({ message: res.data.msg, type: "success" })

@@ -32,6 +32,7 @@
           <th>地区</th>
           <th>质保金（元）</th>
           <th>审核人</th>
+          <th>结算类型</th>
           <th>申请时间</th>
           <th>审核时间</th>
         </tr>
@@ -57,6 +58,7 @@
           </td>
           <td>{{item.set_retention_money}}</td>
           <td>{{item.audit_person}}</td>
+          <td>{{item.accounts}}</td>
           <td>{{item.create_time}}</td>
           <td>{{item.audit_time | datetime}}</td>
         </tr>

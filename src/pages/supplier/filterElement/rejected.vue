@@ -35,6 +35,7 @@
 
           <th>驳回人</th>
           <th>驳回理由</th>
+          <th>结算类型</th>
           <th>申请时间</th>
           <th>驳回时间</th>
           <th>产品图片</th>
@@ -65,6 +66,7 @@
                          class="ellipsis">{{item.reason}}</el-button>
             </el-popover>
           </td>
+          <td>{{item.accounts}}</td>
           <td>{{item.create_time}}</td>
           <td>{{item.audit_time | datetime}}</td>
           <td>

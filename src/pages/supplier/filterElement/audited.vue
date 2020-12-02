@@ -36,6 +36,7 @@
           <th>质保金</th>
           <!-- <th>已缴纳质保金</th> -->
           <th>审核人</th>
+          <th>结算类型</th>
           <th>申请时间</th>
           <th>审核时间</th>
           <th>产品图片</th>
@@ -43,6 +44,7 @@
           <th>质量承保书</th>
           <th>质检报告</th>
           <th>地区</th>
+
         </tr>
         <tr v-for='(item,index) in list'
             :key="index"
@@ -58,6 +60,7 @@
           <td>{{item.set_retention_money}}</td>
           <!-- <td>{{item.my_retention_money}}</td> -->
           <td>{{item.audit_person}}</td>
+          <td>{{item.accounts}}</td>
           <td>{{item.create_time}}</td>
           <td>{{item.audit_time | datetime}}</td>
           <td>

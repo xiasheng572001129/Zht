@@ -12,7 +12,7 @@
     <div class="container">
       <div class="quote">
         <div class="quote-ele">
-          <i></i>系统设置-保险公司设置-线上领取
+          <i></i>系统设置-集团客户卡密-线上领取
         </div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
@@ -32,18 +32,18 @@
         </el-date-picker>
         <el-button type="primary"
                    class="addChannel"
-                   @click="addChannelVisible=true,status=0">添加保险公司</el-button>
+                   @click="addChannelVisible=true,status=0">添加单位</el-button>
 
       </div>
       <el-table :data="list">
-        <el-table-column label="保险公司图片"
+        <el-table-column label="单位图片"
                          align='center'>
           <template slot-scope="scope">
             <img :src="scope.row.photo"
                  class="photo" />
           </template>
         </el-table-column>
-        <el-table-column label="保险公司"
+        <el-table-column label="单位"
                          align="center">
           <template slot-scope="scope">
             {{scope.row.company}}
@@ -81,7 +81,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog :title="status==0 ? '添加保险公司' : '修改保险公司'"
+      <el-dialog :title="status==0 ? '添加单位' : '修改单位'"
                  center
                  :visible.sync="addChannelVisible"
                  width="30%"
@@ -91,9 +91,9 @@
                  :model="channelList"
                  :rules="channelRules"
                  ref="channelForm">
-          <el-form-item label="保险公司名称"
+          <el-form-item label="单位名称"
                         prop="name">
-            <el-input placeholder="请输入保险公司名称"
+            <el-input placeholder="请输入单位名称"
                       v-model="channelList.name"
                       :disabled="status==1"
                       v-if="status==1" />
@@ -101,7 +101,7 @@
                              v-model="channelList.name"
                              :fetch-suggestions="querySearch"
                              @select="handleSelect"
-                             placeholder="请输入保险公司名称"
+                             placeholder="请输入单位名称"
                              v-else
                              style="width:100%"></el-autocomplete>
           </el-form-item>
@@ -320,7 +320,7 @@ export default {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {
               if (arr[i].son) {
-                if (arr[i].name == '保险公司设置') {
+                if (arr[i].name == '集团客户卡密') {
                   this.seCurId = arr[i].id;
                   this.threeAuthList = arr[i].son;
                 }
@@ -328,7 +328,7 @@ export default {
                   if (arr[i].action != arr[i].son[j].action) {
                     arr[i].action = arr[i].son[0].action;
                   }
-                  if (arr[i].son[j].name == '线上领取' && arr[i].name == '保险公司设置') {
+                  if (arr[i].son[j].name == '线上领取' && arr[i].name == '集团客户卡密') {
                     this.thCurId = arr[i].son[j].id;
                   }
                 }

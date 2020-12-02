@@ -33,6 +33,7 @@
           <th>质保金（元）</th>
           <th>驳回人</th>
           <th>驳回理由</th>
+          <th>结算类型</th>
           <th>申请时间</th>
           <th>驳回时间</th>
         </tr>
@@ -68,6 +69,7 @@
                          type="text">{{item.reason}}</el-button>
             </el-popover>
           </td>
+          <td>{{item.accounts}}</td>
           <td>{{item.create_time}}</td>
           <td>{{item.audit_time | datetime}}</td>
         </tr>

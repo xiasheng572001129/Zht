@@ -31,6 +31,7 @@
           <th>质检报告</th>
           <th>地区</th>
           <!-- <th>申请状态</th> -->
+          <th>结算类型</th>
           <th>申请时间</th>
           <th>操作</th>
         </tr>
@@ -55,6 +56,7 @@
                        @click="regionDetails(item)">详情</el-button>
           </td>
           <!-- <td>{{item.update == 0 ? '首次' : '二次修改'}}</td> -->
+          <td>{{item.accounts}}</td>
           <td>{{item.create_time}}</td>
           <td>
             <el-button type="primary"

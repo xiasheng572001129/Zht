@@ -32,7 +32,7 @@
           <th>产品名称</th>
           <th>品牌</th>
           <th>金额（元）</th>
-
+          <th>结算类型</th>
           <th>申请时间</th>
           <th>产品图片</th>
           <th>质量保证书</th>
@@ -50,7 +50,7 @@
           <td>{{item.brand}}</td>
           <td>{{item.standard}}</td>
           <td>{{item.price}}</td>
-
+          <td>{{item.accounts}}</td>
           <td>{{item.create_time}}</td>
           <td>
             <img :src="item.pic" />

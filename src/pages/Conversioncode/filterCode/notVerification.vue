@@ -12,7 +12,7 @@
     <div class="container">
       <div class="quote">
         <div class="quote-ele">
-          <i></i>油品兑换码-未核销
+          <i></i>机油格兑换码-未核销
           <el-button type="primary"
                      class="generateCode"
                      @click="generateCode"
@@ -77,7 +77,7 @@ export default {
       this.init()
     },
     init () {
-      this.$axios.post('admin/AgentString/notList', { token: this.token, page: this.page })
+      this.$axios.post('admin/AgentString/filterNotList', { token: this.token, page: this.page })
         .then(res => {
           this.list = res.data.data.list;
           this.pageCount = res.data.data.rows;
@@ -87,7 +87,7 @@ export default {
     async generateCode () {
       try {
         this.loading = true
-        const res = await this.$axios.post('admin/AgentString/createCode', { token: this.token })
+        const res = await this.$axios.post('admin/AgentString/filterCreateCode', { token: this.token })
         this.loading = false
         if (res.data.code == 1) {
           this.$message({ message: res.data.msg, type: "success" })
@@ -118,7 +118,7 @@ export default {
           var arr = res.data.data;
           for (var i = 0; i < arr.length; i++) {
             if (arr[i].son) {
-              if (arr[i].name == '油品兑换码') {
+              if (arr[i].name == '机油格兑换码') {
                 this.seCurId = arr[i].id;
                 this.threeAuthList = arr[i].son;
               }
@@ -126,7 +126,7 @@ export default {
                 if (arr[i].action != arr[i].son[j].action) {
                   arr[i].action = arr[i].son[0].action;
                 }
-                if (arr[i].son[j].name == '未核销' && arr[i].name == '油品兑换码') {
+                if (arr[i].son[j].name == '未核销' && arr[i].name == '机油格兑换码') {
                   this.thCurId = arr[i].son[j].id;
                 }
               }

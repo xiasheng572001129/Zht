@@ -1295,13 +1295,22 @@ const routes = [
             auth: true
         }
     },
-    { //系统设置-集团客户卡密-线下领取
-        path: '/ststemSet/groupCamilo/offlineGet',
-        component: () => import('@/pages/groupCamilo/offlineGet'),
+
+    { //系统设置-集团客户卡密全国
+        path: '/ststemSet/groupCamiloAll',
+        redirect: '/ststemSet/groupCamiloAll/issueCamilo'
+
+    },
+    { //系统设置-集团客户卡密-发放卡密 全国
+        path: '/ststemSet/groupCamiloAll/issueCamilo',
+        component: () => import('@/pages/groupCamiloAll/issueCamilo'),
         meta: {
             auth: true
         }
     },
+
+
+
 
     { //系统设置-致敬老兵卡密
         path: '/ststemSet/veteranCamilo',
@@ -1318,16 +1327,36 @@ const routes = [
         path: '/Conversioncode',
         redirect: '/Conversioncode/notVerification'
     },
-    { //兑换码-未核销
+    { //油品兑换码-未核销
         path: '/Conversioncode/notVerification',
         component: () => import('@/pages/Conversioncode/notVerification'),
         meta: {
             auth: true
         }
     },
-    { //兑换码-已核销
+    { //油品兑换码-已核销
         path: '/Conversioncode/hasVerification',
         component: () => import('@/pages/Conversioncode/hasVerification'),
+        meta: {
+            auth: true
+        }
+    },
+
+    { //机油格兑换码
+        path: '/Conversioncode/filterCode',
+        redirect: '/Conversioncode/filterCode/notVerificati'
+    },
+
+    { //机油格兑换码-未核销
+        path: '/Conversioncode/filterCode/notVerificati',
+        component: () => import('@/pages/Conversioncode/filterCode/notVerification'),
+        meta: {
+            auth: true
+        }
+    },
+    { //机油格兑换码-已核销
+        path: '/Conversioncode/filterCode/hasVerificati',
+        component: () => import('@/pages/Conversioncode/filterCode/hasVerification'),
         meta: {
             auth: true
         }

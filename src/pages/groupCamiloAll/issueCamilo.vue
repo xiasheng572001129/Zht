@@ -73,21 +73,21 @@
                            align="center"
                            prop="num">
             <template slot-scope="scope">
-              {{scope.row.num}}张
+              {{scope.row.total_num || 0}}张
             </template>
           </el-table-column>
           <el-table-column label="消耗数量"
                            align="center"
                            prop="num">
             <template slot-scope="scope">
-              {{scope.row.consume}}张
+              {{scope.row.consume_total ||0}}张
             </template>
           </el-table-column>
           <el-table-column label="剩余数量"
                            align="center"
                            prop="num">
             <template slot-scope="scope">
-              {{scope.row.sur_num}}张
+              {{scope.row.sur_num || 0}}张
             </template>
           </el-table-column>
           <el-table-column label="操作"
@@ -289,7 +289,7 @@ export default {
           try {
 
             this.channelLoaading = true
-            const res = await this.$axios.post('admin/GroupSetCity/channelAdd', Object.assign(this.channelList, { token: this.token }))
+            const res = await this.$axios.post('admin/GroupSetCity/allChannelAdd', Object.assign(this.channelList, { token: this.token }))
             this.channelLoaading = false
             if (res.data.code == 1) {
               this.$message({ message: res.data.msg, type: "success" })
@@ -318,7 +318,7 @@ export default {
         this.channelList = Object.assign(this.channelList, item, { name: item.company })
       })
     },
-    async ModifyImg () {
+    async ModifyImg () { //修改图片
       try {
 
         this.channelLoaading = true
@@ -336,19 +336,7 @@ export default {
         throw (error)
       }
     },
-    async addCityChannel () {
-      try {
-        const res = await this.$axios.post('admin/GroupSetCity/channelCityAdd', { token: this.token, data: this.CheckedChannel })
-        if (res.data.code == 1) {
-          this.$message({ message: res.data.msg, type: 'success' })
-          this.init()
-        } else {
-          this.$message.error(res.data.msg)
-        }
-      } catch (error) {
-        throw (error)
-      }
-    },
+
     handleSelectionChange (val) {  //获取选中的保险公司
 
       let checkedCompany = val.map((v) => {

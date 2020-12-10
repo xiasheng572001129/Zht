@@ -1109,13 +1109,7 @@ const routes = [
 
     },
 
-    //免费保养-已驳回
-    {
-        path: '/audit/channel/rejected',
-        component: () => import('@/pages/audit/channel/rejected'),
-        meta: { auth: true }
-
-    },
+  
     {  //免费保养
         path: "/audit/channel",
         redirect: '/audit/channel/unaudited',
@@ -1129,10 +1123,17 @@ const routes = [
         meta: { auth: true }
 
     },
-
+    
     {  //免费保养-已审核
         path: '/audit/channel/passed',
         component: () => import('@/pages/audit/channel/passed'),
+        meta: { auth: true }
+
+    },
+      //免费保养-已驳回
+      {
+        path: '/audit/channel/rejected',
+        component: () => import('@/pages/audit/channel/rejected'),
         meta: { auth: true }
 
     },
@@ -1142,6 +1143,42 @@ const routes = [
         meta: { auth: true }
 
     },
+
+
+    {  //致敬老兵
+        path: "/audit/veteran",
+        redirect: '/audit/veteran/unaudited',
+
+        meta: { auth: true }
+
+    },
+    {  //致敬老兵-未审核
+        path: '/audit/veteran/unaudited',
+        component: () => import('@/pages/audit/veteran/unaudited'),
+        meta: { auth: true }
+
+    },
+    
+    {  //致敬老兵-已审核
+        path: '/audit/veteran/passed',
+        component: () => import('@/pages/audit/veteran/passed'),
+        meta: { auth: true }
+
+    },
+      //致敬老兵-已驳回
+      {
+        path: '/audit/veteran/rejected',
+        component: () => import('@/pages/audit/veteran/rejected'),
+        meta: { auth: true }
+
+    },
+    {  //致敬老兵-二次复核
+        path: '/audit/veteran/twiceReview',
+        component: () => import('@/pages/audit/veteran/twiceReview'),
+        meta: { auth: true }
+
+    },
+
     {  //渠道发卡
         path: "/audit/channelIssuing",
         component: () => import('@/pages/audit/channelIssuing'),

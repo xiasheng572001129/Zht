@@ -69,7 +69,6 @@
                        @click="regionDetails(item)">详情</el-button>
           </td>
           <td>
-
             <el-button type="success"
                        size="small"
                        @click="areaVisible=true,currentList=item">通过</el-button>

@@ -203,54 +203,7 @@
                          label="车牌号">
 
         </el-table-column>
-        <el-table-column align="center"
-                         prop="rankers"
-                         label="类型">
-        </el-table-column>
-        <el-table-column align="center"
-                         label="老兵姓名">
-          <template slot-scope="scope">
-            {{scope.row.ranker==6 ? scope.row.old_name : '无'}}
-          </template>
-        </el-table-column>
-        <!-- <el-table-column align="center"
-                         prop="vin"
-                         label="vin码">
 
-        </el-table-column>
-        <el-table-column align="center"
-                         prop="policy_num"
-                         label="保单号">
-          <template slot-scope="scope">
-            {{scope.row.policy_num || '无'}}
-          </template>
-        </el-table-column> -->
-        <el-table-column align="center"
-                         prop=""
-                         label="保单图片/优待证">
-          <template slot-scope="scope">
-
-            <el-button type="text"
-                       v-if="scope.row.pc_img && scope.row.pc_img.length>0"
-                       @click="pcImgVisible=true,imgList=scope.row.pc_img,imgDetails()">详情</el-button>
-            <span v-else>无</span>
-
-          </template>
-        </el-table-column>
-        <!-- <el-table-column align="center"
-                         prop="start_time"
-                         label="开始时间">
-          <template slot-scope="scope">
-            {{scope.row.start_time || '无'}}
-          </template>
-        </el-table-column>
-        <el-table-column align="center"
-                         prop="end_time"
-                         label="结束时间">
-          <template slot-scope="scope">
-            {{scope.row.end_time || '无'}}
-          </template>
-        </el-table-column> -->
         <el-table-column align="center"
                          label="驳回理由">
           <template slot-scope="scope">
@@ -265,7 +218,7 @@
             </el-popover>
           </template>
         </el-table-column>
-         <el-table-column align="center"
+        <el-table-column align="center"
                          label="领取类型"
                          prop="electronic_type">
 

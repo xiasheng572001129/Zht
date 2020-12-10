@@ -11,13 +11,7 @@
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele">
-          <i></i>
-          审核-免费保养-已审核
-          <el-button type="primary"
-                     @click="Export()"
-                     style="float:right;margin-right:50px;margin-top:20px">导出</el-button>
-        </div>
+        <div class="quote-ele"><i></i>审核-致敬老兵-二次复核</div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
                        v-for="item in threeAuthList"
@@ -27,6 +21,7 @@
           </router-link>
         </div>
       </div>
+
       <div style="margin:0 20px">
         <!-- <el-input placeholder="请输入维修厂"
                   v-model="ListQuery.company"
@@ -35,6 +30,7 @@
                      icon="el-icon-search"
                      @click="page=1,init()"></el-button>
         </el-input> -->
+
         <el-select style="margin-right:10px"
                    v-model="ListQuery.ucp_company"
                    placeholder="请选择保险公司"
@@ -121,7 +117,6 @@
                          align="center"></el-table-column> -->
         <el-table-column label="地区"
                          align="center">
-
           <template slot-scope="scope">
             <el-popover placement="top-start"
                         title="地区详情"
@@ -135,8 +130,7 @@
           </template>
 
         </el-table-column>
-
-        <el-table-column label="审核数量"
+        <el-table-column label="复核数量"
                          align="center"
                          prop="num">
         </el-table-column>
@@ -146,9 +140,7 @@
             <el-button type="primary"
                        size="mini"
                        @click="details(scope.row)">详情</el-button>
-
           </template>
-
         </el-table-column>
       </el-table>
 
@@ -166,6 +158,7 @@
                :visible.sync="detailsVisible"
                width="80%"
                @close='detailsPage=1,detailsCount=1'>
+      <div class="remind">**请审核保单生效时间与申请时间一致的免费保养**</div>
       <el-table :data="detailsList"
                 class="detailsTable">
         <el-table-column align="center"
@@ -201,12 +194,13 @@
                          label="车排量">
 
         </el-table-column> -->
+
         <el-table-column align="center"
-                         prop="plate"
-                         label="车牌号">
-
+                         label="老兵姓名">
+          <template slot-scope="scope">
+            {{scope.row.ranker==6 ? scope.row.old_name : '无'}}
+          </template>
         </el-table-column>
-
         <!-- <el-table-column align="center"
                          prop="vin"
                          label="vin码">
@@ -219,39 +213,71 @@
             {{scope.row.policy_num || '无'}}
           </template>
         </el-table-column> -->
-
         <el-table-column align="center"
-                         label="领取类型"
-                         prop="electronic_type">
+                         prop=""
+                         label="保单图片/优待证">
+          <template slot-scope="scope">
+
+            <el-button type="text"
+                       v-if="scope.row.pc_img && scope.row.pc_img.length>0"
+                       @click="pcImgVisible=true,imgList=scope.row.pc_img,imgDetails()">详情</el-button>
+            <span v-else>无</span>
+
+          </template>
         </el-table-column>
+
         <el-table-column align="center"
                          label="申请时间"
                          prop="sale_time">
 
         </el-table-column>
         <el-table-column align="center"
-                         prop="review_time"
-                         label="审核时间">
+                         label="保养时间"
+                         prop="create_time">
+
+        </el-table-column>
+        <!-- <el-table-column align="center"
+                         prop="start_time"
+                         label="开始时间">
           <template slot-scope="scope">
-            {{scope.row.review_time | datetime}}
+            {{scope.row.start_time || '无'}}
+          </template>
+        </el-table-column> -->
+        <el-table-column align="center"
+                         label="修改时间">
+          <template slot-scope="scope">
+            {{scope.row.audit_time | datetime}}
           </template>
         </el-table-column>
 
+        <el-table-column min-width="100px"
+                         label="操作"
+                         align="center">
+          <template slot-scope="scope">
+            <el-button type="primary"
+                       size='mini'
+                       :loading="throughLoading[scope.$index]"
+                       @click="through(scope.row,scope.$index)">通过</el-button>
+            <el-button type="danger"
+                       size='mini'
+                       :loading="rejecteLoading[scope.$index]"
+                       @click="rejecte(scope.row,scope.$index)">驳回</el-button>
+          </template>
+        </el-table-column>
       </el-table>
-
       <div class="page_center">
         <paging :page-count="detailsCount"
                 :page="detailsPage"
                 @index="detailsPaging"></paging>
         <!--分页的组件-->
       </div>
+
       <el-dialog center
                  title="保单图片"
                  :visible.sync="pcImgVisible"
                  append-to-body
                  width="25%">
         <div>
-
           <img v-for="(item,index) in imgList"
                style="width:100px;height:100px;margin-right:20px"
                :key='index'
@@ -276,6 +302,8 @@ export default {
       thCurId: '',
       authList: [],
       threeAuthList: [],
+      throughLoading: [],
+      rejecteLoading: [],
       detailsVisible: false,
       pcImgVisible: false,
       multipleData: [],
@@ -326,7 +354,7 @@ export default {
       this.details(this.currentDetails)
     },
     init () {
-      this.$axios.post('admin/UserAudit/channelList', Object.assign(this.ListQuery, { token: this.token, page: this.page, status: 1, pay_status: 1, review: 2 }))
+      this.$axios.post('admin/UserAudit/channelLists', Object.assign(this.ListQuery, { token: this.token, page: this.page, status: 0, pay_status: 1, review: 2, ranker: 6 }))
         .then(res => {
           this.list = res.data.data.list;
           this.pageCount = res.data.data.rows;
@@ -390,7 +418,7 @@ export default {
       this.detailsVisible = true
       this.currentDetails = row
       try {
-        const res = await this.$axios.post("admin/UserAudit/detail", { token: this.token, sid: row.id, policy_id: row.policy_id, status: row.status, page: this.detailsPage })
+        const res = await this.$axios.post("admin/UserAudit/details", { token: this.token, sid: row.id, policy_id: row.policy_id, status: row.status, page: this.detailsPage, start_time: this.ListQuery.start_time, end_time: this.ListQuery.end_time, ranker: 6 })
         this.detailsList = res.data.data.list || [];
         this.detailsCount = res.data.data.rows;
         this.$nextTick(() => {  //施工图放大
@@ -403,10 +431,6 @@ export default {
         throw (error)
       }
 
-    },
-
-    Export () {  //导出
-      window.location.href = `${this.baseURL}admin/Login/freeMain?ucp_company=${this.ListQuery.ucp_company}&search["province"]=${this.ListQuery.search['province']}&search["city"]=${this.ListQuery.search['city']}&search["county_id"]=${this.ListQuery.county}`
     },
     // handleSelectionChange (val) {  //全选/单选
     //   let tmp = []
@@ -423,7 +447,60 @@ export default {
         Viewer(img)
       })
     },
+    //通过
+    through (item, index) {
 
+      this.$confirm('此操作将通过审核, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      }).then(async () => {
+        try {
+
+          this.throughLoading[index] = true
+          const res = await this.$axios.post('admin/UserAudit/channelAdopt', { token: this.token, ucp_id: item.ucp_id, card_id: item.card_id })
+          this.throughLoading[index] = false
+          if (res.data.code == 1) {
+            this.$message({ message: res.data.msg, type: "success" })
+            this.init()
+            this.details(this.currentDetails)
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        } catch (err) {
+          this.throughLoading[index] = false
+          throw (err)
+        }
+      }).catch(() => { });
+    },
+    //驳回
+    rejecte (item, index) {
+
+      this.$prompt('请输入驳回理由', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /\S/,
+        inputErrorMessage: '请输入驳回理由'
+      }).then(async ({ value }) => {
+        try {
+
+          this.rejecteLoading[index] = true
+          const res = await this.$axios.post('admin/UserAudit/channelReject', { token: this.token, ucp_id: item.ucp_id, uc_id: item.uc_id, reason: value })
+          this.rejecteLoading[index] = false
+          if (res.data.code == 1) {
+            this.$message({ message: res.data.msg, type: "success" })
+            this.details(this.currentDetails)
+            this.init()
+          } else {
+            this.$message.error(res.data.msg)
+          }
+        } catch (err) {
+          this.rejecteLoading[index] = false
+          throw (err)
+        }
+      }).catch(() => { });
+    },
 
     Auth () {
       var id = this.$route.query.id;
@@ -438,7 +515,7 @@ export default {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {
               if (arr[i].son) {
-                if (arr[i].name == '免费保养') {
+                if (arr[i].name == '致敬老兵') {
                   this.seCurId = arr[i].id;
                   this.threeAuthList = arr[i].son;
                 }
@@ -446,7 +523,7 @@ export default {
                   if (arr[i].action != arr[i].son[j].action) {
                     arr[i].action = arr[i].son[0].action;
                   }
-                  if (arr[i].son[j].name == '已审核' && arr[i].name == '免费保养') {
+                  if (arr[i].son[j].name == '二次复核' && arr[i].name == '致敬老兵') {
                     this.thCurId = arr[i].son[j].id;
                   }
                 }
@@ -588,5 +665,10 @@ button.pass {
 .regionDetail >>> .el-dialog__body {
   padding: 0px 25px 30px;
   border-top: solid 2px #eee;
+}
+.remind {
+  color: red;
+  text-align: right;
+  font-size: 16px;
 }
 </style>

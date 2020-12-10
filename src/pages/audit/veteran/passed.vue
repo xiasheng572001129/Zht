@@ -13,7 +13,7 @@
       <div class="quote">
         <div class="quote-ele">
           <i></i>
-          审核-免费保养-已审核
+          审核-致敬老兵-已审核
           <el-button type="primary"
                      @click="Export()"
                      style="float:right;margin-right:50px;margin-top:20px">导出</el-button>
@@ -201,12 +201,13 @@
                          label="车排量">
 
         </el-table-column> -->
+
         <el-table-column align="center"
-                         prop="plate"
-                         label="车牌号">
-
+                         label="老兵姓名">
+          <template slot-scope="scope">
+            {{scope.row.ranker==6 ? scope.row.old_name : '无'}}
+          </template>
         </el-table-column>
-
         <!-- <el-table-column align="center"
                          prop="vin"
                          label="vin码">
@@ -219,11 +220,19 @@
             {{scope.row.policy_num || '无'}}
           </template>
         </el-table-column> -->
-
         <el-table-column align="center"
-                         label="领取类型"
-                         prop="electronic_type">
+                         prop=""
+                         label="保单图片/优待证">
+          <template slot-scope="scope">
+
+            <el-button type="text"
+                       v-if="scope.row.pc_img && scope.row.pc_img.length>0"
+                       @click="pcImgVisible=true,imgList=scope.row.pc_img,imgDetails()">详情</el-button>
+            <span v-else>无</span>
+
+          </template>
         </el-table-column>
+
         <el-table-column align="center"
                          label="申请时间"
                          prop="sale_time">
@@ -326,7 +335,7 @@ export default {
       this.details(this.currentDetails)
     },
     init () {
-      this.$axios.post('admin/UserAudit/channelList', Object.assign(this.ListQuery, { token: this.token, page: this.page, status: 1, pay_status: 1, review: 2 }))
+      this.$axios.post('admin/UserAudit/channelList', Object.assign(this.ListQuery, { token: this.token, page: this.page, status: 1, pay_status: 1, review: 2, ranker: 6 }))
         .then(res => {
           this.list = res.data.data.list;
           this.pageCount = res.data.data.rows;
@@ -390,7 +399,7 @@ export default {
       this.detailsVisible = true
       this.currentDetails = row
       try {
-        const res = await this.$axios.post("admin/UserAudit/detail", { token: this.token, sid: row.id, policy_id: row.policy_id, status: row.status, page: this.detailsPage })
+        const res = await this.$axios.post("admin/UserAudit/detail", { token: this.token, sid: row.id, policy_id: row.policy_id, status: row.status, page: this.detailsPage, ranker: 6 })
         this.detailsList = res.data.data.list || [];
         this.detailsCount = res.data.data.rows;
         this.$nextTick(() => {  //施工图放大
@@ -438,7 +447,7 @@ export default {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {
               if (arr[i].son) {
-                if (arr[i].name == '免费保养') {
+                if (arr[i].name == '致敬老兵') {
                   this.seCurId = arr[i].id;
                   this.threeAuthList = arr[i].son;
                 }
@@ -446,7 +455,7 @@ export default {
                   if (arr[i].action != arr[i].son[j].action) {
                     arr[i].action = arr[i].son[0].action;
                   }
-                  if (arr[i].son[j].name == '已审核' && arr[i].name == '免费保养') {
+                  if (arr[i].son[j].name == '已审核' && arr[i].name == '致敬老兵') {
                     this.thCurId = arr[i].son[j].id;
                   }
                 }

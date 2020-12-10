@@ -11,13 +11,7 @@
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele">
-          <i></i>
-          审核-免费保养-已审核
-          <el-button type="primary"
-                     @click="Export()"
-                     style="float:right;margin-right:50px;margin-top:20px">导出</el-button>
-        </div>
+        <div class="quote-ele"><i></i>审核-致敬老兵-已驳回</div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
                        v-for="item in threeAuthList"
@@ -44,7 +38,7 @@
                      :label="item.company"
                      :value="item.id"></el-option>
         </el-select>
-        <el-date-picker v-model="pickerSearch"
+        <!-- <el-date-picker v-model="pickerSearch"
                         type="daterange"
                         style="width:24%;margin-right:10px"
                         @change="page=1,init()"
@@ -52,7 +46,7 @@
                         range-separator="至"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期">
-        </el-date-picker>
+        </el-date-picker> -->
         省:
         <el-select v-model="ListQuery.search['province']"
                    placeholder="请选择省"
@@ -95,7 +89,7 @@
         <!-- <el-table-column type="selection"
                          width="55">
         </el-table-column> -->
-        <!-- <el-table-column label="福利"
+        <el-table-column label="福利"
                          align="center"
                          prop="user_type">
           <template slot-scope="scope">
@@ -106,7 +100,7 @@
               {{scope.row.user_type==1 ? '保险公司' : scope.row.user_type==2 ? '主机厂' : '其他类型'}}
             </span>
           </template>
-        </el-table-column> -->
+        </el-table-column>
         <el-table-column prop="ucp_company"
                          label="保险公司名称"
                          align="center"></el-table-column>
@@ -136,10 +130,12 @@
 
         </el-table-column>
 
-        <el-table-column label="审核数量"
+        <el-table-column label="驳回数量"
                          align="center"
                          prop="num">
+
         </el-table-column>
+
         <el-table-column label="操作"
                          align="center">
           <template slot-scope="scope">
@@ -171,6 +167,7 @@
         <el-table-column align="center"
                          label="施工照片">
           <template slot-scope="scope">
+
             <div>
               <img v-for="(item,index) in scope.row.oil_photo"
                    :key="index"
@@ -201,12 +198,13 @@
                          label="车排量">
 
         </el-table-column> -->
+
         <el-table-column align="center"
-                         prop="plate"
-                         label="车牌号">
-
+                         label="老兵姓名">
+          <template slot-scope="scope">
+            {{scope.row.ranker==6 ? scope.row.old_name : '无'}}
+          </template>
         </el-table-column>
-
         <!-- <el-table-column align="center"
                          prop="vin"
                          label="vin码">
@@ -219,11 +217,47 @@
             {{scope.row.policy_num || '无'}}
           </template>
         </el-table-column> -->
-
         <el-table-column align="center"
-                         label="领取类型"
-                         prop="electronic_type">
+                         prop=""
+                         label="保单图片/优待证">
+          <template slot-scope="scope">
+
+            <el-button type="text"
+                       v-if="scope.row.pc_img && scope.row.pc_img.length>0"
+                       @click="pcImgVisible=true,imgList=scope.row.pc_img,imgDetails()">详情</el-button>
+            <span v-else>无</span>
+
+          </template>
         </el-table-column>
+        <!-- <el-table-column align="center"
+                         prop="start_time"
+                         label="开始时间">
+          <template slot-scope="scope">
+            {{scope.row.start_time || '无'}}
+          </template>
+        </el-table-column>
+        <el-table-column align="center"
+                         prop="end_time"
+                         label="结束时间">
+          <template slot-scope="scope">
+            {{scope.row.end_time || '无'}}
+          </template>
+        </el-table-column> -->
+        <el-table-column align="center"
+                         label="驳回理由">
+          <template slot-scope="scope">
+            <el-popover placement="top-start"
+                        title="地区详情"
+                        width="200"
+                        trigger="hover"
+                        :content="scope.row.reason">
+              <el-button type="text"
+                         slot="reference"
+                         class="ellipsis">{{scope.row.reason}}</el-button>
+            </el-popover>
+          </template>
+        </el-table-column>
+
         <el-table-column align="center"
                          label="申请时间"
                          prop="sale_time">
@@ -231,7 +265,7 @@
         </el-table-column>
         <el-table-column align="center"
                          prop="review_time"
-                         label="审核时间">
+                         label="驳回时间">
           <template slot-scope="scope">
             {{scope.row.review_time | datetime}}
           </template>
@@ -245,20 +279,20 @@
                 @index="detailsPaging"></paging>
         <!--分页的组件-->
       </div>
-      <el-dialog center
-                 title="保单图片"
-                 :visible.sync="pcImgVisible"
-                 append-to-body
-                 width="25%">
-        <div>
+    </el-dialog>
+    <el-dialog center
+               title="保单图片"
+               :visible.sync="pcImgVisible"
+               append-to-body
+               width="25%">
+      <div>
 
-          <img v-for="(item,index) in imgList"
-               style="width:100px;height:100px;margin-right:20px"
-               :key='index'
-               :src="item"
-               ref="img" />
-        </div>
-      </el-dialog>
+        <img v-for="(item,index) in imgList"
+             style="width:100px;height:100px;margin-right:20px"
+             :key='index'
+             :src="item"
+             ref="img" />
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -326,7 +360,7 @@ export default {
       this.details(this.currentDetails)
     },
     init () {
-      this.$axios.post('admin/UserAudit/channelList', Object.assign(this.ListQuery, { token: this.token, page: this.page, status: 1, pay_status: 1, review: 2 }))
+      this.$axios.post('admin/UserAudit/channelList', Object.assign(this.ListQuery, { token: this.token, page: this.page, status: 2, pay_status: 1, review: 2, ranker: 6 }))
         .then(res => {
           this.list = res.data.data.list;
           this.pageCount = res.data.data.rows;
@@ -352,7 +386,6 @@ export default {
     },
     //获取市
     getCity (id) {
-      this.page = 1
       this.ListQuery.search['province'] = this.query(this.provincelist, id)
       this.ListQuery.search['city'] = ''  //清空上一次所选的市
       this.ListQuery.county = ''  //清空上一次所选的区/县
@@ -364,7 +397,6 @@ export default {
     },
     //获取 区/县
     getCounty (id) {
-      this.page = 1
       this.ListQuery.search['city'] = this.query(this.citylist, id)
       this.ListQuery.county = '' //清空上一次所选的区/县
       this.ListQuery.search['county_id'] = '' //清空上一次所选的区/县id
@@ -374,7 +406,6 @@ export default {
       this.init()
     },
     changeCounty (id) {
-      this.page = 1
       this.ListQuery.search['county_id'] = id
       this.init()
     },
@@ -390,7 +421,7 @@ export default {
       this.detailsVisible = true
       this.currentDetails = row
       try {
-        const res = await this.$axios.post("admin/UserAudit/detail", { token: this.token, sid: row.id, policy_id: row.policy_id, status: row.status, page: this.detailsPage })
+        const res = await this.$axios.post("admin/UserAudit/detail", { token: this.token, sid: row.id, policy_id: row.policy_id, status: row.status, page: this.detailsPage, ranker: 6 })
         this.detailsList = res.data.data.list || [];
         this.detailsCount = res.data.data.rows;
         this.$nextTick(() => {  //施工图放大
@@ -403,10 +434,6 @@ export default {
         throw (error)
       }
 
-    },
-
-    Export () {  //导出
-      window.location.href = `${this.baseURL}admin/Login/freeMain?ucp_company=${this.ListQuery.ucp_company}&search["province"]=${this.ListQuery.search['province']}&search["city"]=${this.ListQuery.search['city']}&search["county_id"]=${this.ListQuery.county}`
     },
     // handleSelectionChange (val) {  //全选/单选
     //   let tmp = []
@@ -438,7 +465,7 @@ export default {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {
               if (arr[i].son) {
-                if (arr[i].name == '免费保养') {
+                if (arr[i].name == '致敬老兵') {
                   this.seCurId = arr[i].id;
                   this.threeAuthList = arr[i].son;
                 }
@@ -446,7 +473,7 @@ export default {
                   if (arr[i].action != arr[i].son[j].action) {
                     arr[i].action = arr[i].son[0].action;
                   }
-                  if (arr[i].son[j].name == '已审核' && arr[i].name == '免费保养') {
+                  if (arr[i].son[j].name == '已驳回' && arr[i].name == '致敬老兵') {
                     this.thCurId = arr[i].son[j].id;
                   }
                 }

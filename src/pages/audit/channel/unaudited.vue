@@ -204,15 +204,11 @@
 
         </el-table-column>
         <el-table-column align="center"
-                         prop="rankers"
-                         label="类型">
+                         label="领取类型"
+                         prop="electronic_type">
+
         </el-table-column>
-        <el-table-column align="center"
-                         label="老兵姓名">
-          <template slot-scope="scope">
-            {{scope.row.ranker==6 ? scope.row.old_name : '无'}}
-          </template>
-        </el-table-column>
+
         <!-- <el-table-column align="center"
                          prop="vin"
                          label="vin码">
@@ -225,23 +221,7 @@
             {{scope.row.policy_num || '无'}}
           </template>
         </el-table-column> -->
-        <el-table-column align="center"
-                         prop=""
-                         label="保单图片/优待证">
-          <template slot-scope="scope">
 
-            <el-button type="text"
-                       v-if="scope.row.pc_img && scope.row.pc_img.length>0"
-                       @click="pcImgVisible=true,imgList=scope.row.pc_img,imgDetails()">详情</el-button>
-            <span v-else>无</span>
-
-          </template>
-        </el-table-column>
-        <el-table-column align="center"
-                         label="领取类型"
-                         prop="electronic_type">
-
-        </el-table-column>
         <el-table-column align="center"
                          label="申请时间"
                          prop="sale_time">

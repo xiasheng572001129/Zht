@@ -311,18 +311,13 @@ export default {
       }
       this.$axios.post('admin/AgentForward/reject', obj1)
         .then(res => {
-
-          if (!obj1.reason) {
-            layer.msg(res.data.msg);
-            this.$router.push({
-              path: 'Apply'
-            });
-          } else {
-            layer.msg(res.data.msg);
-            this.$router.push({
-              path: 'reject'
-            });
-          }
+             if(res.data.code==1){
+                 this.$message({message:res.data.msg,type:'success'})
+                 layer.closeAll()
+                 this.init()
+             }else{
+                 this.$message.error(res.data.msg)
+             }
         })
         .catch(err => console.log(err))
     },

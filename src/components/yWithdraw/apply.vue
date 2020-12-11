@@ -215,12 +215,11 @@ export default {
         page: this.page
       })
         .then(res => {
-
           if (res.data.code == 1) {
             this.list = res.data.data.list;
-
             this.pageCount = res.data.data.rows;
           } else {
+            this.list = res.data.data.list 
             layer.msg(res.data.msg)
           }
         })

@@ -565,3 +565,7 @@ body {
     margin: 0 auto;
     text-align: center;
 }
+
+.layui-layer-shade{
+    z-index: 8888 !important;
+}

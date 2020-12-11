@@ -154,7 +154,7 @@
         <button class="reject"
                 @click="reject">驳回</button>
         <button class='pass'
-                @click="pass">通过</button>
+                @click="pass" >通过</button>
       </div>
     </div>
   </div>
@@ -334,15 +334,12 @@ export default {
         main_phone: this.transferPhone
       })
         .then(res => {
-
           if (res.data.code == 1) {
             layer.closeAll();
             layer.msg(res.data.msg);
             this.init()
           } else {
-            this.alert(res.data.msg, '提示', {
-              type: 'error'
-            });
+              this.$message.error(res.data.msg)
           }
         })
         .catch(err => {

@@ -29,7 +29,7 @@
                      icon="el-icon-search"
                      @click="page=1,init()"></el-button>
         </el-input> -->
-        <el-select style="margin-right:10px"
+        <!-- <el-select style="margin-right:10px"
                    v-model="ListQuery.ucp_company"
                    placeholder="请选择保险公司"
                    @change="page=1,init()">
@@ -37,7 +37,7 @@
                      :key="index"
                      :label="item.company"
                      :value="item.id"></el-option>
-        </el-select>
+        </el-select> -->
         <el-date-picker v-model="pickerSearch"
                         type="daterange"
                         style="width:24%;margin-right:10px"
@@ -86,33 +86,12 @@
       </div>
       <el-table :data="list"
                 tooltip-effect="dark">
-        <!-- <el-table-column type="selection"
-                         width="55">
-        </el-table-column> -->
-        <!-- <el-table-column label="福利"
-                         align="center"
-                         prop="user_type">
-          <template slot-scope="scope">
-            <el-button type="text"
-                       v-if='scope.row.user_type==1'
-                       @click="details(scope.row)">保险公司</el-button>
-            <span v-else>
-              {{scope.row.user_type==1 ? '保险公司' : scope.row.user_type==2 ? '主机厂' : '其他类型'}}
-            </span>
-          </template>
-        </el-table-column> -->
-        <el-table-column prop="ucp_company"
+        <!-- <el-table-column prop="ucp_company"
                          label="保险公司名称"
-                         align="center"></el-table-column>
+                         align="center"></el-table-column> -->
         <el-table-column prop="company"
                          label="维修厂名称"
                          align="center"></el-table-column>
-        <!-- <el-table-column prop="phone"
-                         label="联系电话"
-                         align="center"></el-table-column>
-        <el-table-column prop="leader"
-                         label="负责人"
-                         align="center"></el-table-column> -->
         <el-table-column label="地区"
                          align="center">
 
@@ -133,7 +112,6 @@
         <el-table-column label="未复核数量"
                          align="center"
                          prop="num">
-
         </el-table-column>
 
         <el-table-column label="操作"
@@ -142,9 +120,7 @@
             <el-button type="primary"
                        size="mini"
                        @click="details(scope.row)">详情</el-button>
-
           </template>
-
         </el-table-column>
       </el-table>
 
@@ -178,50 +154,17 @@
             </div>
           </template>
         </el-table-column>
-        <!-- <el-table-column align="center"
-                         prop="ucp_company"
-                         label="保险公司名称">
-
-        </el-table-column>
-        <el-table-column align="center"
-                         prop="name"
-                         label="车辆名称">
-
-        </el-table-column>
-        <el-table-column align="center"
-                         prop="type"
-                         label="车辆类型">
-
-        </el-table-column>
-        <el-table-column align="center"
-                         prop="series"
-                         label="车排量">
-
-        </el-table-column> -->
-
         <el-table-column align="center"
                          label="老兵姓名">
           <template slot-scope="scope">
             {{scope.row.ranker==6 ? scope.row.old_name : '无'}}
           </template>
         </el-table-column>
-        <!-- <el-table-column align="center"
-                         prop="vin"
-                         label="vin码">
 
-        </el-table-column>
-        <el-table-column align="center"
-                         prop="policy_num"
-                         label="保单号">
-          <template slot-scope="scope">
-            {{scope.row.policy_num || '无'}}
-          </template>
-        </el-table-column> -->
         <el-table-column align="center"
                          prop=""
                          label="保单图片/优待证">
           <template slot-scope="scope">
-
             <el-button type="text"
                        v-if="scope.row.pc_img && scope.row.pc_img.length>0"
                        @click="pcImgVisible=true,imgList=scope.row.pc_img,imgDetails()">详情</el-button>
@@ -243,13 +186,6 @@
                          prop="audit_time"
                          label="保养时间">
         </el-table-column>
-        <!-- <el-table-column align="center"
-                         prop="end_time"
-                         label="结束时间">
-          <template slot-scope="scope">
-            {{scope.row.end_time || '无'}}
-          </template>
-        </el-table-column> -->
         <el-table-column min-width="100px"
                          label="操作"
                          align="center">
@@ -264,6 +200,7 @@
                        @click="rejecte(scope.row,scope.$index)">驳回</el-button>
           </template>
         </el-table-column>
+
       </el-table>
 
       <div class="page_center">
@@ -313,7 +250,7 @@ export default {
       detailsCount: 1,
       currentDetails: {},
       ListQuery: {
-        company: '',
+        // company: '',
         ucp_company: '',
         start_time: '',
         end_time: '',
@@ -450,7 +387,6 @@ export default {
     },
     //通过
     through (item, index) {
-
       this.$confirm('此操作将通过审核, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -458,7 +394,6 @@ export default {
         center: true
       }).then(async () => {
         try {
-
           this.throughLoading[index] = true
           const res = await this.$axios.post('admin/UserAudit/channelAdopt', { token: this.token, ucp_id: item.ucp_id, card_id: item.card_id })
           this.throughLoading[index] = false
@@ -477,7 +412,6 @@ export default {
     },
     //驳回
     rejecte (item, index) {
-
       this.$prompt('请输入驳回理由', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -502,7 +436,7 @@ export default {
       }).catch(() => { });
     },
 
-    Auth () {
+    Auth () {  //权限列表
       var id = this.$route.query.id;
       this.curId = id;
       this.$axios.post('admin/Auth/erAuth', {
@@ -510,7 +444,6 @@ export default {
         id: id
       })
         .then(res => {
-
           if (res.data.code == 1) {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {
@@ -543,7 +476,6 @@ export default {
     this.Auth()
     this.getProvince()
     this.getCompany()
-
   },
 }
 </script>

@@ -29,7 +29,7 @@
                      icon="el-icon-search"
                      @click="page=1,init()"></el-button>
         </el-input> -->
-        <el-select style="margin-right:10px"
+        <!-- <el-select style="margin-right:10px"
                    v-model="ListQuery.ucp_company"
                    placeholder="请选择保险公司"
                    @change="page=1,init()">
@@ -37,7 +37,7 @@
                      :key="index"
                      :label="item.company"
                      :value="item.id"></el-option>
-        </el-select>
+        </el-select> -->
         <!-- <el-date-picker v-model="pickerSearch"
                         type="daterange"
                         style="width:24%;margin-right:10px"
@@ -101,9 +101,9 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column prop="ucp_company"
+        <!-- <el-table-column prop="ucp_company"
                          label="保险公司名称"
-                         align="center"></el-table-column>
+                         align="center"></el-table-column> -->
         <el-table-column prop="company"
                          label="维修厂名称"
                          align="center"></el-table-column>
@@ -178,45 +178,12 @@
             </div>
           </template>
         </el-table-column>
-        <!-- <el-table-column align="center"
-                         prop="ucp_company"
-                         label="保险公司名称">
-
-        </el-table-column>
-        <el-table-column align="center"
-                         prop="name"
-                         label="车辆名称">
-
-        </el-table-column>
-        <el-table-column align="center"
-                         prop="type"
-                         label="车辆类型">
-
-        </el-table-column>
-        <el-table-column align="center"
-                         prop="series"
-                         label="车排量">
-
-        </el-table-column> -->
-
         <el-table-column align="center"
                          label="老兵姓名">
           <template slot-scope="scope">
             {{scope.row.ranker==6 ? scope.row.old_name : '无'}}
           </template>
         </el-table-column>
-        <!-- <el-table-column align="center"
-                         prop="vin"
-                         label="vin码">
-
-        </el-table-column>
-        <el-table-column align="center"
-                         prop="policy_num"
-                         label="保单号">
-          <template slot-scope="scope">
-            {{scope.row.policy_num || '无'}}
-          </template>
-        </el-table-column> -->
         <el-table-column align="center"
                          prop=""
                          label="保单图片/优待证">
@@ -229,20 +196,6 @@
 
           </template>
         </el-table-column>
-        <!-- <el-table-column align="center"
-                         prop="start_time"
-                         label="开始时间">
-          <template slot-scope="scope">
-            {{scope.row.start_time || '无'}}
-          </template>
-        </el-table-column>
-        <el-table-column align="center"
-                         prop="end_time"
-                         label="结束时间">
-          <template slot-scope="scope">
-            {{scope.row.end_time || '无'}}
-          </template>
-        </el-table-column> -->
         <el-table-column align="center"
                          label="驳回理由">
           <template slot-scope="scope">
@@ -318,7 +271,7 @@ export default {
       detailsCount: 1,
       currentDetails: {},
       ListQuery: {
-        company: '',
+        // company: '',
         ucp_company: '',
         start_time: '',
         end_time: '',

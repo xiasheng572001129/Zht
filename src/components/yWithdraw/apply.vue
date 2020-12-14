@@ -297,7 +297,7 @@ export default {
           })
         })
     },
-    reject: function () {
+    reject: function () {  //驳回
       var obj1 = this.obj;
       obj1 = {
         id: this.id,
@@ -320,7 +320,7 @@ export default {
         })
         .catch(err => console.log(err))
     },
-    pass: function () {
+    pass: function () {  //通过
       this.$axios.post('admin/AgentForward/adopt', {
         token: this.token,
         id: this.id,
@@ -339,45 +339,47 @@ export default {
         .catch(err => {
           alert(err);
         })
+    },
+    Auth(){  //权限列表
+        var id = this.$route.query.id;
+            this.curId = id;
+            this.$axios.post('admin/Auth/erAuth', {
+            token: window.sessionStorage.getItem('bbytoken'),
+            id: id
+            })
+            .then(res => {
+                if (res.data.code == 1) {
+                var arr = res.data.data;
+                for (var i = 0; i < arr.length; i++) {
+                    if (arr[i].son) {
+                    if (arr[i].name == '资金提现') {
+                        this.seCurId = arr[i].id;
+                        this.threeAuthList = arr[i].son;
+                    }
+                    for (var j = 0; j < arr[i].son.length; j++) {
+                        if (arr[i].action != arr[i].son[j].action) {
+                        arr[i].action = arr[i].son[0].action;
+                        }
+                        if (arr[i].son[j].name == '申请列表' && arr[i].name == '资金提现') {
+                        this.thCurId = arr[i].son[j].id;
+                        }
+                    }
+                    }
+                }
+                this.authList = arr;
+                } else {
+                this.$alert(res.data.msg, '提示', {
+                    type: 'error'
+                });
+                }
+            })
+            .catch(err => {
+                alert(err);
+            })
     }
   },
   mounted () {
-    var id = this.$route.query.id;
-    this.curId = id;
-    this.$axios.post('admin/Auth/erAuth', {
-      token: window.sessionStorage.getItem('bbytoken'),
-      id: id
-    })
-      .then(res => {
-
-        if (res.data.code == 1) {
-          var arr = res.data.data;
-          for (var i = 0; i < arr.length; i++) {
-            if (arr[i].son) {
-              if (arr[i].name == '资金提现') {
-                this.seCurId = arr[i].id;
-                this.threeAuthList = arr[i].son;
-              }
-              for (var j = 0; j < arr[i].son.length; j++) {
-                if (arr[i].action != arr[i].son[j].action) {
-                  arr[i].action = arr[i].son[0].action;
-                }
-                if (arr[i].son[j].name == '申请列表' && arr[i].name == '资金提现') {
-                  this.thCurId = arr[i].son[j].id;
-                }
-              }
-            }
-          }
-          this.authList = arr;
-        } else {
-          this.$alert(res.data.msg, '提示', {
-            type: 'error'
-          });
-        }
-      })
-      .catch(err => {
-        alert(err);
-      })
+    this.Auth()
   },
   created () {
     this.init();

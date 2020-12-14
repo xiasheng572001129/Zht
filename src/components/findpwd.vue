@@ -49,7 +49,6 @@ export default {
     submit () {
       this.$axios.post('admin/Login/forget', this.obj).then(res => {
         var that = this;
-
         if (res.data.status == 1)
           layer.msg(res.data.msg, function () {
             that.$router.push({ name: "login" })
@@ -58,9 +57,9 @@ export default {
 
     },
     sendyzm () {
-      if (!this.obj.phone) alert('请输入手机号')
+      if (!this.obj.phone) alert('请输入手机号') 
       else if (!/^[1][3,4,5,7,8][0-9]{9}$/.test(this.obj.phone)) alert('手机号格式不正确')
-      else {  //手机号有并且正确
+      else {  //手机号有并且正确    
         var that = this;
         that.isdisabled = true;
         var interval = window.setInterval(function () {//按钮的值

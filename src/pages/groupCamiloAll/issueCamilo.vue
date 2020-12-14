@@ -217,7 +217,7 @@ export default {
         name: '', //渠道名称
         num: '', //卡数量
         photo: '',  //保险公司图片
-        month: '', //过期时间
+        month: '12月', //过期时间
       },
       channelRules: { //添加渠道form规则验证
         name: { required: true, message: '请输入渠道名称', trigger: 'blur' },
@@ -258,15 +258,19 @@ export default {
     async init () {
       try {
         const res = await this.$axios.post('admin/GroupSetCity/allGroupList', { token: this.token, page: this.page })
-        this.list = res.data.data.list || []
-        this.pageCount = res.data.data.rows || 1
+         let data = res.data.data.list || []
+         data.forEach(item => {
+            item = Object.assign(item, { month:'12月' })
+         })
+         this.list = data || []
+         this.pageCount = res.data.data.rows || 1
       } catch (error) {
-
+        this.$message.error('接口报错,请检查')  
+        throw(error)
       }
     },
     async querySearch (queryString, cb) {  //关键字搜索
       try {
-
         const res = await this.$axios.post('admin/GroupSetCity/searchList', { token: this.token })
         let restaurants = res.data.data || []   //获取所有关键字
         let results = [] //搜索的关键字
@@ -287,14 +291,13 @@ export default {
       this.$refs.channelForm.validate(async valid => {
         if (valid) {
           try {
-
             this.channelLoaading = true
             const res = await this.$axios.post('admin/GroupSetCity/allChannelAdd', Object.assign(this.channelList, { token: this.token }))
             this.channelLoaading = false
             if (res.data.code == 1) {
               this.$message({ message: res.data.msg, type: "success" })
               this.addChannelVisible = false
-              window.location.href = `${this.baseURL}admin/Export/freeCode?id=${res.data.data}&name=${this.channelList.name}&num=${this.channelList.num}&month=${this.channelList.month}`
+              window.location.href = `${this.baseURL}admin/Export/freeCode?id=${res.data.data}&name=${this.channelList.name}&num=${this.channelList.num}&month=${parseInt(this.channelList.month)}`
               this.init()
             } else {
               this.$message.error(res.data.msg)
@@ -340,7 +343,7 @@ export default {
     handleSelectionChange (val) {  //获取选中的保险公司
 
       let checkedCompany = val.map((v) => {
-        return Object.assign(v, { month: '' })
+        return Object.assign(v, { month: v.month ? v.month : '12月' })
       })
       this.checkedCompany = checkedCompany
     },
@@ -372,7 +375,7 @@ export default {
       let required = false
       this.list.forEach((item, index) => {
         console.log(item)
-        data.push({ channel_id: item.id, card_num: item.card_num, month: item.month, city_id: 0 })
+        data.push({ channel_id: item.id, card_num: item.card_num, month: parseInt(item.month), city_id: 0 })
         if (item.card_num) {
           required = true
         } else {

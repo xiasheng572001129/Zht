@@ -19,5 +19,5 @@ export default {
 }
 .el-message {
   z-index: 9999 !important;
-}
+}   
 </style>

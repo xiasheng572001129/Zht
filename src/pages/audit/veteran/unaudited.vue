@@ -163,7 +163,7 @@
 
         <el-table-column align="center"
                          prop=""
-                         label="保单图片/优待证">
+                         label="优待证">
           <template slot-scope="scope">
             <el-button type="text"
                        v-if="scope.row.pc_img && scope.row.pc_img.length>0"

@@ -252,7 +252,7 @@ export default {
         name: '', //渠道名称
         num: '', //卡数量
         photo: '',  //保险公司图片
-        month: '', //过期时间
+        month: '12', //过期时间
       },
       channelRules: { //添加渠道form规则验证
         name: { required: true, message: '请输入渠道名称', trigger: 'blur' },
@@ -295,7 +295,7 @@ export default {
         const res = await this.$axios.post('admin/ChannelSetCity/channelList', { token: this.token, city_id: id })
         let data = res.data.data || []
         data.forEach(item => {
-          item = Object.assign(item, { card_num: '' })
+          item = Object.assign(item, { card_num: '', month:'12月' })
         })
         this.list = data || []
 
@@ -411,7 +411,7 @@ export default {
     },
     handleSelectionChange (val) {  //获取选中的保险公司
       let checkedCompany = val.map((v) => {
-        return Object.assign(v, { month: '' })
+        return Object.assign(v, { month:  v.month ? v.month : '12月' })
       })
       this.checkedCompany = checkedCompany
     },
@@ -444,7 +444,7 @@ export default {
       let data = [];
       let required = false
       this.checkedCompany.forEach((item, index) => {
-        data.push({ city_id: item.city_id, channel_id: item.id, card_num: item.card_num, month: item.month })
+        data.push({ city_id: item.city_id, channel_id: item.id, card_num: item.card_num, month: parseInt(item.month) })
         if (item.card_num) {
           required = true
         } else {

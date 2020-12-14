@@ -124,10 +124,8 @@ export default {
         page: this.page
       })
         .then(res => {
-
           if (res.data.code == 1) {
             this.list = res.data.data.list;
-
             this.showpage(res.data.data);
             this.pageCount = res.data.data.rows;
           }
@@ -143,7 +141,6 @@ export default {
       id: id
     })
       .then(res => {
-
         if (res.data.code == 1) {
           var arr = res.data.data;
           for (var i = 0; i < arr.length; i++) {

@@ -181,6 +181,17 @@
             </div>
           </template>
         </el-table-column>
+        <el-table-column align="center"
+                            prop=""
+                            label="保单图片">
+                            <template slot-scope="scope">
+                                <el-button type="text"
+                                        v-if="scope.row.pc_img && scope.row.pc_img.length>0"
+                                        @click="pcImgVisible=true,imgList=scope.row.pc_img,imgDetails()">详情</el-button>
+                                <span v-else>无</span>
+
+                            </template>
+        </el-table-column>
         <!-- <el-table-column align="center"
                          prop="ucp_company"
                          label="保险公司名称">

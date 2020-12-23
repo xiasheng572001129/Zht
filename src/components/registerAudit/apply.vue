@@ -11,7 +11,7 @@
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele"><i></i>配送中心-注册审核-未审核</div>
+        <div class="quote-ele"><i></i>配送中心-油品审核-未审核</div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
                        v-for="item in threeAuthList"
@@ -78,10 +78,7 @@
             <div class="details_content">
               <div class="youpin">
                 <div class="details_content-abs">
-                  <div class="center">支付凭证</div>
-                  <div class="center"><img :src="usecost"
-                         ref='usecost'
-                         style="width: 200px;height: 100px;margin:10px 0"></div>
+
                   <el-form label-position="left"
                            style="margin-left:58px;padding-right:58px;box-sizing: border-box;">
                     <el-form-item v-show='type==1'>
@@ -420,9 +417,7 @@ export default {
         this.CityPhone = res.data.data.phone || ''
         this.detailArea(row.id)
         this.selectAgent(row.id, row.aid)
-        this.$nextTick(() => {
-          Viewer(this.$refs.usecost)
-        })
+
       } catch (error) {
         throw (error)
       }
@@ -542,7 +537,7 @@ export default {
           var arr = res.data.data;
           for (var i = 0; i < arr.length; i++) {
             if (arr[i].son) {
-              if (arr[i].name == '注册审核') {
+              if (arr[i].name == '油品审核') {
                 this.seCurId = arr[i].id;
                 this.threeAuthList = arr[i].son;
               }
@@ -550,7 +545,7 @@ export default {
                 if (arr[i].action != arr[i].son[j].action) {
                   arr[i].action = arr[i].son[0].action;
                 }
-                if (arr[i].son[j].name == '未审核' && arr[i].name == '注册审核') {
+                if (arr[i].son[j].name == '未审核' && arr[i].name == '油品审核') {
                   this.thCurId = arr[i].son[j].id;
                 }
               }

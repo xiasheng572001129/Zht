@@ -341,7 +341,6 @@ export default {
     },
 
     handleSelectionChange (val) {  //获取选中的保险公司
-
       let checkedCompany = val.map((v) => {
         return Object.assign(v, { month: v.month ? v.month : '12月' })
       })

@@ -49,11 +49,9 @@
         <el-table-column prop="leader"
                          label="负责人"
                          align="center"></el-table-column>
-
         <el-table-column label="联系电话"
                          align="center"
                          prop="phone">
-
         </el-table-column>
         <el-table-column label="取消理由"
                          align="center">

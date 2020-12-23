@@ -183,12 +183,6 @@ export default {
     }
   },
   methods: {
-    go: page.go,
-    first: page.first,
-    end: page.end,
-    prev: page.prev,
-    next: page.next,
-    showpage: page.showpage,
     paging (e) {
       this.page = e;
       this.init()
@@ -224,7 +218,6 @@ export default {
     },
     //通过
     pass () {
-
       var obj1 = {
         id: this.obj.id,
         aid: this.aid,
@@ -238,7 +231,6 @@ export default {
       }
       this.$axios.post('admin/AgentCancel/adopt', obj1)
         .then(res => {
-
           if (res.data.code == 1) {
             layer.msg(res.data.msg);
             setTimeout(() => {
@@ -266,7 +258,6 @@ export default {
       }
       this.$axios.post('admin/AgentCancel/reject', obj1)
         .then(res => {
-
           if (res.data.code == 1) {
             layer.msg(res.data.msg);
             setTimeout(() => {
@@ -295,43 +286,45 @@ export default {
           this.arealist = res.data.data
 
         })
-    }
-  },
-  mounted () {
-    var id = this.$route.query.id;
-    this.curId = id;
-    this.$axios.post('admin/Auth/erAuth', {
-      token: window.sessionStorage.getItem('bbytoken'),
-      id: id
-    })
-      .then(res => {
-
-        if (res.data.code == 1) {
-          var arr = res.data.data;
-          for (var i = 0; i < arr.length; i++) {
-            if (arr[i].son) {
-              if (arr[i].name == '取消合作') {
-                this.seCurId = arr[i].id;
-                this.threeAuthList = arr[i].son;
-              }
-              for (var j = 0; j < arr[i].son.length; j++) {
-                if (arr[i].action != arr[i].son[j].action) {
-                  arr[i].action = arr[i].son[0].action;
+    },
+    Auth () {  //权限列表
+      var id = this.$route.query.id;
+      this.curId = id;
+      this.$axios.post('admin/Auth/erAuth', {
+        token: window.sessionStorage.getItem('bbytoken'),
+        id: id
+      })
+        .then(res => {
+          if (res.data.code == 1) {
+            var arr = res.data.data;
+            for (var i = 0; i < arr.length; i++) {
+              if (arr[i].son) {
+                if (arr[i].name == '取消合作') {
+                  this.seCurId = arr[i].id;
+                  this.threeAuthList = arr[i].son;
                 }
-                if (arr[i].son[j].name == '申请列表' && arr[i].name == '取消合作') {
-                  this.thCurId = arr[i].son[j].id;
+                for (var j = 0; j < arr[i].son.length; j++) {
+                  if (arr[i].action != arr[i].son[j].action) {
+                    arr[i].action = arr[i].son[0].action;
+                  }
+                  if (arr[i].son[j].name == '申请列表' && arr[i].name == '取消合作') {
+                    this.thCurId = arr[i].son[j].id;
+                  }
                 }
               }
             }
+            this.authList = arr;
+          } else {
+            this.$alert(res.data.msg, '提示', { type: 'error' });
           }
-          this.authList = arr;
-        } else {
-          this.$alert(res.data.msg, '提示', { type: 'error' });
-        }
-      })
-      .catch(err => {
-        alert(err);
-      })
+        })
+        .catch(err => {
+          alert(err);
+        })
+    }
+  },
+  mounted () {
+    this.Auth()
   },
 }
 </script>

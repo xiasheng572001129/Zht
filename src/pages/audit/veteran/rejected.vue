@@ -188,7 +188,6 @@
                          prop=""
                          label="优待证">
           <template slot-scope="scope">
-
             <el-button type="text"
                        v-if="scope.row.pc_img && scope.row.pc_img.length>0"
                        @click="pcImgVisible=true,imgList=scope.row.pc_img,imgDetails()">详情</el-button>

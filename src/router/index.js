@@ -361,6 +361,60 @@ const routes = [
 
     },
 
+    { //配送中心-机滤审核
+        path: '/distributionCenter/filter',
+        redirect: '/distributionCenter/filter/unaudited'
+    },
+    { //配送中心-机滤审核-未审核
+        path: '/distributionCenter/filter/unaudited',
+        component: () => import('@/pages/distributionCenter/filter/unaudited'),
+        meta: {
+            auth: true
+        }
+    },
+    { //配送中心-机滤审核-已审核
+        path: '/distributionCenter/filter/audited',
+        component: () => import('@/pages/distributionCenter/filter/audited'),
+        meta: {
+            auth: true
+        }
+    },
+    { //配送中心-机滤审核-已驳回
+        path: '/distributionCenter/filter/rejected',
+        component: () => import('@/pages/distributionCenter/filter/rejected'),
+        meta: {
+            auth: true
+        }
+    },
+
+
+    { //配送中心-活动产品审核
+        path: '/distributionCenter/activity',
+        redirect: '/distributionCenter/activity/unaudited'
+    },
+    { //配送中心-活动产品审核-未审核
+        path: '/distributionCenter/activity/unaudited',
+        component: () => import('@/pages/distributionCenter/activity/unaudited'),
+        meta: {
+            auth: true
+        }
+    },
+    { //配送中心-活动产品审核-已审核
+        path: '/distributionCenter/activity/audited',
+        component: () => import('@/pages/distributionCenter/activity/audited'),
+        meta: {
+            auth: true
+        }
+    },
+    { //配送中心-活动产品审核-已驳回
+        path: '/distributionCenter/activity/rejected',
+        component: () => import('@/pages/distributionCenter/activity/rejected'),
+        meta: {
+            auth: true
+        }
+    },
+
+
     //提现复核
     {
         path: '/withdrawalReview',
@@ -1201,8 +1255,6 @@ const routes = [
     },
 
 
-
-
     {  //审核-服务工号审核-已审核
         path: '/audit/serviceCode/audited',
         component: () => import('@/pages/audit/serviceCode/audited'),
@@ -1354,7 +1406,6 @@ const routes = [
 
 
 
-
     { //系统设置-致敬老兵卡密
         path: '/ststemSet/veteranCamilo',
         component: () => import('@/pages/veteranCamilo/issueCamilo'),
@@ -1362,6 +1413,12 @@ const routes = [
             auth: true
         }
     },
+
+    { //系统设置-每日一题
+        path: '/ststemSet/answer',
+        component: () => import('@/pages/systemSettings/answer')
+    },
+
 
 
 
@@ -1601,6 +1658,27 @@ const routes = [
         path: '/dataAnalysis/index',
         component: () => import("@/pages/dataAnalysis/list"),
         math: {
+            auth: true
+        }
+    },
+
+
+    //公司暂存库
+    {
+        path: '/stagingLibrary',
+        redirect: '/stagingLibrary/list'
+    },
+    { //公司暂存库-暂存库列表
+        path: '/stagingLibrary/list',
+        component: () => import('@/pages/stagingLibrary/list'),
+        meta: {
+            auth: true
+        }
+    },
+    { //公司暂存库-已转列表
+        path: '/stagingLibrary/turnList',
+        component: () => import('@/pages/stagingLibrary/turnList'),
+        meta: {
             auth: true
         }
     }

@@ -415,6 +415,29 @@ const routes = [
     },
 
 
+    {  //配送中心-配送费提现
+        path: '/distributionCenter/fee',
+        redirect: '/distributionCenter/fee/unaudited'
+    },
+    {  //配送中心-配送费提现-未审核
+        path: '/distributionCenter/fee/unaudited',
+        component: () => import('@/pages/distributionCenter/fee/unaudited'),
+        meta: {
+            auth: true
+        }
+    },
+    {  //配送中心-配送费提现-已审核
+        path: '/distributionCenter/fee/audited',
+        component: () => import('@/pages/distributionCenter/fee/audited'),
+        meta: {
+            auth: true
+        }
+    },
+   
+
+
+
+
     //提现复核
     {
         path: '/withdrawalReview',

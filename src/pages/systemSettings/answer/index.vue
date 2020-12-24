@@ -80,16 +80,57 @@
       <el-dialog title="添加题目"
                  :visible.sync='addTitleVisible'
                  center
-                 width="40%">
-        <div v-for="(item,index) in option"
-             :key="index">
-          <p> {{item.letter}}</p>
-          <p>
-            <el-input />
-          </p>
+                 width="30%"
+                 @close='()=>{
+                     addData = $options.data().addData
+                 }'>
+        <el-form label-width="70px"
+                 :rules="rules"
+                 :model="addData"
+                 ref="form">
+          <el-form-item label="题目"
+                        prop="title">
+            <el-input type="textarea"
+                      :autosize="{ minRows: 2, maxRows: 4}"
+                      placeholder="请输入题目"
+                      v-model="addData.title">
+            </el-input>
+          </el-form-item>
+          <el-form-item label="选项">
+            <div v-for="(item,index) in addData.option"
+                 :key="index">
+              <el-form-item :prop="'option.'+index+'.option'"
+                            :rules="rules.option">
+                <div class="Addoption-item">
+                  <p><b>{{index | filterKey}}</b></p>
+                  <p>
+                    <el-input v-model="item.option"
+                              placeholder="请输入选项内容" />
+                  </p>
+                </div>
 
-        </div>
-        <el-button>添加</el-button>
+              </el-form-item>
+            </div>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button class="addOption"
+                       type="primary"
+                       @click="addOption()"
+                       :disabled='addData.option.length>=3'>添加选项</el-button>
+          </el-form-item>
+          <el-form-item label="答案"
+                        prop="answer">
+            <el-input v-model="addData.answer"
+                      placeholder="请输入答案" />
+          </el-form-item>
+        </el-form>
+        <span slot="footer"
+              class="dialog-footer">
+
+          <el-button type="primary"
+                     @click="add()">确 定</el-button>
+        </span>
       </el-dialog>
 
       <!-- 分页 -->
@@ -119,9 +160,27 @@ export default {
       optionVisible: false, //选项详情弹框显示状态
       optionList: [], //选项详情列表
       addTitleVisible: false, //添加题目弹框显示状态
-      option: [
+      addData: {  //添加题目 
+        title: '', //题目
+        option: [ //选项
+          {
+            option: ''
+          }
+        ],
+        answer: '' //答案
+      },
+      rules: { //添加题目规则验证
+        title: { required: true, message: '请输入题目', trigger: 'blur' },
+        option: { required: true, message: '请输入选项', trigger: 'blur' },
+        answer: { required: true, message: '请输入答案', trigger: 'blur' }
+      }
 
-      ]
+    }
+  },
+  filters: {
+    filterKey (v) {
+      let key = ['A', 'B', 'C']
+      return key[v]
     }
   },
   methods: {
@@ -139,7 +198,38 @@ export default {
         throw (error)
       }
     },
+    addOption () {  //添加选项
+      this.addData.option.push({ option: '' })
+    },
+    add () {  //提交添加的内容
+      this.$nextTick(() => {
+        this.$refs.form.validate(async (valid) => {
+          if (valid) {
+            try {
+              let key = ['A', 'B', 'C']
+              this.addData.option.forEach((item, index) => {  //把下标 0 1 2  转换成 A B C
+                item = Object.assign(item, { letter: key[index] })
+              })
+              const res = await this.$axios.post('admin/ShopQuestion/addAnswer', Object.assign(this.addData, { token: this.token }))
+              if (res.data.code == 1) {
+                this.$message({ message: res.data.msg, type: 'success' })
+                this.addTitleVisible = false
+                this.init()
+              } else {
+                this.$message.error(res.data.msg)
+              }
+            } catch (error) {
+              this.$message.error('接口报错,请检查')
+              throw (error)
+            }
+          } else {
+            return false;
+          }
+        });
+      })
 
+
+    },
     Auth () { //权限列表
       var id = this.$route.query.id;
       this.curId = id;
@@ -188,5 +278,18 @@ export default {
 .addTitle {
   float: right;
   margin: 20px 60px 0 0;
+}
+
+.Addoption-item {
+  border: 1px solid #ebeef5;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px;
+  padding: 10px 10px;
+  text-align: center;
+}
+.Addoption-item p {
+}
+.addOption {
+  width: 100%;
 }
 </style>

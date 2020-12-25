@@ -211,13 +211,13 @@
                       </div>
                     </div>
                   </li>
-                  <li>
+                  <!-- <li>
                     <div>送货延迟罚款</div>
                     <div class="right_border-bottom">
                       <input type="text"
                              v-model="delay_fine">
                     </div>
-                  </li>
+                  </li> -->
                   <li>
                     <div>配送费元/升</div>
                     <div class="right_border-bottom">
@@ -487,8 +487,8 @@ export default {
     },
     adopt () {
       this.gid = this.prosyList.id ? this.prosyList.id : this.gid
-      if (!(this.delay_fine && this.gid)) {
-        this.$message.error('供应商/送货延迟罚款不能为空')
+      if (!(this.gid)) {
+        this.$message.error('供应商不能为空')
         return;
       }
       this.$confirm('此操作将通过审核, 是否继续?', '提示', {
@@ -498,7 +498,7 @@ export default {
       }).then(async () => {
         try {
           this.adoptLoading = true
-          const res = await this.$axios.post('admin/AgentAuditList/adopt', { token: this.token, delay_fine: this.delay_fine, gid: this.gid, number: this.choose == 2 || this.type == 2 ? this.CurrentGroup : '', aid: this.aid, type: this.Type, id: this.id, old_aid: this.type == 1 && this.old_aid, cancel_id: this.type == 1 && this.cancel_id, delivery_fee: this.prosyList.delivery_fee, cid: this.regionList.cityId })
+          const res = await this.$axios.post('admin/AgentAuditList/adopt', { token: this.token, gid: this.gid, number: this.choose == 2 || this.type == 2 ? this.CurrentGroup : '', aid: this.aid, type: this.Type, id: this.id, old_aid: this.type == 1 && this.old_aid, cancel_id: this.type == 1 && this.cancel_id, delivery_fee: this.prosyList.delivery_fee, cid: this.regionList.cityId })
           this.adoptLoading = false
           if (res.data.code == 1) {
             this.materialVisible = false

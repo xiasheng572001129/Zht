@@ -11,7 +11,7 @@
     </ctbHead>
     <div class="container">
       <div class="quote">
-        <div class="quote-ele"><i></i>配送中心-资金提现</div>
+        <div class="quote-ele"><i></i>配送中心-车补提现</div>
         <div class="quote-nav">
           <router-link :class="thCurId==item.id? 'cur':''"
                        v-for="item in threeAuthList"
@@ -141,7 +141,7 @@ export default {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {
               if (arr[i].son) {
-                if (arr[i].name == '资金提现') {
+                if (arr[i].name == '车补提现') {
                   this.seCurId = arr[i].id;
                   this.threeAuthList = arr[i].son;
                 }
@@ -149,7 +149,7 @@ export default {
                   if (arr[i].action != arr[i].son[j].action) {
                     arr[i].action = arr[i].son[0].action;
                   }
-                  if (arr[i].son[j].name == '驳回列表' && arr[i].name == '资金提现') {
+                  if (arr[i].son[j].name == '驳回列表' && arr[i].name == '车补提现') {
                     this.thCurId = arr[i].son[j].id;
                   }
                 }

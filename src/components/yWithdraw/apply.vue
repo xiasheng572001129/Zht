@@ -28,7 +28,7 @@
             <th>联系电话</th>
             <th>负责人</th>
             <th>提现金额</th>
-            <th>类型</th>
+
             <th>账户信息</th>
             <th>申请时间</th>
             <th>操作</th>
@@ -41,7 +41,7 @@
             <td>{{item.phone}}</td>
             <td>{{item.leader}}</td>
             <td>{{item.money}}</td>
-            <td>{{item.type}}</td>
+
             <td>
               <el-popover placement="bottom"
                           title="账户信息详情"
@@ -71,10 +71,10 @@
             </td>
             <td>{{item.create_time}}</td>
             <td>
-              <a href="javascript:;"
+              <!-- <a href="javascript:;"
                  @click="income(item.aid)">收入明细</a>
               <a href="javascript:;"
-                 @click="withdraw(item.aid)">提现明细</a>
+                 @click="withdraw(item.aid)">提现明细</a> -->
               <a href="javascript:;"
                  @click="check(item.aid,item.phone,item.id)">审核</a>
             </td>
@@ -154,7 +154,7 @@
         <button class="reject"
                 @click="reject">驳回</button>
         <button class='pass'
-                @click="pass" >通过</button>
+                @click="pass">通过</button>
       </div>
     </div>
   </div>
@@ -219,7 +219,7 @@ export default {
             this.list = res.data.data.list;
             this.pageCount = res.data.data.rows;
           } else {
-            this.list = res.data.data.list 
+            this.list = res.data.data.list
             layer.msg(res.data.msg)
           }
         })
@@ -310,13 +310,13 @@ export default {
       }
       this.$axios.post('admin/AgentForward/reject', obj1)
         .then(res => {
-             if(res.data.code==1){
-                 this.$message({message:res.data.msg,type:'success'})
-                 layer.closeAll()
-                 this.init()
-             }else{
-                 this.$message.error(res.data.msg)
-             }
+          if (res.data.code == 1) {
+            this.$message({ message: res.data.msg, type: 'success' })
+            layer.closeAll()
+            this.init()
+          } else {
+            this.$message.error(res.data.msg)
+          }
         })
         .catch(err => console.log(err))
     },
@@ -333,49 +333,49 @@ export default {
             layer.msg(res.data.msg);
             this.init()
           } else {
-              this.$message.error(res.data.msg)
+            this.$message.error(res.data.msg)
           }
         })
         .catch(err => {
           alert(err);
         })
     },
-    Auth(){  //权限列表
-        var id = this.$route.query.id;
-            this.curId = id;
-            this.$axios.post('admin/Auth/erAuth', {
-            token: window.sessionStorage.getItem('bbytoken'),
-            id: id
-            })
-            .then(res => {
-                if (res.data.code == 1) {
-                var arr = res.data.data;
-                for (var i = 0; i < arr.length; i++) {
-                    if (arr[i].son) {
-                    if (arr[i].name == '资金提现') {
-                        this.seCurId = arr[i].id;
-                        this.threeAuthList = arr[i].son;
-                    }
-                    for (var j = 0; j < arr[i].son.length; j++) {
-                        if (arr[i].action != arr[i].son[j].action) {
-                        arr[i].action = arr[i].son[0].action;
-                        }
-                        if (arr[i].son[j].name == '申请列表' && arr[i].name == '资金提现') {
-                        this.thCurId = arr[i].son[j].id;
-                        }
-                    }
-                    }
+    Auth () {  //权限列表
+      var id = this.$route.query.id;
+      this.curId = id;
+      this.$axios.post('admin/Auth/erAuth', {
+        token: window.sessionStorage.getItem('bbytoken'),
+        id: id
+      })
+        .then(res => {
+          if (res.data.code == 1) {
+            var arr = res.data.data;
+            for (var i = 0; i < arr.length; i++) {
+              if (arr[i].son) {
+                if (arr[i].name == '资金提现') {
+                  this.seCurId = arr[i].id;
+                  this.threeAuthList = arr[i].son;
                 }
-                this.authList = arr;
-                } else {
-                this.$alert(res.data.msg, '提示', {
-                    type: 'error'
-                });
+                for (var j = 0; j < arr[i].son.length; j++) {
+                  if (arr[i].action != arr[i].son[j].action) {
+                    arr[i].action = arr[i].son[0].action;
+                  }
+                  if (arr[i].son[j].name == '申请列表' && arr[i].name == '资金提现') {
+                    this.thCurId = arr[i].son[j].id;
+                  }
                 }
-            })
-            .catch(err => {
-                alert(err);
-            })
+              }
+            }
+            this.authList = arr;
+          } else {
+            this.$alert(res.data.msg, '提示', {
+              type: 'error'
+            });
+          }
+        })
+        .catch(err => {
+          alert(err);
+        })
     }
   },
   mounted () {

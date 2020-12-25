@@ -28,7 +28,6 @@
             <th>联系电话</th>
             <th>负责人</th>
             <th>提现金额</th>
-            <th>类型</th>
             <th>账户信息</th>
             <th>申请时间</th>
             <th>通过时间</th>
@@ -41,7 +40,6 @@
             <td>{{item.phone}}</td>
             <td>{{item.leader}}</td>
             <td>{{item.money}}</td>
-            <td>{{item.type}}</td>
             <td>
               <el-popover placement="bottom"
                           title="账户信息详情"

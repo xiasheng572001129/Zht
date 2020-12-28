@@ -194,7 +194,7 @@ export default {
       }).then(async ({ value }) => {
         try {
           this.rejectLoading[index] = true
-          const res = await this.$axios.post('admin/AgentWithdrawal/reject', { token: this.token, id: item.id, phone: item.phone, reason: value })   //id 提现id  phone 手机号  reason 驳回理由
+          const res = await this.$axios.post('admin/AgentWithdrawal/reject', { token: this.token, id: item.id, phone: item.phone, reason: value, type: item.type })   //id 提现id  phone 手机号  reason 驳回理由
           this.rejectLoading[index] = false
           if (res.data.code == 1) {
             this.$message({ message: res.data.msg, type: 'success' })
@@ -217,7 +217,7 @@ export default {
       }).then(async () => {
         try {
           this.adoptLoading[index] = true
-          const res = await this.$axios.post('admin/AgentWithdrawal/adopt', { token: this.token, id: item.id })   //id 提现id
+          const res = await this.$axios.post('admin/AgentWithdrawal/adopt', { token: this.token, id: item.id, type: item.type })   //id 提现id
           this.adoptLoading[index] = false
           if (res.data.code == 1) {
             this.$message({ message: res.data.msg, type: "success" })

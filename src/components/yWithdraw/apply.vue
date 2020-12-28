@@ -28,7 +28,6 @@
             <th>联系电话</th>
             <th>负责人</th>
             <th>提现金额</th>
-
             <th>账户信息</th>
             <th>申请时间</th>
             <th>操作</th>
@@ -41,7 +40,6 @@
             <td>{{item.phone}}</td>
             <td>{{item.leader}}</td>
             <td>{{item.money}}</td>
-
             <td>
               <el-popover placement="bottom"
                           title="账户信息详情"
@@ -101,7 +99,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in incomelist">
+          <tr v-for="(item,index) in incomelist"
+              :key="index">
             <td>配送费</td>
             <td>{{item.amount}}</td>
             <td>{{item.create_time}}</td>
@@ -121,7 +120,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in withlist">
+          <tr v-for="(item,index) in withlist"
+              :key="index">
             <td>{{item.money}}</td>
             <td>{{item.sur_amount}}</td>
             <td v-if="item.audit_time!=''">{{item.audit_time|datetime}}</td>

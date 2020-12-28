@@ -68,7 +68,6 @@ export default {
       seCurId: '',
       authList: [],
       threeAuthList: [],
-
     }
   },
   methods: {

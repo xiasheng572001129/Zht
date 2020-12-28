@@ -1,32 +1,36 @@
 <template>
   <div class='Addresslist'>
     <ctbHead>
-      <router-link active-class="cur"  v-for="(item,index) in authList" :key="item.id" :to="{path:item.action,query:{id:curId}}" :v-key="item.id">
+      <router-link active-class="cur"
+                   v-for="(item,index) in authList"
+                   :key="item.id"
+                   :to="{path:item.action,query:{id:curId}}"
+                   :v-key="item.id">
         {{item.name}}
-        <el-badge v-show='index==2 && $store.state.policyNumber>0' :value="$store.state.policyNumber" :max='99' class="item" >
+        <el-badge v-show='index==2 && $store.state.policyNumber>0'
+                  :value="$store.state.policyNumber"
+                  :max='99'
+                  class="item">
         </el-badge>
       </router-link>
     </ctbHead>
     <div class="container">
-        <router-view />
+      <router-view />
     </div>
-  </div> 
+  </div>
 </template>
 <script type="text/ecmascript-6">
-  export default {
-    data() {
-      return {
-        list: [],
-        authList:'',
-        seCurId:'',
-        curId:'',
-      }
-    },
-    methods:{
-        
-    },
-    mounted() {
-     
+export default {
+  data () {
+    return {
+      list: [],
+      authList: '',
+      seCurId: '',
+      curId: '',
+    }
+  },
+  methods: {
+    Auth () {  //权限列表
       var id = this.$route.query.id;
       this.curId = id;
       this.$axios.post('admin/Auth/erAuth', {
@@ -34,11 +38,9 @@
         id: id
       })
         .then(res => {
-          
-          if(res.data.code == 1) {
+          if (res.data.code == 1) {
             var arr = res.data.data;
             this.authList = arr;
-          
           } else {
             this.$alert(res.data.msg, '提示', {
               type: 'error'
@@ -49,8 +51,11 @@
           alert(err);
         })
     }
+  },
+  mounted () {
+    this.Auth()
   }
+}
 </script>
 <style scoped>
-   
 </style>

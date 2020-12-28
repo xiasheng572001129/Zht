@@ -74,7 +74,7 @@
               <a href="javascript:;"
                  @click="withdraw(item.aid)">提现明细</a> -->
               <a href="javascript:;"
-                 @click="check(item.aid,item.phone,item.id)">审核</a>
+                 @click="check(item.aid,item.phone,item.id,item.types)">审核</a>
             </td>
           </tr>
         </tbody>
@@ -276,12 +276,13 @@ export default {
           else layer.msg(res.data.msg);
         }).catch(err => { })
     },
-    check: function (aid, phone, id) {
+    check: function (aid, phone, id, types) {
       this.id = id;
       this.$axios.post('admin/AgentForward/audit', {
         token: this.token,
         phone: phone,
-        aid: aid
+        aid: aid,
+        types: types
       })
         .then(res => {
 

@@ -59,6 +59,10 @@
                          prop="error"
                          align="center">
         </el-table-column>
+        <el-table-column label="系统上传时间"
+                         prop="time"
+                         align="center">
+        </el-table-column>
       </el-table>
 
       <!-- 选项详情 -->
@@ -84,7 +88,7 @@
                  @close='()=>{
                      addData = $options.data().addData
                  }'>
-        <el-form label-width="70px"
+        <el-form label-width="110px"
                  :rules="rules"
                  :model="addData"
                  ref="form">
@@ -123,6 +127,15 @@
                         prop="answer">
             <el-input v-model="addData.answer"
                       placeholder="请输入答案" />
+          </el-form-item>
+          <el-form-item label="系统上传时间"
+                        prop="time">
+            <el-date-picker v-model="addData.time"
+                            type="date"
+                            value-format="yyyy-MM-dd"
+                            placeholder="选择日期"
+                            style="width:100%">
+            </el-date-picker>
           </el-form-item>
         </el-form>
         <span slot="footer"
@@ -167,12 +180,14 @@ export default {
             option: ''
           }
         ],
-        answer: '' //答案
+        answer: '', //答案
+        time: '', //系统上传时间
       },
       rules: { //添加题目规则验证
         title: { required: true, message: '请输入题目', trigger: 'blur' },
         option: { required: true, message: '请输入选项', trigger: 'blur' },
-        answer: { required: true, message: '请输入答案', trigger: 'blur' }
+        answer: { required: true, message: '请输入答案', trigger: 'blur' },
+        time: { required: true, message: '请选择上传的时间', trigger: 'blur' }
       }
 
     }

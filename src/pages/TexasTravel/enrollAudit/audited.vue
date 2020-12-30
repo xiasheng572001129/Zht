@@ -66,12 +66,10 @@
         <el-table-column label="申请时间"
                          align="center"
                          prop="create_time">
-
         </el-table-column>
         <el-table-column label="审核人"
                          align="center"
                          prop="audit_person">
-
         </el-table-column>
         <el-table-column label="审核时间"
                          align="center">
@@ -79,7 +77,6 @@
             {{scope.row.audit_time | datetime}}
           </template>
         </el-table-column>
-
       </el-table>
 
       <!-- 分页 -->
@@ -123,7 +120,7 @@ export default {
         }).catch(err => { })
     },
 
-    Auth () {
+    Auth () {   //权限列表
       var id = this.$route.query.id;
       this.curId = id;
       this.$axios.post('admin/Auth/erAuth', {
@@ -131,7 +128,6 @@ export default {
         id: id
       })
         .then(res => {
-
           if (res.data.code == 1) {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {

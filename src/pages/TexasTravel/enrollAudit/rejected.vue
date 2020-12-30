@@ -127,7 +127,6 @@ export default {
       this.page = e;
       this.init()
     },
-
     init () {
       this.$axios.post('admin/DeTravelExamine/regAudit', { token: this.token, page: this.page, audit_status: 2 })
         .then(res => {
@@ -136,7 +135,7 @@ export default {
         }).catch(err => { })
     },
 
-    Auth () {
+    Auth () {   //权限列表
       var id = this.$route.query.id;
       this.curId = id;
       this.$axios.post('admin/Auth/erAuth', {
@@ -144,7 +143,6 @@ export default {
         id: id
       })
         .then(res => {
-
           if (res.data.code == 1) {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {

@@ -134,7 +134,6 @@ export default {
 
     //通过
     through (item, index) {
-
       this.$confirm('此操作将通过审核, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -185,7 +184,7 @@ export default {
       }).catch(() => { });
     },
 
-    Auth () {
+    Auth () {  //权限列表
       var id = this.$route.query.id;
       this.curId = id;
       this.$axios.post('admin/Auth/erAuth', {
@@ -193,7 +192,6 @@ export default {
         id: id
       })
         .then(res => {
-
           if (res.data.code == 1) {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {

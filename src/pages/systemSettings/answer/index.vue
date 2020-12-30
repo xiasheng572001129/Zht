@@ -86,17 +86,18 @@
                  center
                  width="30%"
                  @close='()=>{
+                     $refs.form.resetFields(),
                      addData = $options.data().addData
                  }'>
         <el-form label-width="110px"
                  :rules="rules"
                  :model="addData"
                  ref="form">
-          <el-form-item label="题目"
+          <el-form-item label="提问"
                         prop="title">
             <el-input type="textarea"
                       :autosize="{ minRows: 2, maxRows: 4}"
-                      placeholder="请输入题目"
+                      placeholder="请输入提问的问题"
                       v-model="addData.title">
             </el-input>
           </el-form-item>
@@ -106,13 +107,12 @@
               <el-form-item :prop="'option.'+index+'.option'"
                             :rules="rules.option">
                 <div class="Addoption-item">
-                  <p><b>{{index | filterKey}}</b></p>
+                  <p><b>{{fromCharCode(index)}}</b></p>
                   <p>
                     <el-input v-model="item.option"
                               placeholder="请输入选项内容" />
                   </p>
                 </div>
-
               </el-form-item>
             </div>
           </el-form-item>
@@ -184,7 +184,7 @@ export default {
         time: '', //系统上传时间
       },
       rules: { //添加题目规则验证
-        title: { required: true, message: '请输入题目', trigger: 'blur' },
+        title: { required: true, message: '请输入提问的问题', trigger: 'blur' },
         option: { required: true, message: '请输入选项', trigger: 'blur' },
         answer: { required: true, message: '请输入答案', trigger: 'blur' },
         time: { required: true, message: '请选择上传的时间', trigger: 'blur' }
@@ -192,12 +192,7 @@ export default {
 
     }
   },
-  filters: {
-    filterKey (v) {
-      let key = ['A', 'B', 'C']
-      return key[v]
-    }
-  },
+
   methods: {
     paging (e) {
       this.page = e;
@@ -221,9 +216,8 @@ export default {
         this.$refs.form.validate(async (valid) => {
           if (valid) {
             try {
-              let key = ['A', 'B', 'C']
               this.addData.option.forEach((item, index) => {  //把下标 0 1 2  转换成 A B C
-                item = Object.assign(item, { letter: key[index] })
+                item = Object.assign(item, { letter: this.fromCharCode(index) })
               })
               const res = await this.$axios.post('admin/ShopQuestion/addAnswer', Object.assign(this.addData, { token: this.token }))
               if (res.data.code == 1) {
@@ -243,7 +237,9 @@ export default {
         });
       })
 
-
+    },
+    fromCharCode (index) {  //把 1 2 3  转换成 A B C  
+      return String.fromCharCode(97 + index).toLocaleUpperCase()
     },
     Auth () { //权限列表
       var id = this.$route.query.id;
@@ -256,6 +252,7 @@ export default {
           if (res.data.code == 1) {
             var arr = res.data.data;
             this.authList = arr;
+
           } else {
             this.$message.error(res.data.msg)
           }
@@ -268,7 +265,6 @@ export default {
   mounted () {
     this.init()
     this.Auth()
-
   },
 }
 </script>

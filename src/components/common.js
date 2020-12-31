@@ -37,7 +37,6 @@ var obj = {
         })
             .then(res => {
                 this.citylist = res.data;
-
             })
             .catch(error => console.log(error));
     },

@@ -189,7 +189,6 @@ export default {
         answer: { required: true, message: '请输入答案', trigger: 'blur' },
         time: { required: true, message: '请选择上传的时间', trigger: 'blur' }
       }
-
     }
   },
 

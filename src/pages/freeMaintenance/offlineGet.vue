@@ -166,7 +166,7 @@ export default {
       addChannelVisible: false, //添加渠道弹框显示状态
       channelList: {  //添加保险公司数据
         name: '', //渠道名称
-        num: '500', //卡数量
+        num: '20', //卡数量
         photo: '',  //保险公司图片
       },
       channelRules: { //添加保险公司form规则验证

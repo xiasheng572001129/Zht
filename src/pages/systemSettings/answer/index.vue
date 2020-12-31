@@ -58,6 +58,10 @@
         <el-table-column label="错误数量"
                          prop="error"
                          align="center">
+          <template slot-scope="scope">
+            <el-button type="text"
+                       @click="errorList.visible=true,errorList.currentData=scope.row, errorDetails(scope.row)">{{scope.row.error}}</el-button>
+          </template>
         </el-table-column>
         <el-table-column label="系统上传时间"
                          prop="time"
@@ -77,6 +81,40 @@
             <p><b>{{item.letter}}</b></p>
             <p>{{item.option}}</p>
           </div>
+        </div>
+      </el-dialog>
+
+      <!-- 问题错误详情 -->
+      <el-dialog title="问题错误详情"
+                 :visible.sync='errorList.visible'
+                 center
+                 @close='()=>errorList= $options.data().errorList'>
+        <el-table :data="errorList.list">
+          <el-table-column label="维修厂名称"
+                           prop="company"
+                           align="center"></el-table-column>
+          <el-table-column label="负责人"
+                           prop="leader"
+                           align="center"></el-table-column>
+          <el-table-column label="省"
+                           prop="province"
+                           align="center"></el-table-column>
+          <el-table-column label="市"
+                           prop="city"
+                           align="center"></el-table-column>
+          <el-table-column label="区"
+                           prop="county"
+                           align="center"></el-table-column>
+        </el-table>
+        <!-- 分页 -->
+        <div class="page_center">
+          <paging :page-count="errorList.pageCount"
+                  :page="errorList.page"
+                  @index="(e)=>{
+                    errorList.page = e,
+                    errorDetails(errorList.currentData)
+                }"></paging>
+          <!--分页的组件-->
         </div>
       </el-dialog>
 
@@ -172,6 +210,13 @@ export default {
       threeAuthList: [],
       optionVisible: false, //选项详情弹框显示状态
       optionList: [], //选项详情列表
+      errorList: {  //问题错误详情
+        visible: false,
+        page: 1,
+        pageCount: 1,
+        list: [],
+        currentData: {}
+      },
       addTitleVisible: false, //添加题目弹框显示状态
       addData: {  //添加题目 
         title: '', //题目
@@ -202,6 +247,16 @@ export default {
         const res = await this.$axios.post('admin/ShopQuestion/questionList', { token: this.token, page: this.page })
         this.list = res.data.data.list || []
         this.pageCount = res.data.data.rows || 1
+      } catch (error) {
+        this.$message.error('接口报错,请检查')
+        throw (error)
+      }
+    },
+    async errorDetails (item) {  //错误问题详情
+      try {
+        const res = await this.$axios.post('admin/ShopQuestion/errorLog', { token: this.token, id: item.id, page: this.errorList.page })
+        this.errorList.list = res.data.data.list || []
+        this.errorList.pageCount = res.data.data.rows || 1
       } catch (error) {
         this.$message.error('接口报错,请检查')
         throw (error)

@@ -61,8 +61,8 @@
         <p>标题：{{obj.title}}</p>
         <p>
           消息内容：
-          <div class="content"
-               v-html="obj.content"></div>
+        <div class="content"
+             v-html="obj.content"></div>
         </p>
         <p>
           发送对象：

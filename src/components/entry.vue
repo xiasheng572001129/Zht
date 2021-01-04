@@ -100,7 +100,6 @@ export default {
         .catch(err => {
           throw (err)
         })
-
     }
   },
   mounted () {

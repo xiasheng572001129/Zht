@@ -130,8 +130,6 @@ export default {
           this.pageCount = res.data.data.rows;
         }).catch(err => { })
     },
-
-
     //通过
     through (item, index) {
       this.$confirm('此操作将通过审核, 是否继续?', '提示', {
@@ -141,7 +139,6 @@ export default {
         center: true
       }).then(async () => {
         try {
-
           this.throughLoading[index] = true
           const res = await this.$axios.post('admin/DeTravelExamine/regThrough', { token: this.token, id: item.id, phone: item.phone, tour_name: item.tour_name })
           this.throughLoading[index] = false
@@ -159,7 +156,6 @@ export default {
     },
     //驳回
     rejecte (item, index) {
-
       this.$prompt('请输入驳回理由', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -167,7 +163,6 @@ export default {
         inputErrorMessage: '请输入驳回理由'
       }).then(async ({ value }) => {
         try {
-
           this.rejecteLoading[index] = true
           const res = await this.$axios.post('admin/DeTravelExamine/regDismissal', { token: this.token, id: item.id, reason: value, phone: item.phone, tour_name: item.tour_name })
           this.rejecteLoading[index] = false

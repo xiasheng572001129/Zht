@@ -117,6 +117,7 @@
               {{item.shop_type}}
             </td>
             <td>{{item.deposit_type}}</td>
+            
             <!-- <td>{{item.fee || '无'}}</td> -->
             <td>
               <el-switch v-model="item.serve_car"

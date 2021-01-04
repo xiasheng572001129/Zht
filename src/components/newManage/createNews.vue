@@ -34,8 +34,8 @@
         <button @click="send"
                 class="send">{{sendText}}</button>
       </div>
-    </div> 
-    
+    </div>
+
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -46,7 +46,7 @@ import qs from 'qs';
 export default {
   // components: {UE},
   components: { wangEditor },
-  data () { 
+  data () {
     return {
       title: '',
       perarr: [],
@@ -60,7 +60,7 @@ export default {
         // { value: '6', per: '商用运营商' },
         { value: '7', per: '技师' },
         // { value: '9', per: '约驾出行' },
-        // { value: '13', per: '供应商' },
+        { value: '13', per: '供应商' },
         // { value: '12', per: '运营总监' },
         // { value: '14', per: 'ubi用户' },
         { value: '15', per: '油站' },

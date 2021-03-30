@@ -90,6 +90,16 @@
               {{scope.row.sur_num || 0}}张
             </template>
           </el-table-column>
+			<el-table-column label="滤芯费" align="center">
+					<template slot-scope='scope'>
+							   {{scope.row.if_filter==1 ? 0 : scope.row.filter_price}}
+						</template>
+			</el-table-column>
+			<el-table-column label="工时费" align="center">
+					<template slot-scope='scope'>
+							   {{scope.row.if_hour==1 ? 0 : scope.row.hour_price}}
+						</template>
+			</el-table-column>
           <el-table-column label="操作"
                            align="center">
             <template slot-scope="scope">
@@ -159,9 +169,33 @@
                       v-model="channelList.num"
                       :disabled="status==1" />
           </el-form-item>
+		  <el-form-item label="滤芯费" required>
+			         <el-form-item prop="if_filter">
+						 <el-radio-group v-model="channelList.if_filter">
+						 	 <el-radio :label="1">无</el-radio>
+						 	 <el-radio :label="2">有</el-radio>
+						 </el-radio-group>
+					 </el-form-item>
+			          <el-form-item prop="filter_price" v-if="channelList.if_filter==2">
+						  <el-input  placeholder="请填写工时费" v-model="channelList.filter_price"></el-input>
+					  </el-form-item>
+					
+		  </el-form-item>
+		  <el-form-item label="工时费" required>
+		  			         <el-form-item prop="if_hour">
+		  						 <el-radio-group v-model="channelList.if_hour ">
+		  						 	 <el-radio :label="1">无</el-radio>
+		  						 	 <el-radio :label="2">有</el-radio>
+		  						 </el-radio-group>
+		  					 </el-form-item>
+		  			          <el-form-item prop="hour_price" v-if="channelList.if_hour==2">
+		  						  <el-input  placeholder="请填写工时费" v-model="channelList.hour_price"></el-input>
+		  					  </el-form-item>
+		  					
+		  </el-form-item>
           <el-form-item label="过期时间"
                         prop="month">
-            <el-select v-model="channelList.month">
+            <el-select v-model="channelList.month" :disabled="status==1">
               <el-option v-for="(item,index) in 12"
                          :key="index"
                          :value="item"
@@ -218,12 +252,20 @@ export default {
         num: '', //卡数量
         photo: '',  //保险公司图片
         month: '12月', //过期时间
+		if_filter:1,  //是否有滤芯费 1 无  2 有
+		filter_price:'', //；滤芯费
+		if_hour:1, //是否有工时费 1 无 2 有
+		hour_price:'', //工时费
       },
       channelRules: { //添加渠道form规则验证
         name: { required: true, message: '请输入渠道名称', trigger: 'blur' },
         num: { required: true, message: '请输入添加的卡数量', trigger: 'blur' },
         photo: { required: true, message: '请上传保险公司图片', trigger: 'blur' },
         month: { required: true, message: '请选择过期时间', trigger: 'blur' },
+		if_filter:{required:true,message:'请选择是否有滤芯费',trigger:'blur'},
+		filter_price:{required:true,message:'请输入滤芯费',trigger:'blur'},
+		if_hour:{required:true,message:'请选择是否有工时费',trigger:'blur'},
+		hour_price:{required:true,message:'请输入工时费',trigger:'blur'},
       },
       channelLoaading: false, //添加渠道loading
       acitivIndex: 0,
@@ -292,7 +334,11 @@ export default {
         if (valid) {
           try {
             this.channelLoaading = true
-            const res = await this.$axios.post('admin/GroupSetCity/allChannelAdd', Object.assign(this.channelList, { token: this.token }))
+			let {filter_price,hour_price} = {   // filter_price  滤芯费     hour_price 工时费
+				filter_price:this.channelList.if_filter==1 ? 0 :this.channelList.filter_price,  //if_filter 是否有滤芯费 如果没有默认为0
+				hour_price: this.channelList.if_hour ==1 ? 0 :this.channelList.hour_price   //hour_price 是否有工时费 如果没有默认为0
+			}
+            const res = await this.$axios.post('admin/GroupSetCity/allChannelAdd', Object.assign(this.channelList, { token: this.token,filter_price:filter_price,hour_price:hour_price }))
             this.channelLoaading = false
             if (res.data.code == 1) {
               this.$message({ message: res.data.msg, type: "success" })
@@ -321,11 +367,14 @@ export default {
         this.channelList = Object.assign(this.channelList, item, { name: item.company })
       })
     },
-    async ModifyImg () { //修改图片
+    async ModifyImg () { //修改
       try {
-
         this.channelLoaading = true
-        const res = await this.$axios.post('admin/GroupSetCity/updImg', { token: this.token, photo: this.channelList.photo, channel_id: this.channelList.id })
+		let {filter_price,hour_price} = {   // filter_price  滤芯费     hour_price 工时费
+			filter_price:this.channelList.if_filter==1 ? 0 :this.channelList.filter_price,  //if_filter 是否有滤芯费 如果没有默认为0
+			hour_price: this.channelList.if_hour ==1 ? 0 :this.channelList.hour_price   //hour_price 是否有工时费 如果没有默认为0
+		}
+        const res = await this.$axios.post('admin/GroupSetCity/updImg', { token: this.token, photo: this.channelList.photo, channel_id: this.channelList.id,filter_price:filter_price,hour_price:hour_price,if_filter:this.channelList.if_filter,if_hour:this.channelList.if_hour })
         this.channelLoaading = false
         if (res.data.code == 1) {
           this.$message({ message: res.data.msg, type: "success" })

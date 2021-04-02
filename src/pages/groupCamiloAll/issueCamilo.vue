@@ -171,25 +171,25 @@
           </el-form-item>
 		  <el-form-item label="滤芯费" required>
 			         <el-form-item prop="if_filter">
-						 <el-radio-group v-model="channelList.if_filter">
+						 <el-radio-group v-model="channelList.if_filter" :disabled="status==1">
 						 	 <el-radio :label="1">无</el-radio>
 						 	 <el-radio :label="2">有</el-radio>
 						 </el-radio-group>
 					 </el-form-item>
 			          <el-form-item prop="filter_price" v-if="channelList.if_filter==2">
-						  <el-input  placeholder="请填写工时费" v-model="channelList.filter_price"></el-input>
+						  <el-input  placeholder="请填写工时费" v-model="channelList.filter_price" :disabled="status==1"></el-input>
 					  </el-form-item>
 					
 		  </el-form-item>
 		  <el-form-item label="工时费" required>
 		  			         <el-form-item prop="if_hour">
-		  						 <el-radio-group v-model="channelList.if_hour ">
+		  						 <el-radio-group v-model="channelList.if_hour " :disabled="status==1">
 		  						 	 <el-radio :label="1">无</el-radio>
 		  						 	 <el-radio :label="2">有</el-radio>
 		  						 </el-radio-group>
 		  					 </el-form-item>
 		  			          <el-form-item prop="hour_price" v-if="channelList.if_hour==2">
-		  						  <el-input  placeholder="请填写工时费" v-model="channelList.hour_price"></el-input>
+		  						  <el-input  placeholder="请填写工时费" v-model="channelList.hour_price" :disabled="status==1"></el-input>
 		  					  </el-form-item>
 		  					
 		  </el-form-item>

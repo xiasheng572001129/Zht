@@ -110,7 +110,7 @@ export default {
             var arr = res.data.data;
             for (var i = 0; i < arr.length; i++) {
               if (arr[i].son) {
-                if (arr[i].name == '增加地区') {
+                if (arr[i].name == '审核管理员') {
                   this.seCurId = arr[i].id;
                   this.threeAuthList = arr[i].son;
                 }
@@ -118,7 +118,7 @@ export default {
                   if (arr[i].action != arr[i].son[j].action) {
                     arr[i].action = arr[i].son[0].action;
                   }
-                  if (arr[i].son[j].name == '已审核' && arr[i].name == '增加地区') {
+                  if (arr[i].son[j].name == '已审核' && arr[i].name == '审核管理员') {
                     this.thCurId = arr[i].son[j].id;
                   }
                 }

@@ -122,7 +122,6 @@ export default {
     defaultData () {
       if (this.id) {
         this.$axios.post('admin/messageManage/msg', { token: window.sessionStorage.getItem("bbytoken"), id: this.id }).then(res => {
-
           if (res.data.code == 1) {
             ({ title: this.title, sendto: this.perarr, content: this.defaultContent } = { ...res.data.data });
 

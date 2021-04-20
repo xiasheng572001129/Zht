@@ -46,8 +46,12 @@
                          label="登录名称"
                          prop="login_name"></el-table-column>
         <el-table-column align="center"
+                         label="省"
+                         prop="province"></el-table-column>
+        <el-table-column align="center"
                          label="注册城市"
                          prop="area_name"></el-table-column>
+
         <el-table-column align="center"
                          label="联系电话"
                          prop="phone"></el-table-column>

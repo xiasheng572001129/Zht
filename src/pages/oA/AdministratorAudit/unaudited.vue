@@ -60,9 +60,8 @@
           </template>
         </el-table-column>
       </el-table>
-
       <!-- 分页 -->
-      <div class="page_center">
+      <div class="page_center">a
         <paging :page-count="pageCount"
                 :page="page"
                 @index="paging"></paging>
@@ -88,7 +87,6 @@ export default {
       authList: [],
       throughLoading: [], //通过loading
       rejectLoading: [], //驳回loading
-
     }
   },
 
@@ -157,7 +155,6 @@ export default {
         inputPattern: /\S/,
         inputErrorMessage: '驳回理由不能为空'
       }).then(async ({ value }) => {
-
         try {
           this.rejectLoading[index] = true
           const res = await this.$axios.post('admin/OaAudit/refuse_manager', { token: this.token, uid: row.uid, reason: value })
@@ -174,9 +171,6 @@ export default {
         }
       }).catch(() => { });
     },
-
-
-
     Auth () {  //权限列表
       var id = this.$route.query.id;
       this.curId = id;

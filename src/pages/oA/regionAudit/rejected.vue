@@ -103,9 +103,7 @@ export default {
       curId: 0,
       thCurId: 0,
       threeAuthList: [],
-      authList: [],
-
-
+      authList: []
     }
   },
   methods: {

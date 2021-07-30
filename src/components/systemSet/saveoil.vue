@@ -112,7 +112,7 @@ export default {
         about: this.content,
         id: this.id,
         token: window.sessionStorage.getItem("bbytoken"),
-        cover: this.picaddr ? this.picaddr : this.lunboaddr,
+        cover: this.picaddr ? this.picaddr : this.lunboaddr,  
         price: this.price,
         name: this.title
       }
@@ -125,11 +125,15 @@ export default {
     },
     cancel () { //取消直接关闭
       parent.layer.close(this.indexNow);
+  
     }
   }
 };
 </script>
 <style scoped>
+
+
+
 .lunbo {
   background-color: #fff;
 }

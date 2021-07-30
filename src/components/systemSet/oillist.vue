@@ -26,7 +26,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in list">
+            <tr v-for="(item,index) in list"
+                :key="index">
               <td class="sno">{{item.name}}</td>
               <!-- <td class="pic">
                 <img :src="item.cover"
@@ -64,8 +65,9 @@
         <select v-model="oilselect">
           <option disabled
                   value="">请选择</option>
-          <option v-for="item in oilname"
-                  :value="item.id">{{item.name}}</option>
+          <option v-for="(item,index) in oilname"
+                  :value="item.id"
+                  :key="index">{{item.name}}</option>
         </select>
       </div>
       <div class="titlename">

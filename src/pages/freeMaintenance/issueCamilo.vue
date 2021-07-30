@@ -66,11 +66,13 @@
             </el-row>
           </div> -->
           <el-table :data="list"
-                    v-if="currentProvince"
-                    @selection-change="handleSelectionChange">
-            <el-table-column type="selection"
+                    v-if="currentProvince">
+            <!-- <el-table-column type="selection"
                              width="55">
-            </el-table-column>
+            </el-table-column> -->
+            <el-table-column label="管理员名称"
+                             align="center"
+                             prop="uname"></el-table-column>
             <el-table-column label="保险公司图片"
                              align='center'>
               <template slot-scope="scope">
@@ -86,13 +88,13 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="卡数量"
+            <!-- <el-table-column label="卡数量"
                              align="center">
               <template slot-scope="scope">
                 <el-input placeholder="请输入卡数量"
                           v-model="scope.row.card_num" />
               </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column label="过期时间"
                              align="center">
               <template slot-scope="scope">
@@ -131,16 +133,16 @@
                 <el-button type="danger"
                            size="small"
                            @click="remove(scope.row)">删除</el-button>
-                <el-button type="primary"
+                <!-- <el-button type="primary"
                            size="small"
-                           @click="status=1,Modify(scope.row)">修改</el-button>
+                           @click="status=1,Modify(scope.row)">修改</el-button> -->
               </template>
             </el-table-column>
           </el-table>
-          <el-button type="primary"
+          <!-- <el-button type="primary"
                      v-if="checkedCompany && checkedCompany.length>0"
                      class="main_confirm"
-                     @click="Export()">导出</el-button>
+                     @click="Export()">导出</el-button> -->
           <!-- <el-row>
             <el-col :span="1">
               <el-checkbox v-model="item.checked"></el-checkbox>
@@ -193,6 +195,56 @@
             <el-input placeholder="请输入卡数量"
                       v-model="channelList.num"
                       :disabled="status==1" />
+          </el-form-item>
+          <el-form-item label="单价"
+                        prop="money">
+            <el-input placeholder="请输输入单价"
+                      v-model="channelList.money" />
+          </el-form-item>
+          <el-form-item label="油品数量">
+
+            <el-input placeholder="请输入油品数量"
+                      v-model="channelList.oil_num"
+                      :disabled="true" />
+          </el-form-item>
+          <el-form-item label="滤芯价格"
+                        required>
+            <el-form-item prop="filter_price"
+                          v-if="channelList.if_filter==2"
+                          style="margin:10px 0">
+              <el-input placeholder="请输入滤芯价格"
+                        v-model="channelList.filter_price" />
+            </el-form-item>
+            <el-form-item prop="if_filter">
+              <el-radio-group v-model="channelList.if_filter">
+                <el-radio :label="1">没有滤芯</el-radio>
+                <el-radio :label="2">有滤芯</el-radio>
+              </el-radio-group>
+            </el-form-item>
+
+          </el-form-item>
+          <el-form-item label="工时价格"
+                        required>
+            <el-form-item prop="hour_price"
+                          v-if="channelList.if_hour==2"
+                          style="margin:10px 0">
+              <el-input placeholder="请输入工时价格"
+                        v-model="channelList.hour_price" />
+            </el-form-item>
+            <el-form-item prop="if_hour">
+              <el-radio-group v-model="channelList.if_hour">
+                <el-radio :label="1">没有工时</el-radio>
+                <el-radio :label="2">有工时</el-radio>
+              </el-radio-group>
+            </el-form-item>
+
+          </el-form-item>
+          <el-form-item label="备注"
+                        prop="remarks">
+            <el-input type="textarea"
+                      placeholder="请输入备注"
+                      v-model="channelList.remarks"
+                      :rows="2" />
           </el-form-item>
           <el-form-item label="过期时间"
                         prop="month">
@@ -251,14 +303,27 @@ export default {
       channelList: {  //添加渠道数据
         name: '', //渠道名称
         num: '', //卡数量
+        money: '', //单价
         photo: '',  //保险公司图片
         month: '12', //过期时间
+        oil_num: '4L', //油品数量
+        filter_price: '', //滤芯价格
+        hour_price: '', //工时价格
+        if_filter: 1, //是否有滤芯  1没有  2 有
+        if_hour: 1, //是否有工时 1 没有 2 有
+        remarks: '', //备注 
       },
       channelRules: { //添加渠道form规则验证
         name: { required: true, message: '请输入渠道名称', trigger: 'blur' },
         num: { required: true, message: '请输入添加的卡数量', trigger: 'blur' },
         photo: { required: true, message: '请上传保险公司图片', trigger: 'blur' },
         month: { required: true, message: '请选择过期时间', trigger: 'blur' },
+        money: { required: true, message: '请输入单价', trigger: 'blur' },
+        filter_price: { required: true, message: '请输入滤芯价格', trigger: 'blur' },
+        hour_price: { required: true, message: '请输入工时价格', trigger: 'blur' },
+        if_filter: { required: true, message: '请选择是否有滤芯', trigger: 'blur' },
+        if_hour: { required: true, message: '请选择是否有工时', trigger: 'blur' },
+        remarks: { required: true, message: '请输入备注', trigger: 'blur' },
       },
       channelLoaading: false, //添加渠道loading
       acitivIndex: 0,
@@ -287,6 +352,18 @@ export default {
           this.channelList.photo = ''
         }
       }
+    },
+    "channelList.if_filter": {
+      deep: true, //深度监听设置为 true
+      handler (v) {
+        this.channelList.filter_price = v == 1 ? '' : this.channelList.filter_price
+      }
+    },
+    "channelList.if_hour": {
+      deep: true, //深度监听设置为 true
+      handler (v) {
+        this.channelList.hour_price = v == 1 ? '' : this.channelList.hour_price
+      }
     }
   },
   methods: {
@@ -295,7 +372,7 @@ export default {
         const res = await this.$axios.post('admin/ChannelSetCity/channelList', { token: this.token, city_id: id })
         let data = res.data.data || []
         data.forEach(item => {
-          item = Object.assign(item, { card_num: '', month:'12月' })
+          item = Object.assign(item, { card_num: '', month: '12月' })
         })
         this.list = data || []
 
@@ -382,7 +459,16 @@ export default {
       try {
         let id = this.cityList[this.acitivIndex] && this.cityList[this.acitivIndex].id
         this.channelLoaading = true
-        const res = await this.$axios.post('admin/ChannelSetCity/updImg', { token: this.token, channel_id: this.channelList.id, photo: this.channelList.photo })
+        const res = await this.$axios.post('admin/ChannelSetCity/updImg', {
+          token: this.token,
+          channel_id: this.channelList.id,
+          photo: this.channelList.photo,
+          money: this.channelList.money,
+          filter_price: this.channelList.filter_price,
+          hour_price: this.channelList.hour_price,
+          if_fiter: this.channelList.if_fiter,
+          if_hour: this.channelList.if_hour
+        })
         this.channelLoaading = false
         if (res.data.code == 1) {
           this.$message({ message: res.data.msg, type: "success" })
@@ -409,12 +495,12 @@ export default {
         throw (error)
       }
     },
-    handleSelectionChange (val) {  //获取选中的保险公司
-      let checkedCompany = val.map((v) => {
-        return Object.assign(v, { month:  v.month ? v.month : '12月' })
-      })
-      this.checkedCompany = checkedCompany
-    },
+    // handleSelectionChange (val) {  //获取选中的保险公司
+    //   let checkedCompany = val.map((v) => {
+    //     return Object.assign(v, { month:  v.month ? v.month : '12月' })
+    //   })
+    //   this.checkedCompany = checkedCompany
+    // },
     changeCity (id) {  //获取市
       this.init()
     },

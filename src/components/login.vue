@@ -120,7 +120,7 @@ export default {
       }
       /**绘制干扰线**/
       for (var i = 0; i < 5; i++) {
-        ctx.strokeStyle = this.randomColor(40, 180);
+        ctx.strokeStyle = this.randomColor(40, 180);      
         ctx.beginPath();
         ctx.moveTo(this.randomNum(0, width), this.randomNum(0, height));
         ctx.lineTo(this.randomNum(0, width), this.randomNum(0, height));

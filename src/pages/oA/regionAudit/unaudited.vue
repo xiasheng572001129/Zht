@@ -54,7 +54,6 @@
         <el-table-column align="center"
                          label="联系电话"
                          prop="phone"></el-table-column>
-
         <el-table-column align="center"
                          label="创建时间"
                          prop="create_time"></el-table-column>
@@ -181,8 +180,6 @@ export default {
         }
       }).catch(() => { });
     },
-
-
 
     Auth () {  //权限列表
       var id = this.$route.query.id;

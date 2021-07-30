@@ -32,6 +32,7 @@
                  class="photo" />
           </template>
         </el-table-column>
+
         <el-table-column align="center"
                          label="登录名称"
                          prop="login_name"></el-table-column>
@@ -49,6 +50,7 @@
         <el-table-column align="center"
                          label="审核时间"
                          prop="audit_time"></el-table-column>
+
       </el-table>
 
       <!-- 分页 -->
@@ -63,6 +65,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+
 export default {
   data () {
     return {

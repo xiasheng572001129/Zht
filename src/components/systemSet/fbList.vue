@@ -26,7 +26,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in list">
+            <tr v-for="(item,index) in list"
+                :key="index">
               <td class="sno">{{item.name}}</td>
               <td class="pic">
                 <img :src="item.cover"
@@ -175,7 +176,7 @@ export default {
     },
     addoil: function () {
       var that = this;
-     
+
       layer.open({
         type: 2,
         area: ['80%', '80%'],

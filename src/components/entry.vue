@@ -12,6 +12,7 @@
             <p>{{item.name}}</p>
           </router-link>
         </li>
+
         <!--<li :style="note">-->
         <!--<router-link to="/shoplist/list">-->
         <!--<div><img src="../../static/images/qxc.png" alt=""></div>-->

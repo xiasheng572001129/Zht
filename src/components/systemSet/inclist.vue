@@ -11,8 +11,9 @@
           <select v-model="oilselect">
             <option disabled
                     value="">请选择</option>
-            <option v-for="item in oilname"
-                    :value="item.id">{{item.name}}</option>
+            <option v-for="(item,index) in oilname"
+                    :value="item.id"
+                    :key="index">{{item.name}}</option>
           </select>
         </div>
         <div class="titlename">
@@ -92,9 +93,7 @@ export default {
     },
     handlePictureCardPreview (file) {
       this.dialogImageUrl = file.url;
-    
       this.dialogVisible = true;
-
     },
     handleSuccess: function (response, file, fileList) {
       this.picaddr = response;
@@ -102,7 +101,7 @@ export default {
     },
     editpic: function (e) {
       this.picshow = false;
-    
+
     },
     idtoname (id, arr) {
       for (var i = 0; i < arr.length; i++) {
@@ -112,7 +111,7 @@ export default {
       }
     },
     send () { //确定
-     
+
       if (!this.oilselect) {
         layer.msg('请指定油品名称');
         return;
